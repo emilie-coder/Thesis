@@ -9,7 +9,10 @@ const Login = () => {
             <input type='text' placeholder='Password' required/>
         </form>
         <button> Login </button>
-        <Link to="/reset"> Reset Password </Link>
+        <div>
+            Forgot password?
+            <Link to="/reset"> Reset Password </Link>
+        </div>
         <div>
             --- or ---
         </div>
