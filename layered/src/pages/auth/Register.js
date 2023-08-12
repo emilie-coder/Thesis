@@ -1,33 +1,60 @@
+/* eslint-disable no-unused-vars */
 import React, { useState } from 'react'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {getAuth, createUserWithEmailAndPassword} from "firebase/auth";
+import myAuth from "../../firebase/config";
+import Loader from "../../components/loader/Loader"
+import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
 
     const[email, SetEmail] = useState("");
     const[password, SetPassword] = useState("");
     const[cPassword, SetCPassword] = useState("");
-    const fail = () => toast("Passwords do not match");
+    const[isLoading, setIsLoading] = useState(false);
+
     const success = () => toast("Successfully registered");
     
+    const navigate = useNavigate();
+
     const registerUser = (e) => {
         e.preventDefault();
 
         console.log(email, password, cPassword);
 
         if(password !== cPassword){
-            fail();
-        } else {
-            success();
+            toast.error("Passwords do not match :( ")
         }
 
-        SetEmail('');
-        SetPassword('');
-        SetCPassword('');
-    }
+        setIsLoading(true);
+        const auth = getAuth();
+        createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+            // Signed in 
+            const user = userCredential.user;
+            console.log(user);
+            console.log("success?");
+            setIsLoading(false);
+            success();
+        })
+        .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            toast.error(errorMessage);
+            setIsLoading(false);
+            console.log("failed");
+            console.log(errorMessage);
+        });
+            // SetEmail('');
+            // SetPassword('');
+            // SetCPassword('');
+            // navigate("/login");
+        }
 
     return (
         <div>
+            {isLoading && <Loader/>}
             Register
             <form onSubmit={registerUser}>
                 <input type='text' placeholder='Email' required value={email} onChange={(e) => SetEmail(e.target.value)}/>
