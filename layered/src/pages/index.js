@@ -1,2 +1,6 @@
 export{default as Home} from "./home/Home"
 export{default as Contact} from "./contact/Contact"
+export{default as Browse} from "./browse/Browse"
+export{default as Profile} from  "./profile/Profile"
+export{default as Research} from "./research/Research"
+export{default as SignIn} from "./signIn/SignIn"

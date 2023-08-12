@@ -1,5 +1,5 @@
 import React from 'react'
-import style from './Browse.module.scss'
+// import style from './Browse.module.scss'
 
 const Browse = () => {
   return (

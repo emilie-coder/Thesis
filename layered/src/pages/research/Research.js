@@ -1,5 +1,5 @@
 import React from 'react'
-import style from './Research.module.scss'
+//import style from './Research.module.scss'
 
 const Research = () => {
   return (
