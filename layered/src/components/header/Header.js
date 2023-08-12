@@ -13,7 +13,6 @@ const Header = () => {
           <Link to='/Contact'> Contact </Link>
           <Link to='/Login'> Login </Link>
           <Link to='/Register'> Register </Link>
-          <Link to='/Reset'> Reset </Link>
         </ul>
       </nav>
     </div>
