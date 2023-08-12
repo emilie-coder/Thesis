@@ -3,7 +3,6 @@ import React, { useState } from 'react'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {getAuth, createUserWithEmailAndPassword} from "firebase/auth";
-import myAuth from "../../firebase/config";
 import Loader from "../../components/loader/Loader"
 import { useNavigate } from 'react-router-dom';
 
@@ -34,9 +33,9 @@ const Register = () => {
             // Signed in 
             const user = userCredential.user;
             console.log(user);
-            console.log("success?");
             setIsLoading(false);
             success();
+            navigate("/login");
         })
         .catch((error) => {
             const errorCode = error.code;
@@ -46,10 +45,6 @@ const Register = () => {
             console.log("failed");
             console.log(errorMessage);
         });
-            // SetEmail('');
-            // SetPassword('');
-            // SetCPassword('');
-            // navigate("/login");
         }
 
     return (
