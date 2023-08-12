@@ -11,7 +11,9 @@ const Header = () => {
           <Link to='/Research'> Research </Link>
           <Link to='/Browse'> Browse </Link>
           <Link to='/Contact'> Contact </Link>
-          <Link to='/SignIn'> SignIn </Link>
+          <Link to='/Login'> Login </Link>
+          <Link to='/Register'> Register </Link>
+          <Link to='/Reset'> Reset </Link>
         </ul>
       </nav>
     </div>

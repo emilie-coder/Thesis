@@ -2,7 +2,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 // pages
-import {Home, Contact, Browse, Research, SignIn} from "./pages/index";
+import {Home, Contact, Browse, Research, Login, Register, Reset} from "./pages/index";
 
 // components
 import {Header, Footer} from "./components/index";
@@ -17,8 +17,11 @@ function App() {
         <Route path='/' element={<Home/>}/>
         <Route path="/Contact" element={<Contact/>}/>
         <Route path="/Browse" element={<Browse/>}/>
-        <Route path="/SignIn" element={<SignIn/>}/>
+        <Route path="/Login" element={<Login/>}/>
         <Route path="/Research" element={<Research/>}/>
+        <Route path="/Register" element={<Register/>}/>
+        <Route path="/Reset" element={<Reset/>}/>
+        <Route path="*" element={<div> Unknown link :( </div>}/>
       </Routes>
     <Footer/>
 
