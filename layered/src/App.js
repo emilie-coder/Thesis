@@ -10,7 +10,7 @@ import {Header, Footer} from "./components/index";
 function App() {
 
   return (
-    <div>
+    <div className = "App">
     <BrowserRouter>
     <Header/>
       <Routes>
