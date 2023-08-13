@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer, toast } from 'react-toastify';
 import { useDispatch } from "react-redux";
+import { SET_ACTIVE_USER } from '../../redux/slice/authSlice';
 
 
 const Header = () => {
@@ -17,7 +18,9 @@ const Header = () => {
     const navigate = useNavigate();
     
 
-    //
+    // redux
+    const dispatch = useDispatch();
+    
 
 
     //  monitor currently signed in user
@@ -28,12 +31,23 @@ const Header = () => {
         // User is signed in, see docs for a list of available properties
         // https://firebase.google.com/docs/reference/js/auth.user
         const uid = user.uid;
-        console.log(user.displayName);
-        setDisplayName(user.displayName);
+
+        if (user.displayName == null ) {
+          const u1 = user.email.slice(0, -10);
+          const uName = u1.charAt(0).toUpperCase() + u1.slice(1);
+          setDisplayName(uName);
+        } else {
+          setDisplayName(user.displayName);
+        }
+
+        dispatch(SET_ACTIVE_USER({
+          email: auth.email,
+          userName: auth.displayName,
+          userID: auth.uid,
+        }));
+
       } else {
-        // User is signed out
-        console.log("logged out");
-        setDisplayName('');
+        setDisplayName('"');
       }
     });
 
@@ -71,7 +85,6 @@ const Header = () => {
           <p>
             Hi, {displayName}
           </p>
-          "
         </ul>
       </nav>
     </div>
