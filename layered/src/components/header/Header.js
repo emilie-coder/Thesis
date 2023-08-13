@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
 import headerCSS from './Header.module.css';
@@ -33,7 +34,7 @@ const Header = () => {
         const uid = user.uid;
 
         if (user.displayName == null ) {
-          const u1 = user.email.slice(0, -10);
+          const u1 = user.email.substring(0, '@');
           const uName = u1.charAt(0).toUpperCase() + u1.slice(1);
           setDisplayName(uName);
         } else {
@@ -41,9 +42,9 @@ const Header = () => {
         }
 
         dispatch(SET_ACTIVE_USER({
-          email: auth.email,
-          userName: auth.displayName,
-          userID: auth.uid,
+          email: user.email,
+          userName: user.displayName ? user.displayName : displayName,
+          userID: uid,
         }));
 
       } else {
@@ -82,9 +83,9 @@ const Header = () => {
           <Link to='/Login'> Login </Link>
           <Link to='/Register'> Register </Link>
           <Link to='/' onClick={logoutUser}> Log Out </Link>
-          <p>
+          <a href='#'>
             Hi, {displayName}
-          </p>
+          </a>
         </ul>
       </nav>
     </div>
