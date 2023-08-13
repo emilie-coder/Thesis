@@ -9,7 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer, toast } from 'react-toastify';
 import { useDispatch } from "react-redux";
 import { SET_ACTIVE_USER, REMOVE_ACTIVE_USER } from '../../redux/slice/authSlice';
-
+import ShowOnLogin, { ShowOnLogOut } from './hiddenLink/hiddenLink';
 
 const Header = () => {
 
@@ -17,12 +17,10 @@ const Header = () => {
     const[isLoading, setIsLoading] = useState(false);
     const[displayName, setDisplayName] = useState('');
     const navigate = useNavigate();
-    
 
     // redux
     const dispatch = useDispatch();
     
-
 
     //  monitor currently signed in user
     useEffect(() => {
@@ -51,7 +49,7 @@ const Header = () => {
         setDisplayName("");
         dispatch(REMOVE_ACTIVE_USER());
       }
-    });
+    }, [dispatch, displayName]);
 
 
     })      
@@ -81,12 +79,19 @@ const Header = () => {
           <Link to='/Research'> Research </Link>
           <Link to='/Browse'> Browse </Link>
           <Link to='/Contact'> Contact </Link>
-          <Link to='/Login'> Login </Link>
-          <Link to='/Register'> Register </Link>
-          <Link to='/' onClick={logoutUser}> Log Out </Link>
-          <a href='#'>
-            Hi, {displayName}
-          </a>
+
+          <ShowOnLogOut>
+            <Link to='/Login'> Login </Link>
+            <Link to='/Register'> Register </Link>
+          </ShowOnLogOut>
+
+
+          <ShowOnLogin>
+            <Link to='/' onClick={logoutUser}> Log Out </Link>
+            <a href='#home'>
+              Hi, {displayName}
+            </a>
+          </ShowOnLogin>
         </ul>
       </nav>
     </div>
