@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer, toast } from 'react-toastify';
 import { useDispatch } from "react-redux";
-import { SET_ACTIVE_USER } from '../../redux/slice/authSlice';
+import { SET_ACTIVE_USER, REMOVE_ACTIVE_USER } from '../../redux/slice/authSlice';
 
 
 const Header = () => {
@@ -34,7 +34,7 @@ const Header = () => {
         const uid = user.uid;
 
         if (user.displayName == null ) {
-          const u1 = user.email.substring(0, '@');
+          const u1 = user.email.substring(0, user.email.indexOf("@"));
           const uName = u1.charAt(0).toUpperCase() + u1.slice(1);
           setDisplayName(uName);
         } else {
@@ -48,7 +48,8 @@ const Header = () => {
         }));
 
       } else {
-        setDisplayName('"');
+        setDisplayName("");
+        dispatch(REMOVE_ACTIVE_USER());
       }
     });
 
