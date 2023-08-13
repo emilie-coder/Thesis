@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import React, { useState } from 'react'
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {getAuth, createUserWithEmailAndPassword} from "firebase/auth";
 import Loader from "../../components/loader/Loader"
@@ -57,7 +57,6 @@ const Register = () => {
                 <input type='text' placeholder='Confirm Password' required value={cPassword} onChange={(e) => SetCPassword(e.target.value)}/>
                 <button type="submit" > submit </button>
             </form>
-            <ToastContainer/>
         </div>
     )
 }

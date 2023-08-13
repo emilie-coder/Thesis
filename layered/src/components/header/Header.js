@@ -18,6 +18,7 @@ const Header = () => {
   signOut(auth).then(() => {
     toast.success("Logged out :D");
     setIsLoading(false);
+    navigate("/");
   }).catch((error) => {
     toast.error(error)
     setIsLoading(false);

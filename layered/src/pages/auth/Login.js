@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import 'react-toastify/dist/ReactToastify.css';
-import { ToastContainer, toast } from 'react-toastify';
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { toast } from 'react-toastify';
+import { getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import app from '../../firebase/config';
 import Loader from "../../components/loader/Loader";
 import { useNavigate } from 'react-router-dom';
+
 
 const Login = () => {
 
@@ -22,10 +23,11 @@ const Login = () => {
 
         signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
+            // eslint-disable-next-line no-unused-vars
             const user = userCredential.user;
             toast.success("Logged in :D")
             setIsLoading(false);
-            // navigate("/");
+            navigate("/");
         })
         .catch((error) => {
             // const errorCode = error.code;
@@ -36,10 +38,36 @@ const Login = () => {
 
     }
 
+    // Login with Google
+
+    const provider = new GoogleAuthProvider();
+
+    const signInWithGoogle = (e) => {
+        e.preventDefault();
+
+        signInWithPopup(auth, provider)
+        .then((result) => {
+
+            // eslint-disable-next-line no-unused-vars
+            const user = result.user;
+            toast.success("Logged in :D")
+            setIsLoading(false);
+            navigate("/");
+
+
+        }).catch((error) => {
+
+            const errorMessage = error.message;
+            toast.error(errorMessage);
+            setIsLoading(false);
+
+        });
+
+    }
+
     return (
         <div className='login'>
             {isLoading && <Loader/>}
-            <ToastContainer/>
             User Login
             <form onSubmit={loginUser}>
                 <input type='text' placeholder='Email' required value={email} onChange={(e) => SetEmail(e.target.value)}/>
@@ -53,7 +81,7 @@ const Login = () => {
             <div>
                 --- or ---
             </div>
-            <button> Login with Google </button>
+            <button onClick={signInWithGoogle}> Login with Google </button>
             <div>
                 Dont have an account?
                 <Link to="/register"> Register </Link>

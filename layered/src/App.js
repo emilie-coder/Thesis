@@ -7,11 +7,16 @@ import {Home, Contact, Browse, Research, Login, Register, Reset} from "./pages/i
 // components
 import {Header, Footer} from "./components/index";
 
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
+
+
 function App() {
 
   return (
     <div className = "App">
     <BrowserRouter>
+    <ToastContainer/>
     <Header/>
       <Routes>
         <Route path='/' element={<Home/>}/>
