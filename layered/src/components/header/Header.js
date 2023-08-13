@@ -85,9 +85,9 @@ const Header = () => {
 
           <ShowOnLogin>
             <Link to='/' onClick={logoutUser}> Log Out </Link>
-            <a href='#home'>
-              Hi, {displayName}
-            </a>
+            <Link to ='/myDashboard'>
+              My Dashboard
+            </Link>
           </ShowOnLogin>
         </ul>
       </nav>

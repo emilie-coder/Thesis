@@ -1,7 +1,8 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import { getDatabase, ref, push } from "firebase/database";
 import { getStorage } from "firebase/storage";
+
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -18,8 +19,19 @@ const firebaseConfig = {
 
 
 const app = initializeApp(firebaseConfig);
-export const myAuth =  getAuth(app);
-export const db =  getFirestore(app);
+export const myAuth = getAuth(app);
+export const db = getDatabase(app);
 export const storage = getStorage(app);
+
+// Create user
+export function createUser(note) {
+  try {
+    const usersRef = ref(db, "users");
+    push(usersRef, note);
+    console.log("User note added successfully");
+  } catch (error) {
+    console.error("Error adding user note:", error);
+  }
+}
 
 export default app;

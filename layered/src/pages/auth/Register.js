@@ -5,6 +5,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import {getAuth, createUserWithEmailAndPassword} from "firebase/auth";
 import Loader from "../../components/loader/Loader"
 import { useNavigate } from 'react-router-dom';
+import * as db from '../../firebase/config';
+
 
 const Register = () => {
 
@@ -35,6 +37,7 @@ const Register = () => {
             console.log(user);
             setIsLoading(false);
             success();
+            db.createUser((user.uid));
             navigate("/login");
         })
         .catch((error) => {
