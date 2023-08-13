@@ -6,7 +6,7 @@ import { getAuth, signOut, onAuthStateChanged } from "firebase/auth";
 import Loader from "../../components/loader/Loader";
 import { useNavigate } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import { useDispatch } from "react-redux";
 import { SET_ACTIVE_USER, REMOVE_ACTIVE_USER } from '../../redux/slice/authSlice';
 import ShowOnLogin, { ShowOnLogOut } from './hiddenLink/hiddenLink';
@@ -67,12 +67,9 @@ const Header = () => {
     }
 
 
-
-
   return (
     <div className={headerCSS.header}>
       {isLoading && <Loader/>}
-      <ToastContainer/>
       <nav>
         <ul className={headerCSS.ul}>
           <Link to='/'> Layered </Link>
