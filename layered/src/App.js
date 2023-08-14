@@ -12,6 +12,7 @@ import { ToastContainer } from 'react-toastify';
 import CreateProject from './pages/createProject/CreateProject';
 import CreateProjectPage from './pages/createProject/CreateProjectPage';
 import Template from './pages/createProject/Template';
+import ViewProjects from './pages/dashboard/myProjects/ViewProjects';
 
 
 function App() {
@@ -34,6 +35,7 @@ function App() {
         <Route path="/createNewProject/:id" element={<CreateProjectPage/>}></Route>
         <Route path="/createNewProjectTemplate/:id" element={<Template/>}></Route>
         <Route path="*" element={<div> Unknown link :( </div>}/>
+        <Route path="/viewProjects" element={<ViewProjects/>}/>
       </Routes>
     <Footer/>
 
