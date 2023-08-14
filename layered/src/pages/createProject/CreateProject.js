@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom';
 import { selectUserID, selectUsername } from '../../redux/slice/authSlice'
 import { useDispatch, useSelector } from 'react-redux';
