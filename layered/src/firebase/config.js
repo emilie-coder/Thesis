@@ -49,13 +49,18 @@ export function createUserProject(userID, username, title) {
 
     console.log("User found successfully");
 
-    // Push the project data into the user node
-    push(userRef, { title: title, username: username });
+    // Construct the path to the AllUserProjects child node under the user
+    const allUserProjectsRef = child(userRef, "AllUserProjects");
 
+    // Push the project data into the AllUserProjects node
+    push(allUserProjectsRef, { title: title, username: username });
+
+    console.log("Project added under AllUserProjects");
   } catch (error) {
-    console.error("Error adding user:", error);
+    console.error("Error adding project:", error);
   }
 }
+
 
 
 
