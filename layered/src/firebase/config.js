@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { getDatabase, ref, push } from "firebase/database";
+// eslint-disable-next-line no-unused-vars
+import { getDatabase, ref, set, child, push } from "firebase/database";
 import { getStorage } from "firebase/storage";
 
 
@@ -24,14 +25,16 @@ export const db = getDatabase(app);
 export const storage = getStorage(app);
 
 // Create user
-export function createUser(note) {
+export function createUser(userID) {
   try {
     const usersRef = ref(db, "users");
-    push(usersRef, note);
-    console.log("User note added successfully");
+    const userRef = child(usersRef, userID);
+    set(userRef, true); // Use the userID as the key and set value to true
+    console.log("User added successfully");
   } catch (error) {
-    console.error("Error adding user note:", error);
+    console.error("Error adding user:", error);
   }
 }
+
 
 export default app;

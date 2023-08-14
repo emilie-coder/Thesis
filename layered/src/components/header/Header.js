@@ -73,9 +73,9 @@ const Header = () => {
       <nav>
         <ul className={headerCSS.ul}>
           <Link to='/'> Layered </Link>
-          <Link to='/Research'> Research </Link>
+          {/* <Link to='/Research'> Research </Link>
           <Link to='/Browse'> Browse </Link>
-          <Link to='/Contact'> Contact </Link>
+          <Link to='/Contact'> Contact </Link> */}
 
           <ShowOnLogOut>
             <Link to='/Login'> Login </Link>
