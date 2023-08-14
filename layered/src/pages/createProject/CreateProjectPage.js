@@ -16,16 +16,16 @@ const CreateProjectPage = () => {
             <div>
                 current project info:
                 <div>
-                    title: {projTitle}
+                    project tilte: {projTitle}
                 </div>
                 <div>
-                    projiD: {projiD}
+                    project id: {projiD}
                 </div>
                 <div>
-                    proTemplate: {proTemplate}
+                    project template: {proTemplate}
                 </div>
                 <div>
-                    projTitle: {projAuthor}
+                    Porject author: {projAuthor}
                 </div>
 
             </div>

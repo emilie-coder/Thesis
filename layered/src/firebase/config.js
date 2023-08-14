@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 // eslint-disable-next-line no-unused-vars
-import { getDatabase, ref, set, child, push, serverTimestamp } from "firebase/database";
+import { getDatabase, ref, set, child, push, serverTimestamp, get, onValue } from "firebase/database";
 import { getStorage } from "firebase/storage";
 
 
@@ -47,8 +47,6 @@ export async function createUserProject(userID, username, title) {
     // Construct the path to the user node
     const userRef = child(usersRef, userID);
 
-    console.log("User found successfully");
-
     // Construct the path to the AllUserProjects child node under the user
     const allUserProjectsRef = child(userRef, "AllUserProjects");
 
@@ -70,6 +68,35 @@ export async function createUserProject(userID, username, title) {
 }
 
 
+export function fetchNotes(callback) {
+  db.on('value', (snapshot) => {
+    const data = snapshot.val();
+    callback(data);
+  });
+}
+
+
+
+
+export async function fetchUserProjects(userID) {
+  try {
+    const userProjectsRef = ref(db, 'users/' + userID + '/AllUserProjects');
+    
+    return new Promise((resolve, reject) => {
+      onValue(userProjectsRef, (snapshot) => {
+        const data = snapshot.val();
+        console.log(data);
+        resolve(data); // Resolve the promise with the fetched data
+      }, (error) => {
+        console.error("Error fetching projects:", error);
+        reject(error); // Reject the promise with the error
+      });
+    });
+  } catch (error) {
+    console.error("Error fetching projects:", error);
+    throw error;
+  }
+}
 
 
 export default app;
