@@ -10,6 +10,7 @@ import {Header, Footer} from "./components/index";
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
 import CreateProject from './pages/createProject/CreateProject';
+import CreateProjectPage from './pages/createProject/CreateProjectPage';
 
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
         <Route path="/Reset" element={<Reset/>}/>
         <Route path="/myDashboard" element={<Dashboard/>}></Route>
         <Route path="/createNewProject" element={<CreateProject/>}></Route>
+        <Route path="/createNewProject/:id" element={<CreateProjectPage/>}></Route>
         <Route path="*" element={<div> Unknown link :( </div>}/>
       </Routes>
     <Footer/>

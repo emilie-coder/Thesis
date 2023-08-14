@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 // eslint-disable-next-line no-unused-vars
-import { getDatabase, ref, set, child, push } from "firebase/database";
+import { getDatabase, ref, set, child, push, serverTimestamp } from "firebase/database";
 import { getStorage } from "firebase/storage";
 
 
@@ -53,7 +53,11 @@ export function createUserProject(userID, username, title) {
     const allUserProjectsRef = child(userRef, "AllUserProjects");
 
     // Push the project data into the AllUserProjects node
-    push(allUserProjectsRef, { title: title, username: username });
+    push(allUserProjectsRef, {
+      title: title,
+      username: username,
+      createdAt: serverTimestamp() // Adding the server timestamp
+    });
 
     console.log("Project added under AllUserProjects");
   } catch (error) {

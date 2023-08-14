@@ -21,6 +21,13 @@ const CreateProject = () => {
 
         // call firebase function here
         db.createUserProject(userID, userName, title); 
+
+        // once it creates the project - we want to grab that projects id
+
+        
+        // handle the redux state here
+
+        // path="/createNewProject/:id"
       }
 
     return (
