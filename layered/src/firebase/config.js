@@ -68,14 +68,6 @@ export async function createUserProject(userID, username, title) {
 }
 
 
-export function fetchNotes(callback) {
-  db.on('value', (snapshot) => {
-    const data = snapshot.val();
-    callback(data);
-  });
-}
-
-
 
 
 export async function fetchUserProjects(userID) {
