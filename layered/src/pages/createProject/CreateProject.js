@@ -1,34 +1,47 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom';
-import { selectEmail, selectUserID, selectUsername } from '../../redux/slice/authSlice'
-import { useSelector } from 'react-redux';
+import { selectUserID, selectUsername } from '../../redux/slice/authSlice'
+import { useDispatch, useSelector } from 'react-redux';
 import * as db from '../../firebase/config';
+import { SET_ACTIVE_PROJECT } from '../../redux/slice/projectSlice';
 
 
 const CreateProject = () => {
 
     const userID = useSelector(selectUserID);
     const userName = useSelector(selectUsername);
-    const navigate = useNavigate();
-
+    
     const[title, SetTitle] = useState("");
 
 
-    const createDBProject = (e) => {
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+
+    const createDBProject = async (e) => {
         e.preventDefault();
-        navigate("/createNewProject");
-
-        // call firebase function here
-        db.createUserProject(userID, userName, title); 
-
-        // once it creates the project - we want to grab that projects id
-
-        
-        // handle the redux state here
-
-        // path="/createNewProject/:id"
-      }
+      
+        try {
+          const tempID = await db.createUserProject(userID, userName, title);
+      
+          // Handle the redux state here
+          dispatch(
+            SET_ACTIVE_PROJECT({
+              projectID: tempID, 
+              projectTitle: title,
+              projectTemplate: null,
+              projectTimeCreated: null,
+              projectTimeLastSaved: null,
+              projectAuthor: userName,
+            })
+          );
+      
+          navigate(`/createNewProject/${tempID}`); 
+        } catch (error) {
+          console.error("Error creating project:", error);
+        }
+      };
+      
 
     return (
         <div>

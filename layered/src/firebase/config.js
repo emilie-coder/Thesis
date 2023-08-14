@@ -40,7 +40,7 @@ export function createUser(userID) {
 }
 
 
-export function createUserProject(userID, username, title) {
+export async function createUserProject(userID, username, title) {
   try {
     const usersRef = ref(db, "users");
 
@@ -52,19 +52,22 @@ export function createUserProject(userID, username, title) {
     // Construct the path to the AllUserProjects child node under the user
     const allUserProjectsRef = child(userRef, "AllUserProjects");
 
-    // Push the project data into the AllUserProjects node
-    push(allUserProjectsRef, {
+    // Push the project data into the AllUserProjects node and get the generated ID
+    const newProjectRef = push(allUserProjectsRef, {
       title: title,
       username: username,
       createdAt: serverTimestamp() // Adding the server timestamp
     });
 
-    console.log("Project added under AllUserProjects");
+    const newProjectID = newProjectRef.key; // Get the generated ID
+
+    console.log("Project added under AllUserProjects with ID:", newProjectID);
+    return newProjectID;
   } catch (error) {
     console.error("Error adding project:", error);
+    throw error; // Rethrow the error to handle it at the calling site
   }
 }
-
 
 
 
