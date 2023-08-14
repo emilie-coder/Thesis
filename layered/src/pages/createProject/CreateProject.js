@@ -3,15 +3,16 @@ import { Link } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom';
 import { selectEmail, selectUserID, selectUsername } from '../../redux/slice/authSlice'
 import { useSelector } from 'react-redux';
+import * as db from '../../firebase/config';
+
 
 const CreateProject = () => {
 
     const userID = useSelector(selectUserID);
     const userName = useSelector(selectUsername);
-    const email = useSelector(selectEmail);
     const navigate = useNavigate();
 
-    const[title, SetTitle] = useState("untitled");
+    const[title, SetTitle] = useState("");
 
 
     const createDBProject = (e) => {
@@ -19,6 +20,7 @@ const CreateProject = () => {
         navigate("/createNewProject");
 
         // call firebase function here
+        db.createUserProject(userID, userName, title); 
       }
 
     return (
@@ -26,7 +28,8 @@ const CreateProject = () => {
             CreateProject
 
             <form onSubmit={createDBProject}>
-                <input type='text' placeholder="Project title" value="untitled" onChange={(e) => SetTitle(e.target.value)}/>
+                <input type='text' placeholder="Project title" value={title} onChange={(e) => SetTitle(e.target.value)}/>
+                <button type='submit'> Create my piece </button>
             </form>
 
 

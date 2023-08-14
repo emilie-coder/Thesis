@@ -29,12 +29,35 @@ export function createUser(userID) {
   try {
     const usersRef = ref(db, "users");
     const userRef = child(usersRef, userID);
-    set(userRef, true); // Use the userID as the key and set value to true
-    console.log("User added successfully");
+
+    // Set a value for the user node (using userID as the key)
+    set(userRef, { AllUserProjects: true });
+
+    console.log("User and AllUserProjects added successfully");
   } catch (error) {
     console.error("Error adding user:", error);
   }
 }
+
+
+export function createUserProject(userID, username, title) {
+  try {
+    const usersRef = ref(db, "users");
+
+    // Construct the path to the user node
+    const userRef = child(usersRef, userID);
+
+    console.log("User found successfully");
+
+    // Push the project data into the user node
+    push(userRef, { title: title, username: username });
+
+  } catch (error) {
+    console.error("Error adding user:", error);
+  }
+}
+
+
 
 
 export default app;
