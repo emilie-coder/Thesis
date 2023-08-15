@@ -70,6 +70,16 @@ export async function createUserProject(userID, username, title) {
 }
 
 
+export function fetchNotes(callback, userID) {
+  console.log("inside fetch notes")
+  console.log(userID);
+  // const noteHashMap = db.ref(userID + "/AllUserProjects");
+  // noteHashMap.on('value', (snapshot) => {
+  //   const data = snapshot.val();
+  //   callback(data);
+  // });
+}
+
 
 
 export default app;

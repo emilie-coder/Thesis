@@ -1,11 +1,10 @@
-import React from 'react'
-import { selectEmail, selectUserID, selectUsername } from '../../redux/slice/authSlice'
-// import style from './Dashboard.module.scss'
+import React from 'react';
+import { selectEmail, selectUserID, selectUsername } from '../../redux/slice/authSlice';
 import { useSelector } from 'react-redux';
 import MyProjects from './myProjects/MyProjects';
 import MyCollections from './myCollections/MyCollections';
 import { useNavigate } from 'react-router-dom';
-
+import { useProjectSelector } from '../../customHooks/useProjectSelector';
 
 
 const Dashboard = () => {
@@ -14,12 +13,12 @@ const Dashboard = () => {
   const email = useSelector(selectEmail);
   const navigate = useNavigate();
 
+  const userProjects = useProjectSelector(); // Use the custom hook
 
   const createNewProject = (e) => {
     e.preventDefault();
     navigate("/createNewProject");
-  }
-
+  };
 
   return (
     <div>
@@ -39,16 +38,16 @@ const Dashboard = () => {
 
       <div>
         My Projects list:
-        <MyProjects/>
+        <MyProjects projects={userProjects} />
         <button onClick={createNewProject}> Create New Project </button>
       </div>
       <div>
         My Collections:
-        <MyCollections/>
+        <MyCollections />
         <button> Create New Collection </button>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Dashboard
+export default Dashboard;
