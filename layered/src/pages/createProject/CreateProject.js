@@ -18,6 +18,7 @@ const CreateProject = () => {
 
     const [chosenTemplate, setShosenTemplate] = useState(null);
 
+
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -38,14 +39,21 @@ const CreateProject = () => {
             SET_ACTIVE_PROJECT({
               projectID: tempID, 
               projectTitle: title,
-              projectTemplate: null,
+              projectTemplate: chosenTemplate,
               projectTimeCreated: null,
               projectTimeLastSaved: null,
               projectAuthor: userName,
             })
           );
       
-          navigate(`/createNewProject/${tempID}`); 
+
+          if(chosenTemplate !== 'blank' && chosenTemplate !== null){
+            navigate(`/createNewProject/${tempID}`); 
+          } else {
+            navigate(`/createNewProjectTemplate/${tempID}`);
+          }
+
+          
         } catch (error) {
           console.error("Error creating project:", error);
         }
@@ -55,7 +63,13 @@ const CreateProject = () => {
       e.preventDefault();
       console.log("template chosen");
       setShosenTemplate(id);
-      console.log(chosenTemplate);
+
+      dispatch(
+        SET_ACTIVE_TEMPLATE({
+          templateChosen: true,
+          template: id,
+        })
+      );
     }
 
     useEffect(() => {
