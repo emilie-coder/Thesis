@@ -4,15 +4,19 @@ import { selectUserID, selectUsername } from '../../redux/slice/authSlice'
 import { useDispatch, useSelector } from 'react-redux';
 import * as db from '../../firebase/config';
 import { SET_ACTIVE_PROJECT } from '../../redux/slice/projectSlice';
+import { SET_ACTIVE_TEMPLATE } from '../../redux/slice/templateSlice';
+
 
 const CreateProject = () => {
 
     const userID = useSelector(selectUserID);
     const userName = useSelector(selectUsername);
     
-    const[title, SetTitle] = useState("");
+    const [title, SetTitle] = useState("");
 
     const [templates, setTemplates] = useState(null);
+
+    const [chosenTemplate, setShosenTemplate] = useState(null);
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -21,7 +25,13 @@ const CreateProject = () => {
         e.preventDefault();
       
         try {
-          const tempID = await db.createUserProject(userID, userName, title);
+          let tempID;
+          
+          if (title === null || title === "") {
+            tempID = await db.createUserProject(userID, userName, "untitled");
+          } else {
+            tempID = await db.createUserProject(userID, userName, title);
+          }
       
           // Handle the redux state here
           dispatch(
@@ -39,7 +49,14 @@ const CreateProject = () => {
         } catch (error) {
           console.error("Error creating project:", error);
         }
-      };
+    };
+
+    const chooseTemplate = (e, id) => {
+      e.preventDefault();
+      console.log("template chosen");
+      setShosenTemplate(id);
+      console.log(chosenTemplate);
+    }
 
     useEffect(() => {
       db.fetchTemplates(userID, (notes) => {
@@ -59,20 +76,17 @@ const CreateProject = () => {
                   {templates && (
                   <div>
                     {Object.keys(templates).map((projectId) => (
-                      <div key={projectId}>
+                      <button key={projectId} onClick={(e) => chooseTemplate(e, projectId)}>
                         {projectId}
-                      </div>
+                      </button>
                     ))}
                   </div>
                 )}
                 </div>
                 <button type='submit'> Create my piece </button>
             </form>
-
-
-
         </div>
     )
 }
 
-export default CreateProject
+export default CreateProject;

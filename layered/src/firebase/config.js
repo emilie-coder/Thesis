@@ -52,9 +52,12 @@ export async function createUserProject(userID, username, title) {
     // Construct the path to the AllUserProjects child node under the user
     const allUserProjectsRef = child(userRef, "AllUserProjects");
 
+    // Set the title to "untitled" if it's blank or null
+    const projectTitle = title || "untitled";
+
     // Push the project data into the AllUserProjects node and get the generated ID
     const newProjectRef = push(allUserProjectsRef, {
-      title: title,
+      title: projectTitle,
       username: username,
       createdAt: serverTimestamp() // Adding the server timestamp
     });
@@ -68,6 +71,7 @@ export async function createUserProject(userID, username, title) {
     throw error; // Rethrow the error to handle it at the calling site
   }
 }
+
 
 
 

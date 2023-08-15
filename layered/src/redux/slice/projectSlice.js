@@ -19,7 +19,8 @@ const projectSlice = createSlice({
         state.isLoggedIn = true;
         const { projectID, projectTitle, projectTemplate, projectTimeCreated, projectTimeLastSaved, projectAuthor } = action.payload;
         state.projectID = projectID;
-        state.projectTitle = projectTitle;
+        // Set projectTitle to "untitled" if it's empty or null
+        state.projectTitle = projectTitle || 'untitled';
         state.projectTemplate = projectTemplate;
         state.projectTimeCreated = projectTimeCreated;
         state.projectTimeLastSaved = projectTimeLastSaved;
