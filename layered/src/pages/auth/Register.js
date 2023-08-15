@@ -38,7 +38,7 @@ const Register = () => {
             setIsLoading(false);
             success();
             db.createUser((user.uid));
-            navigate("/login");
+            navigate("/");
         })
         .catch((error) => {
             const errorCode = error.code;

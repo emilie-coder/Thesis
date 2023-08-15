@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import MyProjects from './myProjects/MyProjects';
 import MyCollections from './myCollections/MyCollections';
 import { useNavigate } from 'react-router-dom';
-import { fetchNotes } from '../../firebase/config';
+import { fetchUserProjects } from '../../firebase/config';
 
 const Dashboard = () => {
   const userID = useSelector(selectUserID);
@@ -20,10 +20,8 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    fetchNotes(userID, (notes) => {
+    fetchUserProjects(userID, (notes) => {
       setUserProjects(notes);
-      console.log("in use effect");
-      console.log(notes);
     });
   }, [userID]);
 
@@ -49,7 +47,9 @@ const Dashboard = () => {
         {userProjects && (
           <div>
             {Object.keys(userProjects).map((projectId) => (
-              <div key={projectId}>{userProjects[projectId].title}</div>
+              <div key={projectId}>
+                {userProjects[projectId].title}
+              </div>
             ))}
           </div>
         )}

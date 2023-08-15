@@ -72,7 +72,7 @@ export async function createUserProject(userID, username, title) {
 
 
 // fetch
-export function fetchNotes(userID, callback) {
+export function fetchUserProjects(userID, callback) {
 
   try{
     const myDb = getDatabase();
@@ -88,6 +88,27 @@ export function fetchNotes(userID, callback) {
   }
 
 }
+
+
+export function fetchTemplates(userID, callback) {
+
+  try{
+    const myDb = getDatabase();
+    const templates = ref(myDb, 'templates');
+    onValue(templates, (snapshot) => {
+      const data = snapshot.val();
+      console.log("in fetch templates");
+      console.log(data);
+      callback(data);
+    });
+
+  } catch (error) {
+    console.error("Error finding templates", error);
+    throw error; // Rethrow the error to handle it at the calling site
+  }
+
+}
+
 
 
 
