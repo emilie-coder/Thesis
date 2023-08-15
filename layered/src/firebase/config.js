@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 // eslint-disable-next-line no-unused-vars
-import { getDatabase, ref, set, child, push, serverTimestamp } from "firebase/database";
+import { getDatabase, ref, set, child, push, serverTimestamp, onValue } from "firebase/database";
 import { getStorage } from "firebase/storage";
 
 
@@ -67,6 +67,26 @@ export async function createUserProject(userID, username, title) {
     console.error("Error adding project:", error);
     throw error; // Rethrow the error to handle it at the calling site
   }
+}
+
+
+
+// fetch
+export function fetchNotes(userID, callback) {
+
+  try{
+    const myDb = getDatabase();
+    const noteHashMap = ref(myDb, 'users/' + userID + '/AllUserProjects');
+    onValue(noteHashMap, (snapshot) => {
+      const data = snapshot.val();
+      callback(data);
+    });
+
+  } catch (error) {
+    console.error("Error adding project:", error);
+    throw error; // Rethrow the error to handle it at the calling site
+  }
+
 }
 
 
