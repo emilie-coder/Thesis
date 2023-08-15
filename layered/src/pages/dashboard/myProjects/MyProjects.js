@@ -30,7 +30,7 @@ const MyProjects = () => {
 
   useEffect(() => {
     fetchUserProjects();
-  }, []); // Watch for changes in userID
+  }, [userProjectsFound]); // Watch for changes in userID
 
   const movePage = (e) => {
     e.preventDefault();
