@@ -1,6 +1,8 @@
 import React from 'react'
 import { useSelector } from 'react-redux';
 import { selectProjectAuthor, selectProjectID, selectProjectTemplate, selectProjectTitle } from '../../redux/slice/projectSlice';
+import ThreeScene from "../../threejs/three-scene";
+
 
 const Template = () => {
 
@@ -27,6 +29,10 @@ const Template = () => {
                 <div>
                     Project Author: {projAuthor}
                 </div>
+            </div>
+
+            <div>
+              <ThreeScene/>
             </div>
         </div>
     )
