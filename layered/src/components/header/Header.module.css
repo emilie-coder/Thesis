@@ -1,12 +1,44 @@
-  
-  .header {
-    background-color: rgb(0, 253, 97);
-    padding-top: 0;
-    padding: 0;
-    margin: 0;
-    text-align: center;
-  }
-  ul{
-    padding: 0;
-    margin: 0;
-  }
+@import '../../styling/colors.css';
+/* 
+--white: #fff;
+--black: #000;
+--main-color: #79155B;
+--secondary-color: #C23373;
+--accent-color-a: #F6635C;
+--accent-color-b: #FFBA86;
+ */
+
+.header {
+  background-color: var(--accent-color-a);
+  padding-top: 0;
+  padding: 0;
+  margin: 0;
+  text-align: center;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+
+.nav{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.leftLogo, .userStates, .middleLinks * {
+  display: flex;
+  flex-direction: row;
+  margin: 10px;
+}
+
+.leftLogo:hover, .middleLinks *:hover , .userStates *:hover{
+  scale: 110%;
+}
+
+.leftLogo:active, .userStates *:active, .middleLinks *:active  {
+  scale: 100%;
+}
+
+

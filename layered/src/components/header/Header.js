@@ -70,26 +70,33 @@ const Header = () => {
   return (
     <div className={headerCSS.header}>
       {isLoading && <Loader/>}
-      <nav>
-        <ul className={headerCSS.ul}>
-          <Link to='/'> Layered </Link>
-          {/* <Link to='/Research'> Research </Link>
-          <Link to='/Browse'> Browse </Link>
-          <Link to='/Contact'> Contact </Link> */}
-
-          <ShowOnLogOut>
-            <Link to='/Login'> Login </Link>
-            <Link to='/Register'> Register </Link>
-          </ShowOnLogOut>
+      <nav className={headerCSS.nav}>
 
 
-          <ShowOnLogin>
-            <Link to='/' onClick={logoutUser}> Log Out </Link>
-            <Link to ='/myDashboard'>
-              My Dashboard
-            </Link>
-          </ShowOnLogin>
-        </ul>
+          <div className={headerCSS.leftLogo}>
+            <Link to='/'> Echo VR </Link>
+          </div>
+
+          <div className={headerCSS.middleLinks} >
+            <Link to='/Research'> Research </Link>
+            <Link to='/Browse'> Browse </Link>
+            <Link to='/Contact'> Contact </Link>
+          </div>
+
+          <div className={headerCSS.userStates}>
+            <ShowOnLogOut>
+              <Link to='/Login'> Login </Link>
+              <Link to='/Register'> Register </Link>
+            </ShowOnLogOut>
+
+
+            <ShowOnLogin>
+              <Link to='/' onClick={logoutUser}> Log Out </Link>
+              <Link to ='/myDashboard'>
+                My Dashboard
+              </Link>
+            </ShowOnLogin>
+          </div>
       </nav>
     </div>
   )
