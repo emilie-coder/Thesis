@@ -18,22 +18,35 @@ class ThreeScene extends Component {
     this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     this.camera.position.z = 5;
 
-    // create box
-    var geometry = new THREE.BoxGeometry(1, 1, 1);
-    var material = new THREE.MeshBasicMaterial({
-      color: 0x00ff00,
-      wireframe : true,
-    });
-    this.cube = new THREE.Mesh(geometry, material);
+// Light
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1)
+    this.scene.add(ambientLight)
 
-    // add the cube to the scene
-    this.scene.add(this.cube);
+    // texture loader 
+    const loader = new THREE.TextureLoader()
+    const texture = loader.load('https://cdn.mos.cms.futurecdn.net/yCPyoZDQBBcXikqxkeW2jJ-1920-80.jpg.webp')
+
+    texture.wrapS = THREE.RepeatWrapping
+    texture.wrapT = THREE.RepeatWrapping
+
+
+    // the board
+
+    const material2 = new THREE.MeshPhongMaterial({
+        map: texture,
+        side: THREE.DoubleSide
+     })
+
+    const planeSize = 2;
+    const geometry2 = new THREE.PlaneGeometry(planeSize, planeSize)
+    const board = new THREE.Mesh(geometry2, material2)
+    board.position.set(0, 0, 0)
+    this.scene.add(board)
+
+
 
     // Call the render function
     this.renderScene();
-
-    // Call the animation function
-    this.animation();
 
     // orbit controls
     this.controls = new OrbitControls(this.camera, this.renderer.domElement); 

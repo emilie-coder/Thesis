@@ -78,7 +78,7 @@ const Template = () => {
                 return <img src={url} alt='userUploadedImage'/>
               })}
             </div>
-            {/* <ThreeScene/> */}
+            <ThreeScene/>
           </div>
       </div>
     )
