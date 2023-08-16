@@ -32,7 +32,7 @@ const Template = () => {
             </div>
 
             <div>
-              <ThreeScene/>
+              {/* <ThreeScene/> */}
             </div>
         </div>
     )

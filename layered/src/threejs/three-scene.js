@@ -22,6 +22,7 @@ class ThreeScene extends Component {
     var geometry = new THREE.BoxGeometry(1, 1, 1);
     var material = new THREE.MeshBasicMaterial({
       color: 0x00ff00,
+      wireframe : true,
     });
     this.cube = new THREE.Mesh(geometry, material);
 
