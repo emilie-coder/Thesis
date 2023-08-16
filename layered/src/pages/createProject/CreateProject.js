@@ -48,9 +48,9 @@ const CreateProject = () => {
       
 
           if(chosenTemplate !== 'blank' && chosenTemplate !== null){
-            navigate(`/createNewProject/${tempID}`); 
-          } else {
             navigate(`/createNewProjectTemplate/${tempID}`);
+          } else {
+            navigate(`/createNewProject/${tempID}`); 
           }
 
           
@@ -63,7 +63,7 @@ const CreateProject = () => {
       e.preventDefault();
       console.log("template chosen");
       setShosenTemplate(id);
-
+    
       dispatch(
         SET_ACTIVE_TEMPLATE({
           templateChosen: true,
@@ -71,6 +71,7 @@ const CreateProject = () => {
         })
       );
     }
+    
 
     useEffect(() => {
       db.fetchTemplates(userID, (notes) => {

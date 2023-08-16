@@ -9,13 +9,18 @@ const CreateProjectPage = () => {
     const proTemplate = useSelector(selectProjectTemplate);
     const projTitle = useSelector(selectProjectTitle);
 
+    // Define a function that will be called onClick
+    const handleTitleClick = (e) => {
+        e.preventDefault();
+        console.log("Clicked title");
+    }
 
     return (
         <div>
             CreateProjectPage
             <div>
                 current project info:
-                <div>
+                <div onClick={handleTitleClick}>
                     title: {projTitle}
                 </div>
                 <div>
@@ -27,11 +32,9 @@ const CreateProjectPage = () => {
                 <div>
                     projTitle: {projAuthor}
                 </div>
-
             </div>
-            
         </div>
     )
 }
 
-export default CreateProjectPage
+export default CreateProjectPage;
