@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import * as THREE from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"; 
 
 class ThreeScene extends Component {
   componentDidMount() {
@@ -32,6 +33,12 @@ class ThreeScene extends Component {
 
     // Call the animation function
     this.animation();
+
+    // orbit controls
+    this.controls = new OrbitControls(this.camera, this.renderer.domElement); 
+
+    //event handlers
+    window.addEventListener("resize", this.handleWindowResize);
   }
 
   renderScene = () => {
@@ -44,9 +51,21 @@ class ThreeScene extends Component {
 
   animation = () => {
     requestAnimationFrame(this.animation);
-    this.cube.rotation.x += 0.01;
-    this.cube.rotation.y += 0.01;
+    this.cube.rotation.x += 0.001;
+    this.cube.rotation.y += 0.001;
   };
+
+  handleWindowResize = () => {
+    this.camera.aspect = window.innerWidth / window.innerHeight;
+    this.camera.updateProjectionMatrix();
+
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
+    this.renderer.render(this.scene, this.camera);
+  };
+
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.handleWindowResize);
+  }
 
   render() {
     return <div ref={(ref) => (this.mount = ref)} />;
