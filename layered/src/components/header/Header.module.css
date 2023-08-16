@@ -27,10 +27,16 @@
   width: 100%;
 }
 
-.leftLogo, .userStates, .middleLinks * {
+.leftLogo, .userStates *, .middleLinks * {
+  display: flex;
+  flex-direction: column;
+  margin: 10px;
+}
+
+.userStates, .middleLinks {
   display: flex;
   flex-direction: row;
-  margin: 10px;
+
 }
 
 .leftLogo:hover, .middleLinks *:hover , .userStates *:hover{

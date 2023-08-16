@@ -7,6 +7,8 @@ import { useState, useEffect } from 'react';
 import { selectUserID } from '../../redux/slice/authSlice'
 import { v4 } from "uuid";
 import { ref, uploadBytes, listAll, getDownloadURL } from 'firebase/storage';
+import templateCSS from './Template.module.css';
+import UserImageFile from './imageComponents/UserImageFile';
 
 const Template = () => {
 
@@ -52,9 +54,9 @@ const Template = () => {
   }, []);
 
   return (
-      <div>
-          CreateProjectPage - TEMPLATE
-          <div>
+      <div className={templateCSS.templatePage}>
+          {/* CreateProjectPage - TEMPLATE */}
+          {/* <div>
               current project info:
               <div>
                   title: {projTitle}
@@ -68,17 +70,23 @@ const Template = () => {
               <div>
                   Project Author: {projAuthor}
               </div>
-          </div>
+          </div> */}
 
-          <div>
-            <input type="file" onChange={((event) => {setImageUplad(event.target.files[0])})}/>
-            <button onClick={uploadImage}>upload image</button>
-            <div>
-              {imageList.map((url) => {
-                return <img src={url} alt='userUploadedImage'/>
-              })}
+          <div className={templateCSS.fileUploadContainer}>
+            <div className={templateCSS.fileUpload}>
+              <input type="file" onChange={((event) => {setImageUplad(event.target.files[0])})}/>
+              <button onClick={uploadImage}>upload image</button>
             </div>
-            <ThreeScene/>
+
+            <div className={templateCSS.userImages}>
+            {imageList.map((url) => {
+              return <UserImageFile key={url} imageURL={url} />
+              // return <img src={url} alt ='temp'></img>
+            })}
+          </div>
+          <div className = {templateCSS.test}>
+          <ThreeScene/>
+          </div>
           </div>
       </div>
     )

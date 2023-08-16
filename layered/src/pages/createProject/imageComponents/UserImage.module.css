@@ -1,0 +1,11 @@
+@import '../../../styling/colors.css';
+
+.imageHolder {
+    width: 100px;
+    height: 100px;
+}
+
+.imageHolder * {
+    max-height: 100%;
+    max-width: 100%;
+}

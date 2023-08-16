@@ -1,0 +1,33 @@
+@import '../../styling/colors.css';
+
+.templatePage{
+    display: flex;
+    width: 100%;
+    height: auto;
+    flex-direction: column;
+}
+
+.fileUploadContainer{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.fileUpload{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.userImages {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.test{
+    display: flex;
+    width: 500px;
+    height: 500px;
+}
