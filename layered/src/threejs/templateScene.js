@@ -1,9 +1,12 @@
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls, TransformControls, useCursor } from '@react-three/drei'
 // import { useControls } from 'leva'
 import create from 'zustand'
-import { Plane } from 'three'
+import DuckScene from './3dScenes/DuckScene'
+import SimpleFlower from './3dScenes/Test_flower'
+
+
 
 const useStore = create((set) => ({ target: null, setTarget: (target) => set({ target }) }))
 
@@ -20,18 +23,22 @@ function Box(props) {
 }
 
 export default function TemplateScene() {
-  const { target, setTarget } = useStore()
-  // const { mode } = useControls({ mode: { value: 'translate', options: ['translate', 'rotate', 'scale'] } })
+  const { target, setTarget } = useStore();
+
   return (
     <Canvas dpr={[1, 2]} onPointerMissed={() => setTarget(null)}>
+      <Suspense fallback={null}>
+        <gridHelper args={[400, 200, '#151515', '#020202']} position={[0, -4, 0]} />
+        <ambientLight intensity={1.5} />
+        <pointLight position={[10, 10, 10]} intensity={1} castShadow />
 
-        <gridHelper args={[1000, 200, '#151515', '#020202']} position={[0, -4, 0]} />
-        <ambientLight intensity={0.01} />
-        <hemisphereLight intensity={0.925} color="#8040df" groundColor="red" />
-      <Box position={[2, 2, 0]} />
-      <Box />
-      {target && <TransformControls object={target} mode={ 'translate' } />}
-      <OrbitControls makeDefault />
+        <mesh>
+          <DuckScene />
+        </mesh>
+
+        {target && <TransformControls object={target} mode="translate" />}
+        <OrbitControls makeDefault />
+      </Suspense>
     </Canvas>
-  )
+  );
 }
