@@ -1,7 +1,8 @@
 import React from 'react'
 import { useSelector } from 'react-redux';
 import { selectProjectAuthor, selectProjectID, selectProjectTemplate, selectProjectTitle } from '../../redux/slice/projectSlice';
-import ThreeScene from "../../threejs/three-scene";
+// import ThreeScene from "../../threejs/three-scene";
+import TemplateScene from "../../threejs/templateScene";
 import { storage } from '../../firebase/config';
 import { useState, useEffect } from 'react';
 import { selectUserID } from '../../redux/slice/authSlice'
@@ -85,7 +86,7 @@ const Template = () => {
             })}
           </div>
           <div className = {templateCSS.test}>
-          <ThreeScene/>
+          <TemplateScene/>
           </div>
           </div>
       </div>
