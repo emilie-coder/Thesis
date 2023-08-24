@@ -27,6 +27,10 @@ import ImageEditor from '../../components/editing/ImageEditor';
 import { updateProjectTitle } from '../../firebase/config';
 import { useLocation } from 'react-router-dom';
 
+
+
+
+
 const Template = () => {
   const dispatch = useDispatch();
   const projID = useSelector(selectProjectID);

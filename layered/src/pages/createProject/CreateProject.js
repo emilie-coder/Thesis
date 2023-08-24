@@ -6,21 +6,28 @@ import * as db from '../../firebase/config';
 import { SET_ACTIVE_PROJECT } from '../../redux/slice/projectSlice';
 import { SET_ACTIVE_TEMPLATE } from '../../redux/slice/templateSlice';
 
+import cpCSS from './CreateProject.module.css';
+
+
 
 const CreateProject = () => {
 
     const userID = useSelector(selectUserID);
     const userName = useSelector(selectUsername);
     
+
+
     const [title, SetTitle] = useState("");
-
     const [templates, setTemplates] = useState(null);
-
     const [chosenTemplate, setChosenTemplate] = useState(null);
     const [chosenTemplateInteger, setChosenTemplateInt] = useState(null);
 
+
     const navigate = useNavigate();
     const dispatch = useDispatch();
+
+
+
 
     const createDBProject = async (e) => {
         e.preventDefault();
@@ -55,6 +62,8 @@ const CreateProject = () => {
         }
     };
 
+
+
     const chooseTemplate = (e, name, tempInt) => {
       e.preventDefault();
       // console.log("template chosen");
@@ -71,12 +80,32 @@ const CreateProject = () => {
     }
     
 
+
+
+
     useEffect(() => {
-      db.fetchTemplates(userID, (notes) => {
-        setTemplates(notes);
+      db.fetchTemplates(userID, (snapshot) => {
+        const templates = [];
+    
+        // Iterate over the keys of the snapshot object
+        Object.keys(snapshot).forEach((key) => {
+          const templateData = snapshot[key];
+    
+          // Do whatever you need to do with the key and data
+          templates.push({
+            key: key,
+            templateTitle: templateData.templateTitle,
+            templateCover: templateData.templateCover,
+            // Add other properties you need
+          });
+        });
+    
+        setTemplates(templates);
       });
     }, [userID]);
-      
+    
+    
+
 
     return (
         <div>
@@ -88,9 +117,10 @@ const CreateProject = () => {
                   Choose Template
                   {templates && (
                   <div>
-                    {templates.map((templateValue, projectId) => (
-                      <button key={projectId} onClick={(e) => chooseTemplate(e, templateValue, projectId)}>
-                        {templateValue}
+                    {templates.map((templateValue) => (
+                      <button key={templateValue.key} className={cpCSS.templateButton}>
+                        <img src= {templateValue.templateCover} alt={'template cover'} className={cpCSS.templateImage}/>
+                        {templateValue.templateTitle}
                       </button>
                     ))}
                   </div>
