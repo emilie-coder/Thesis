@@ -40,7 +40,7 @@ export function createUser(userID) {
 }
 
 
-export async function createUserProject(userID, username, title, templateID) {
+export async function createUserProject(userID, username, title, templateID, templateType) {
   try {
     const usersRef = ref(db, "users");
 
@@ -60,7 +60,8 @@ export async function createUserProject(userID, username, title, templateID) {
       title: projectTitle,
       username: username,
       templateID: templateID,
-      createdAt: serverTimestamp() // Adding the server timestamp
+      createdAt: serverTimestamp(), // Adding the server timestamp
+      projectTemplate: templateType
     });
 
     const newProjectID = newProjectRef.key; // Get the generated ID

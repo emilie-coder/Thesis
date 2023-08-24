@@ -29,9 +29,9 @@ const CreateProject = () => {
           let tempID;
           
           if (title === null || title === "") {
-            tempID = await db.createUserProject(userID, userName, "untitled", chosenTemplateInteger);
+            tempID = await db.createUserProject(userID, userName, "untitled", chosenTemplateInteger, chosenTemplate);
           } else {
-            tempID = await db.createUserProject(userID, userName, title, chosenTemplateInteger);
+            tempID = await db.createUserProject(userID, userName, title, chosenTemplateInteger, chosenTemplate);
           }
       
           // Handle the redux state here

@@ -34,7 +34,7 @@ const Dashboard = () => {
       const projectInfo = {
         projectID: projectID,
         projectTitle: projectData.title,
-        projectTemplate: projectData.template,
+        projectTemplate: projectData.projectTemplate,
         projectTemplateInteger: projectData.templateID,
         projectTimeCreated: projectData.timeCreated,
         projectTimeLastSaved: projectData.timeLastSaved,

@@ -31,8 +31,8 @@ export default function TemplateScene(props) {
     <Canvas dpr={[1, 2]} onPointerMissed={() => setTarget(null)}>
       <Suspense fallback={null}>
         <gridHelper args={[400, 200, '#151515', '#020202']} position={[0, -4, 0]} />
-        <ambientLight intensity={1.5} />
-        <pointLight position={[10, 10, 10]} intensity={1} castShadow />
+        <ambientLight intensity={1.0} />
+        <pointLight position={[10, 10, 10]} intensity={1} castShadow={true} />
 
         {templateScene === 0 &&
           <Box/>
