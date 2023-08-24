@@ -5,6 +5,7 @@ import MyProjects from './myProjects/MyProjects';
 import MyCollections from './myCollections/MyCollections';
 import { useNavigate } from 'react-router-dom';
 import { fetchUserProjects } from '../../firebase/config';
+import styles from './Dashboard.module.css';
 
 const Dashboard = () => {
   const userID = useSelector(selectUserID);
@@ -26,39 +27,41 @@ const Dashboard = () => {
   }, [userID]);
 
   return (
-    <div>
-      Dashboard
-      <div>
-        Personal information:
+    <div className={styles.dashboard}>
+      <div className={styles.personalInfo}>
+        <h2>Personal Information:</h2>
         <div>
-          username: {userName}
+          <span className={styles.infoLabel}>Username:</span> {userName}
         </div>
         <div>
-          userID: {userID}
+          <span className={styles.infoLabel}>UserID:</span> {userID}
         </div>
         <div>
-          email: {email}
+          <span className={styles.infoLabel}>Email:</span> {email}
         </div>
       </div>
 
-      <div>
-        My Projects list:
+      <div className={styles.projectsSection}>
+        <h2>My Projects List:</h2>
         <MyProjects projects={userProjects} />
         {userProjects && (
-          <div>
+          <div className={styles.projectList}>
             {Object.keys(userProjects).map((projectId) => (
-              <div key={projectId}>
+              <div key={projectId} className={styles.projectItem}>
                 {userProjects[projectId].title}
               </div>
             ))}
           </div>
         )}
-        <button onClick={createNewProject}> Create New Project </button>
+        <button className={styles.createButton} onClick={createNewProject}>
+          Create New Project
+        </button>
       </div>
-      <div>
-        My Collections:
+
+      <div className={styles.collectionsSection}>
+        <h2>My Collections:</h2>
         <MyCollections />
-        <button> Create New Collection </button>
+        <button className={styles.createButton}>Create New Collection</button>
       </div>
     </div>
   );
