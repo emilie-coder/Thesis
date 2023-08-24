@@ -115,6 +115,28 @@ export function fetchUserProjects(userID, callback) {
 }
 
 
+export async function fetchProject(userID, projectID) {
+  try {
+    const myDb = getDatabase();
+    const projectRef = ref(myDb, `users/${userID}/AllUserProjects/${projectID}`);
+
+    const projectSnapshot = await get(projectRef);
+
+    if (projectSnapshot.exists()) {
+      const projectData = projectSnapshot.val();
+      return projectData; // Return the project data
+    } else {
+      throw new Error("Project not found"); // Handle the case where the project doesn't exist
+    }
+  } catch (error) {
+    console.error("Error fetching project:", error);
+    throw error;
+  }
+}
+
+
+
+
 export function fetchTemplates(userID, callback) {
 
   try{

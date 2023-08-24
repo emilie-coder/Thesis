@@ -37,8 +37,20 @@
     border-radius: 5px;
   }
   
+
+  .projectItem:hover {
+    scale: 1.01;
+    background-color: #bdbbbb;
+  }
+
+  .projectItem:active {
+    scale: 0.99;
+    background-color: #8d8c8c;
+  }
+
+
   .createButton {
-    background-color: #007bff;
+    background-color: #4e4e4e;
     color: white;
     border: none;
     border-radius: 5px;
