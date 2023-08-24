@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
+  SET_ACTIVE_PROJECT,
   SET_PROJECT_TITLE,
   selectProjectAuthor,
   selectProjectID,
@@ -9,7 +10,7 @@ import {
   selectProjectTitle,
 } from '../../redux/slice/projectSlice';
 import TemplateScene from '../../threejs/templateScene';
-import { db, storage } from '../../firebase/config';
+import { db, fetchProject, storage } from '../../firebase/config';
 import { selectUserID, selectUsername } from '../../redux/slice/authSlice';
 import { v4 } from 'uuid';
 import {
@@ -25,6 +26,7 @@ import ImageEditor from '../../components/editing/ImageEditor';
 
 
 import { updateProjectTitle } from '../../firebase/config';
+import { useLocation } from 'react-router-dom';
 
 const Template = () => {
   const dispatch = useDispatch();
@@ -40,6 +42,55 @@ const Template = () => {
   const [isEditingTitle, setIsEditingTitle] = useState(false); // State to track if the title is being edited
   const [editedTitle, setEditedTitle] = useState(projTitle); // State to hold the edited title
   const userName = useSelector(selectUsername);
+
+
+
+  // i keep losing data when refreshing so...
+  // Get the current location using useLocation
+  const location = useLocation();
+  const pathSegments = location.pathname.split('/');
+  const projectIDURL = pathSegments[pathSegments.length - 1]; // Get the last part of the URL
+
+  
+  // console.log('project ID url');
+  // console.log(projectIDURL);       // this works
+
+
+  // Fetch and update project data when the component mounts
+  useEffect(() => {
+    // Fetch and update project data when the component mounts
+    const fetchProjectData = async () => {
+      try {
+        // Fetch the project data using your fetchProject function
+        const projectData = await fetchProject(userID, projectIDURL);
+  
+        // Create an object to hold the project information
+        const projectInfo = {
+          projectID: projectIDURL,
+          projectTitle: projectData.title,
+          projectTemplate: projectData.projectTemplate,
+          projectTemplateInteger: projectData.templateID,
+          projectTimeCreated: projectData.timeCreated,
+          projectTimeLastSaved: projectData.timeLastSaved,
+          projectAuthor: projectData.author,
+        };
+  
+        // Dispatch the project information to Redux
+        dispatch(SET_ACTIVE_PROJECT(projectInfo));
+  
+        // Update the editedTitle state
+        setEditedTitle(projectData.title);
+        // ... update other relevant states here
+      } catch (error) {
+        console.error('Error fetching project:', error);
+      }
+    };
+  
+    fetchProjectData();
+  }, [dispatch, projectIDURL, userID]);
+  
+
+
 
   const handleClick = (tab) => {
     setActiveTab(tab);
@@ -120,10 +171,10 @@ const Template = () => {
               value={editedTitle}
               onChange={handleTitleChange}
               onBlur={handleTitleUpdate}
-              autoFocus // This will automatically focus on the input when editing
+              autoFocus
             />
           ) : (
-            editedTitle // Use editedTitle here, and fallback to projTitle if it's empty
+            editedTitle
           )}
         </h2>
           <h5 className={templateCSS.projectSubTitle}> {[proTemplate]} </h5>
