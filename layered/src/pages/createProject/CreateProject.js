@@ -16,8 +16,8 @@ const CreateProject = () => {
 
     const [templates, setTemplates] = useState(null);
 
-    const [chosenTemplate, setShosenTemplate] = useState(null);
-
+    const [chosenTemplate, setChosenTemplate] = useState(null);
+    const [chosenTemplateInteger, setChosenTemplateInt] = useState(null);
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -29,9 +29,9 @@ const CreateProject = () => {
           let tempID;
           
           if (title === null || title === "") {
-            tempID = await db.createUserProject(userID, userName, "untitled");
+            tempID = await db.createUserProject(userID, userName, "untitled", chosenTemplateInteger);
           } else {
-            tempID = await db.createUserProject(userID, userName, title);
+            tempID = await db.createUserProject(userID, userName, title, chosenTemplateInteger);
           }
       
           // Handle the redux state here
@@ -40,6 +40,7 @@ const CreateProject = () => {
               projectID: tempID, 
               projectTitle: title,
               projectTemplate: chosenTemplate,
+              projectTemplateInteger: chosenTemplateInteger,
               projectTimeCreated: null,
               projectTimeLastSaved: null,
               projectAuthor: userName,
@@ -47,27 +48,24 @@ const CreateProject = () => {
           );
       
 
-          if(chosenTemplate !== 'blank' && chosenTemplate !== null){
             navigate(`/createNewProjectTemplate/${tempID}`);
-          } else {
-            navigate(`/createNewProject/${tempID}`); 
-          }
-
           
         } catch (error) {
           console.error("Error creating project:", error);
         }
     };
 
-    const chooseTemplate = (e, id) => {
+    const chooseTemplate = (e, name, tempInt) => {
       e.preventDefault();
-      console.log("template chosen");
-      setShosenTemplate(id);
+      // console.log("template chosen");
+      setChosenTemplate(name);
+      setChosenTemplateInt(tempInt);
     
       dispatch(
         SET_ACTIVE_TEMPLATE({
           templateChosen: true,
-          template: id,
+          template: name,
+          templateInteger: tempInt,
         })
       );
     }
@@ -90,8 +88,9 @@ const CreateProject = () => {
                   Choose Template
                   {templates && (
                   <div>
-                    {Object.keys(templates).map((projectId) => (
-                      <button key={projectId} onClick={(e) => chooseTemplate(e, projectId)}>
+                    {templates.map((templateValue, projectId) => (
+                      <button key={projectId} onClick={(e) => chooseTemplate(e, templateValue, projectId)}>
+                        {templateValue}
                         {projectId}
                       </button>
                     ))}

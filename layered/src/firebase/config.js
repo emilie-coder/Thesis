@@ -33,21 +33,21 @@ export function createUser(userID) {
     // Set a value for the user node (using userID as the key)
     set(userRef, { AllUserProjects: true });
 
-    console.log("User and AllUserProjects added successfully");
+    // console.log("User and AllUserProjects added successfully");
   } catch (error) {
     console.error("Error adding user:", error);
   }
 }
 
 
-export async function createUserProject(userID, username, title) {
+export async function createUserProject(userID, username, title, templateID) {
   try {
     const usersRef = ref(db, "users");
 
     // Construct the path to the user node
     const userRef = child(usersRef, userID);
 
-    console.log("User found successfully");
+    // console.log("User found successfully");
 
     // Construct the path to the AllUserProjects child node under the user
     const allUserProjectsRef = child(userRef, "AllUserProjects");
@@ -59,12 +59,13 @@ export async function createUserProject(userID, username, title) {
     const newProjectRef = push(allUserProjectsRef, {
       title: projectTitle,
       username: username,
+      templateID: templateID,
       createdAt: serverTimestamp() // Adding the server timestamp
     });
 
     const newProjectID = newProjectRef.key; // Get the generated ID
 
-    console.log("Project added under AllUserProjects with ID:", newProjectID);
+    // console.log("Project added under AllUserProjects with ID:", newProjectID);
     return newProjectID;
   } catch (error) {
     console.error("Error adding project:", error);
@@ -102,7 +103,7 @@ export function fetchTemplates(userID, callback) {
     onValue(templates, (snapshot) => {
       const data = snapshot.val();
       console.log("in fetch templates");
-      console.log(data);
+      // console.log(data);
       callback(data);
     });
 

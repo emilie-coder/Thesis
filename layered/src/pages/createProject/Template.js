@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux';
-import { selectProjectAuthor, selectProjectID, selectProjectTemplate, selectProjectTitle } from '../../redux/slice/projectSlice';
+import { selectProjectAuthor, selectProjectID, selectProjectTemplate, selectProjectTemplateInteger, selectProjectTitle } from '../../redux/slice/projectSlice';
 // import ThreeScene from "../../threejs/three-scene";
 import TemplateScene from "../../threejs/templateScene";
 import { storage } from '../../firebase/config';
@@ -17,6 +17,7 @@ const Template = () => {
   const projAuthor = useSelector(selectProjectAuthor);
   const projID = useSelector(selectProjectID);
   const proTemplate = useSelector(selectProjectTemplate);
+  const proTemplateInteger = useSelector(selectProjectTemplateInteger);
   const projTitle = useSelector(selectProjectTitle);
   const [imageUpload, setImageUplad] = useState(null);
   const [imageList, setImageList] = useState([]);
@@ -56,39 +57,33 @@ const Template = () => {
 
   return (
       <div className={templateCSS.templatePage}>
-          {/* CreateProjectPage - TEMPLATE */}
-          {/* <div>
-              current project info:
-              <div>
-                  title: {projTitle}
-              </div>
-              <div>
-                  projiD: {projID}
-              </div>
-              <div>
-                  proTemplate: {proTemplate}
-              </div>
-              <div>
-                  Project Author: {projAuthor}
-              </div>
-          </div> */}
 
+
+
+
+{/* 
           <div className={templateCSS.fileUploadContainer}>
+
+
             <div className={templateCSS.fileUpload}>
               <input type="file" onChange={((event) => {setImageUplad(event.target.files[0])})}/>
               <button onClick={uploadImage}>upload image</button>
             </div>
 
             <div className={templateCSS.userImages}>
-            {imageList.map((url) => {
-              return <UserImageFile key={url} imageURL={url} />
-              // return <img src={url} alt ='temp'></img>
-            })}
-          </div>
+
+
+              {imageList.map((url) => {
+                return <UserImageFile key={url} imageURL={url} />
+              })}
+            </div>
+          </div> */}
+
+
           <div className = {templateCSS.test}>
-          <TemplateScene/>
+              <TemplateScene scene={proTemplateInteger}/>
           </div>
-          </div>
+          
       </div>
     )
 }

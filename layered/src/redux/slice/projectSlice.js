@@ -3,7 +3,8 @@ import { createSlice } from '@reduxjs/toolkit'
 const initialState = {
     projectID: null,
     projectTitle: 'untitled',
-    projectTemplate: null,
+    projectTemplate: '',
+    projectTemplateInteger: 0, // 0 is a blank template
     projectTimeCreated: null,
     projectTimeLastSaved: null,
     projectAuthor: null,
@@ -17,11 +18,12 @@ const projectSlice = createSlice({
   reducers: {
     SET_ACTIVE_PROJECT: (state, action) => {
         state.isLoggedIn = true;
-        const { projectID, projectTitle, projectTemplate, projectTimeCreated, projectTimeLastSaved, projectAuthor } = action.payload;
+        const { projectID, projectTitle, projectTemplate, projectTemplateInteger, projectTimeCreated, projectTimeLastSaved, projectAuthor } = action.payload;
         state.projectID = projectID;
         // Set projectTitle to "untitled" if it's empty or null
         state.projectTitle = projectTitle || 'untitled';
         state.projectTemplate = projectTemplate;
+        state.projectTemplateInteger = projectTemplateInteger;
         state.projectTimeCreated = projectTimeCreated;
         state.projectTimeLastSaved = projectTimeLastSaved;
         state.projectAuthor = projectAuthor;
@@ -29,10 +31,11 @@ const projectSlice = createSlice({
     REMOVE_ACTIVE_PROJECT: (state, action) => {
         state.projectID = null;
         state.projectTitle = 'untitled';
-        state.projectTemplate = null;
+        state.projectTemplate = '';
         state.projectTimeCreated = null;
         state.projectTimeLastSaved = null;
         state.projectAuthor = null;
+        state.projectTemplateInteger = 0;
     }
   }
 });
@@ -47,6 +50,6 @@ export const selectProjectTemplate = (state) => state.project.projectTemplate;
 export const selectProjectTimeCreated = (state) => state.project.projectTimeCreated;
 export const selectProjectTimeLastSaved = (state) => state.project.projectTimeLastSaved;
 export const selectProjectAuthor = (state) => state.project.projectAuthor;
-
+export const selectProjectTemplateInteger = (state) => state.project.projectTemplateInteger;
 
 export default projectSlice.reducer

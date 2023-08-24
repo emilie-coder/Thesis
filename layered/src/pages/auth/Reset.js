@@ -20,7 +20,7 @@ const Reset = () => {
 
   const resetPassword = (e) => {
     e.preventDefault();
-    console.log("resetting password");
+    // console.log("resetting password");
 
 
     const auth = getAuth();

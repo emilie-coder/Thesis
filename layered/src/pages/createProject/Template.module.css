@@ -2,6 +2,7 @@
 
 .templatePage{
     display: flex;
+    padding-top: 20px;
     width: 100%;
     height: 100%;
     flex-direction: column;
@@ -29,6 +30,6 @@
 
 .test{
     display: flex;
-    width: 50%;
-    height: 50%;
+    width: 70%;
+    height: 80%;
 }

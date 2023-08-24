@@ -13,6 +13,7 @@ const useStore = create((set) => ({ target: null, setTarget: (target) => set({ t
 function Box(props) {
   const setTarget = useStore((state) => state.setTarget)
   const [hovered, setHovered] = useState(false)
+  
   useCursor(hovered)
   return (
     <mesh {...props} onClick={(e) => setTarget(e.object)} onPointerOver={() => setHovered(true)} onPointerOut={() => setHovered(false)}>
@@ -22,8 +23,9 @@ function Box(props) {
   )
 }
 
-export default function TemplateScene() {
+export default function TemplateScene(props) {
   const { target, setTarget } = useStore();
+  const templateScene = props.scene;
 
   return (
     <Canvas dpr={[1, 2]} onPointerMissed={() => setTarget(null)}>
@@ -32,9 +34,22 @@ export default function TemplateScene() {
         <ambientLight intensity={1.5} />
         <pointLight position={[10, 10, 10]} intensity={1} castShadow />
 
-        <mesh>
-          <DuckScene />
-        </mesh>
+        {templateScene === 0 &&
+          <Box/>
+        }
+
+        {templateScene === 1 &&
+          <mesh>
+            <DuckScene />
+          </mesh>
+        }
+
+        {templateScene === 2 &&
+          <mesh>
+            <SimpleFlower />
+          </mesh>
+        }
+
 
         {target && <TransformControls object={target} mode="translate" />}
         <OrbitControls makeDefault />
