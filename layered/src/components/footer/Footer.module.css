@@ -1,6 +1,7 @@
+@import '../../styling/colors.css';
 
 .footer {
-    background-color: rgb(0, 253, 97);
+    background-color: var(--accent-color-b);
     position: fixed;
     left: 0;
     bottom: 0;

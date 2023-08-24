@@ -1,35 +1,133 @@
 @import '../../styling/colors.css';
 
-.templatePage{
-    display: flex;
-    padding-top: 20px;
-    width: 100%;
-    height: 100%;
-    flex-direction: column;
+.templatePage {
+  display: flex;
+  padding-top: 30px;
+  width: 100%;
+  height: 100%;
+  flex-direction: row;
+  background-color: var(--white);
 }
 
-.fileUploadContainer{
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    height: 100%;
+.leftEditor {
+  display: flex;
+  flex-direction: column;
+  width: 70%;
+  height: 80%;
+  margin: 20px;
+  padding-bottom: 20px;
+  margin-top: 10px;
+  background-color: var(--white);
+  border-radius: 2px;
+  /* box-shadow: inset 0 0 5px #060606; */
 }
 
-.fileUpload{
+.leftEditorTitle {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: auto;
+  width: 100%;
+}
+
+.leftEditorTitle * {
+  padding: 5px;
+  margin: 0;
+}
+
+.actualEditor {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+.rightEditor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 30%;
+  height: 80%;
+  margin: 20px;
+  padding-bottom: 20px;
+  border-radius: 2px;
+  background-color: var(--white);
+  margin-top: 10px;
+}
+
+.rightEditorTitle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.rightEditorTitle * {
+  margin-top: 15px;
+}
+
+.rightEditorSub {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+}
+
+.rightImageEditorTitle {
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.rightImageEditor {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background-color: rgb(194, 194, 194);
+}
+
+/* Tab buttons */
+.rightImageEditor button {
+  padding: 5px 10px;
+  cursor: pointer;
+  background-color: #f0f0f0;
+  margin-right: 10px;
+  border: none;
+}
+
+.rightImageEditor button:hover {
+  background-color: #e0e0e0;
+}
+
+/* Folder content */
+.folder-container {
+  display: none;
+  padding: 10px;
+  border: 1px solid #ccc;
+  background-color: #f9f9f9;
+}
+
+/* Show the active folder */
+.folder-container.active,
+.folder-container.active button {
+  display: block;
+}
+
+/* Show the active folder */
+.folder-container.active {
+    display: block;
+    background-color: purple; /* Add this line to set the background color to purple */
+  }
+
+
+
+  .choicesContainer{
     display: flex;
     flex-direction: row;
-    align-items: center;
-    justify-content: center;
-}
+  }
 
-.userImages {
+  .choices{
     display: flex;
     flex-direction: row;
-    width: 100%;
-}
-
-.test{
-    display: flex;
-    width: 70%;
-    height: 80%;
-}
+  }

@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 // eslint-disable-next-line no-unused-vars
-import { getDatabase, ref, set, child, push, serverTimestamp, onValue } from "firebase/database";
+import { getDatabase, ref, set, child, push, serverTimestamp, onValue, update, get } from "firebase/database";
 import { getStorage } from "firebase/storage";
 
 
@@ -73,6 +73,26 @@ export async function createUserProject(userID, username, title, templateID) {
   }
 }
 
+export async function updateProjectTitle(userID, editedTitle, projectID) {
+  try {
+    console.log(projectID);
+    // Reference to the specific project in Firebase Realtime Database
+    const projectRef = ref(db, `users/${userID}/AllUserProjects/${projectID}`);
+
+    // Retrieve the current project data
+    const projectSnapshot = await get(projectRef);
+    const currentProjectData = projectSnapshot.val();
+
+    // Update only the title field
+    currentProjectData.title = editedTitle;
+
+    // Update the entire object with the modified data
+    await set(projectRef, currentProjectData);
+  } catch (error) {
+    console.error('Error updating project title:', error);
+    throw error; // Rethrow the error to handle it at the calling site
+  }
+}
 
 
 

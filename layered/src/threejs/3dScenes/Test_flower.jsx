@@ -21,19 +21,22 @@ const SimpleFlower = (props) => {
   return (
     <group {...props} dispose={null} scale={0.1} position={[0.0, -4.0, 0.0]}>
 
+      <group name="flower_stem">
+        <mesh geometry={nodes.stem.geometry} >
+            <meshStandardMaterial color={'green'}/>
+        </mesh>
+      </group>
 
-      <mesh geometry={nodes.stem.geometry} >
-          <meshStandardMaterial color={'green'}/>
-      </mesh>
+
+      <group name="flower_pollen">
+        <mesh geometry={nodes.pollen_flower.geometry}>
+          <meshStandardMaterial color={'yellow'}/>
+        </mesh>
+      </group>
 
 
-      <mesh geometry={nodes.pollen_flower.geometry}>
-        <meshStandardMaterial color={'yellow'}/>
-      </mesh>
-
-      <mesh>
-
-        <mesh geometry={nodes.flower_pSphere10_flower_petal_set_1.geometry}  material={textureMaterial} />
+      <group name="petals">
+        <mesh geometry={nodes.flower_pSphere10_flower_petal_set_1.geometry} />
         <mesh geometry={nodes.flower_flower_petal_set_1_pSphere9.geometry}  />
         <mesh geometry={nodes.flower_flower_petal_set_1_pSphere8.geometry}  />
         <mesh geometry={nodes.flower_flower_petal_set_1_pSphere7.geometry}  />
@@ -57,9 +60,7 @@ const SimpleFlower = (props) => {
         <mesh geometry={nodes.flower_pasted__flower_petal_set_1_flower_pet_set_2_pasted__pSphere5.geometry}  />
         <mesh geometry={nodes.flower_pasted__flower_petal_set_1_flower_pet_set_2_pasted__pSphere3.geometry}  />
         <mesh geometry={nodes.flower_pasted__flower_petal_set_1_flower_pet_set_2_pasted__pSphere4.geometry}  />
-
-      </mesh>
-
+      </group>
 
 
       

@@ -28,6 +28,9 @@ const projectSlice = createSlice({
         state.projectTimeLastSaved = projectTimeLastSaved;
         state.projectAuthor = projectAuthor;
     },
+    SET_PROJECT_TITLE: (state, action) => {
+      state.projectTitle = action.projectTitle ;
+    },
     REMOVE_ACTIVE_PROJECT: (state, action) => {
         state.projectID = null;
         state.projectTitle = 'untitled';
@@ -42,7 +45,7 @@ const projectSlice = createSlice({
 
 
 // these are the actions
-export const {SET_ACTIVE_PROJECT, REMOVE_ACTIVE_PROJECT} = projectSlice.actions
+export const {SET_ACTIVE_PROJECT, REMOVE_ACTIVE_PROJECT, SET_PROJECT_TITLE} = projectSlice.actions
 
 export const selectProjectID = (state) => state.project.projectID;
 export const selectProjectTitle = (state) => state.project.projectTitle;

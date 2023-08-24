@@ -1,39 +1,66 @@
-import React from 'react'
-import { useSelector } from 'react-redux';
-import { selectProjectAuthor, selectProjectID, selectProjectTemplate, selectProjectTemplateInteger, selectProjectTitle } from '../../redux/slice/projectSlice';
-// import ThreeScene from "../../threejs/three-scene";
-import TemplateScene from "../../threejs/templateScene";
-import { storage } from '../../firebase/config';
-import { useState, useEffect } from 'react';
-import { selectUserID } from '../../redux/slice/authSlice'
-import { v4 } from "uuid";
-import { ref, uploadBytes, listAll, getDownloadURL } from 'firebase/storage';
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import {
+  SET_PROJECT_TITLE,
+  selectProjectAuthor,
+  selectProjectID,
+  selectProjectTemplate,
+  selectProjectTemplateInteger,
+  selectProjectTitle,
+} from '../../redux/slice/projectSlice';
+import TemplateScene from '../../threejs/templateScene';
+import { db, storage } from '../../firebase/config';
+import { selectUserID, selectUsername } from '../../redux/slice/authSlice';
+import { v4 } from 'uuid';
+import {
+  ref,
+  uploadBytes,
+  listAll,
+  getDownloadURL,
+  update,
+} from 'firebase/storage';
 import templateCSS from './Template.module.css';
 import UserImageFile from './imageComponents/UserImageFile';
+import ImageEditor from '../../components/editing/ImageEditor';
+
+
+import { updateProjectTitle } from '../../firebase/config';
 
 const Template = () => {
-
-
+  const dispatch = useDispatch();
   const projAuthor = useSelector(selectProjectAuthor);
   const projID = useSelector(selectProjectID);
   const proTemplate = useSelector(selectProjectTemplate);
   const proTemplateInteger = useSelector(selectProjectTemplateInteger);
   const projTitle = useSelector(selectProjectTitle);
-  const [imageUpload, setImageUplad] = useState(null);
+  const [imageUpload, setImageUpload] = useState(null);
   const [imageList, setImageList] = useState([]);
   const userID = useSelector(selectUserID);
+  const [activeTab, setActiveTab] = useState(null);
+  const [isEditingTitle, setIsEditingTitle] = useState(false); // State to track if the title is being edited
+  const [editedTitle, setEditedTitle] = useState(projTitle); // State to hold the edited title
+  const userName = useSelector(selectUsername);
 
+  const handleClick = (tab) => {
+    setActiveTab(tab);
+  };
+
+  const stemGroupName = 'flower_stem';
+  const pollenGroupName = 'flower_pollen';
+  const petalsGroupName = 'petals';
 
   const uploadImage = () => {
-    if(imageUpload == null) return;
+    if (imageUpload == null) return;
 
-    const imageRef = ref(storage, userID + '/project_' + projID + `/images/${imageUpload.name + v4()}`);
+    const imageRef = ref(
+      storage,
+      userID + '/project_' + projID + `/images/${imageUpload.name + v4()}`
+    );
     uploadBytes(imageRef, imageUpload).then((snapshot) => {
       getDownloadURL(snapshot.ref).then((url) => {
         setImageList((prev) => [...prev, url]);
-      })
-    })
-
+      });
+    });
   };
 
   useEffect(() => {
@@ -46,27 +73,116 @@ const Template = () => {
               setImageList((prev) => [...prev, url]);
             })
             .catch((error) => {
-              console.error("Error getting download URL:", error);
+              console.error('Error getting download URL:', error);
             });
         });
       })
       .catch((error) => {
-        console.error("Error listing images:", error);
+        console.error('Error listing images:', error);
       });
   }, []);
 
+  // Function to handle title editing
+  const handleTitleEdit = () => {
+    setIsEditingTitle(true);
+  };
+
+  // Function to handle title change
+  const handleTitleChange = (e) => {
+    setEditedTitle(e.target.value);
+  };
+
+  // Function to handle title update
+  const handleTitleUpdate = () => {
+    setIsEditingTitle(false);
+  
+    // Check if editedTitle is empty, and if it is, fallback to projTitle
+    const titleToDispatch = editedTitle;
+  
+    // Dispatch the action to update the title
+    dispatch(SET_PROJECT_TITLE({ projectTitle: titleToDispatch }));
+
+
+    // update firebase
+    updateProjectTitle(userID, editedTitle, projID);
+  };
+
+
   return (
-      <div className={templateCSS.templatePage}>
+    <div className={templateCSS.templatePage}>
+      <div className={templateCSS.leftEditor}>
+        {projID}
+        <div className={templateCSS.leftEditorTitle}>
+        <h2 className={templateCSS.projectTitle} onClick={handleTitleEdit}>
+          {isEditingTitle ? (
+            <input
+              type="text"
+              value={editedTitle}
+              onChange={handleTitleChange}
+              onBlur={handleTitleUpdate}
+              autoFocus // This will automatically focus on the input when editing
+            />
+          ) : (
+            editedTitle // Use editedTitle here, and fallback to projTitle if it's empty
+          )}
+        </h2>
+          <h5 className={templateCSS.projectSubTitle}> {[proTemplate]} </h5>
+        </div>
+        <div className={templateCSS.actualEditor}>
+          <TemplateScene scene={proTemplateInteger} />
+        </div>
+        </div>
 
+        <div className={templateCSS.rightEditor}>
+          <div className={templateCSS.rightEditorTitle} >
+            <h4>Image Editor</h4>
+          </div>
 
+          <div className={templateCSS.rightEditorSub}>
+            <div className={templateCSS.rightImageEditorTitle}>
+              select image
+            </div>
 
+            <div className={templateCSS.rightImageEditor}>
+              
 
-{/* 
+            <div className={templateCSS.choicesContainer}>
+              {proTemplateInteger === 0 &&
+              <div className='templateCSS.choices'>
+                  <button onClick={() => handleClick('folder1')} id={stemGroupName}>box</button>
+              </div>
+              }
+
+              {proTemplateInteger === 1 &&
+              <div className='templateCSS.choices'>
+                  <button onClick={() => handleClick('folder1')} id={stemGroupName}>Beak </button>
+                  <button onClick={() => handleClick('folder2')} id={pollenGroupName}>Duck Skin</button>
+                  <button onClick={() => handleClick('folder3')} id={petalsGroupName}>Pond</button>
+                </div>
+              }
+
+              {proTemplateInteger === 2 &&
+              <div className ='templateCSS.choices'>
+                  <button onClick={() => handleClick('folder1')} id={stemGroupName}>Stem Group</button>
+                  <button onClick={() => handleClick('folder2')} id={pollenGroupName}>Pollen Group</button>
+                  <button onClick={() => handleClick('folder3')} id={petalsGroupName}>Petals Group</button>
+                  </div>
+              }
+            </div>
+            <div className={templateCSS.choicedInfo}>
+            <div className="folder-container">
+              {activeTab === 'folder1' && <ImageEditor />}
+              {activeTab === 'folder2' && <ImageEditor />}
+              {activeTab === 'folder3' && <ImageEditor />}
+            </div>
+            </div>
+            </div>
+                      
           <div className={templateCSS.fileUploadContainer}>
 
 
             <div className={templateCSS.fileUpload}>
-              <input type="file" onChange={((event) => {setImageUplad(event.target.files[0])})}/>
+              <input type="file" onChange={((event) => {setImageUpload(event.target.files[0])})}/>
               <button onClick={uploadImage}>upload image</button>
             </div>
 
@@ -77,13 +193,13 @@ const Template = () => {
                 return <UserImageFile key={url} imageURL={url} />
               })}
             </div>
-          </div> */}
-
-
-          <div className = {templateCSS.test}>
-              <TemplateScene scene={proTemplateInteger}/>
           </div>
-          
+
+          </div>
+
+
+    </div>
+
       </div>
     )
 }
