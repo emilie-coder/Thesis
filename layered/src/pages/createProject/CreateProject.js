@@ -54,7 +54,6 @@ const CreateProject = () => {
             })
           );
       
-
             navigate(`/createNewProjectTemplate/${tempID}`);
           
         } catch (error) {
@@ -118,7 +117,7 @@ const CreateProject = () => {
                   {templates && (
                   <div>
                     {templates.map((templateValue) => (
-                      <button key={templateValue.key} className={cpCSS.templateButton}>
+                      <button key={templateValue.key} className={cpCSS.templateButton} onClick={(e) => chooseTemplate(e, templateValue.templateTitle, templateValue.key)} >
                         <img src= {templateValue.templateCover} alt={'template cover'} className={cpCSS.templateImage}/>
                         {templateValue.templateTitle}
                       </button>

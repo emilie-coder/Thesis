@@ -41,15 +41,12 @@ export function createUser(userID) {
 
 
 export async function createUserProject(userID, username, title, templateID, templateType) {
+
+
+
   try {
     const usersRef = ref(db, "users");
-
-    // Construct the path to the user node
     const userRef = child(usersRef, userID);
-
-    // console.log("User found successfully");
-
-    // Construct the path to the AllUserProjects child node under the user
     const allUserProjectsRef = child(userRef, "AllUserProjects");
 
     // Set the title to "untitled" if it's blank or null
@@ -61,10 +58,21 @@ export async function createUserProject(userID, username, title, templateID, tem
       username: username,
       templateID: templateID,
       createdAt: serverTimestamp(), // Adding the server timestamp
-      projectTemplate: templateType
+      projectTemplate: templateType,
+      projectScene: null,
     });
 
     const newProjectID = newProjectRef.key; // Get the generated ID
+
+
+    // now we want to copy the template from firebase and want to duplicate it under project scene
+    const templateRef = ref(db, 'templates/' + templateID)
+    const templateSnapshot = await get(templateRef);
+    const templateData = templateSnapshot.val();
+
+    // now push it as a child of the projectScene 
+    const projectBranchRef = child(newProjectRef, 'projectScene');
+    await set(projectBranchRef, templateData)
 
     // console.log("Project added under AllUserProjects with ID:", newProjectID);
     return newProjectID;
@@ -72,7 +80,12 @@ export async function createUserProject(userID, username, title, templateID, tem
     console.error("Error adding project:", error);
     throw error; // Rethrow the error to handle it at the calling site
   }
+
+
+
 }
+
+
 
 export async function updateProjectTitle(userID, editedTitle, projectID) {
   try {
