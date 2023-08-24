@@ -91,7 +91,6 @@ const CreateProject = () => {
                     {templates.map((templateValue, projectId) => (
                       <button key={projectId} onClick={(e) => chooseTemplate(e, templateValue, projectId)}>
                         {templateValue}
-                        {projectId}
                       </button>
                     ))}
                   </div>

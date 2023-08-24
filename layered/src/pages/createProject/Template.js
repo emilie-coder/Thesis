@@ -3,15 +3,14 @@ import { useSelector, useDispatch } from 'react-redux';
 import {
   SET_ACTIVE_PROJECT,
   SET_PROJECT_TITLE,
-  selectProjectAuthor,
   selectProjectID,
   selectProjectTemplate,
   selectProjectTemplateInteger,
   selectProjectTitle,
 } from '../../redux/slice/projectSlice';
 import TemplateScene from '../../threejs/templateScene';
-import { db, fetchProject, storage } from '../../firebase/config';
-import { selectUserID, selectUsername } from '../../redux/slice/authSlice';
+import { fetchProject, storage } from '../../firebase/config';
+import { selectUserID } from '../../redux/slice/authSlice';
 import { v4 } from 'uuid';
 import {
   ref,
@@ -30,7 +29,6 @@ import { useLocation } from 'react-router-dom';
 
 const Template = () => {
   const dispatch = useDispatch();
-  const projAuthor = useSelector(selectProjectAuthor);
   const projID = useSelector(selectProjectID);
   const proTemplate = useSelector(selectProjectTemplate);
   const proTemplateInteger = useSelector(selectProjectTemplateInteger);
@@ -41,7 +39,6 @@ const Template = () => {
   const [activeTab, setActiveTab] = useState(null);
   const [isEditingTitle, setIsEditingTitle] = useState(false); // State to track if the title is being edited
   const [editedTitle, setEditedTitle] = useState(projTitle); // State to hold the edited title
-  const userName = useSelector(selectUsername);
 
 
 
@@ -50,10 +47,6 @@ const Template = () => {
   const location = useLocation();
   const pathSegments = location.pathname.split('/');
   const projectIDURL = pathSegments[pathSegments.length - 1]; // Get the last part of the URL
-
-  
-  // console.log('project ID url');
-  // console.log(projectIDURL);       // this works
 
 
   // Fetch and update project data when the component mounts
@@ -88,7 +81,7 @@ const Template = () => {
   
     fetchProjectData();
   }, [dispatch, projectIDURL, userID]);
-  
+   
 
 
 
@@ -153,7 +146,6 @@ const Template = () => {
     // Dispatch the action to update the title
     dispatch(SET_PROJECT_TITLE({ projectTitle: titleToDispatch }));
 
-
     // update firebase
     updateProjectTitle(userID, editedTitle, projID);
   };
@@ -161,8 +153,11 @@ const Template = () => {
 
   return (
     <div className={templateCSS.templatePage}>
+
+
+      
       <div className={templateCSS.leftEditor}>
-        {projID}
+        Project ID: {projID}
         <div className={templateCSS.leftEditorTitle}>
         <h2 className={templateCSS.projectTitle} onClick={handleTitleEdit}>
           {isEditingTitle ? (
@@ -177,14 +172,17 @@ const Template = () => {
             editedTitle
           )}
         </h2>
-          <h5 className={templateCSS.projectSubTitle}> {[proTemplate]} </h5>
+          <h5 className={templateCSS.projectSubTitle}> {[proTemplate]} template </h5>
         </div>
         <div className={templateCSS.actualEditor}>
           <TemplateScene scene={proTemplateInteger} />
         </div>
-        </div>
+      </div>
 
-        <div className={templateCSS.rightEditor}>
+
+
+
+    <div className={templateCSS.rightEditor}>
           <div className={templateCSS.rightEditorTitle} >
             <h4>Image Editor</h4>
           </div>
