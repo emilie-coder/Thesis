@@ -1,32 +1,60 @@
-import { Suspense, useState } from 'react'
-import { Canvas } from '@react-three/fiber'
-import { OrbitControls, TransformControls, useCursor } from '@react-three/drei'
-// import { useControls } from 'leva'
-import create from 'zustand'
-import DuckScene from './3dScenes/DuckScene'
-import SimpleFlower from './3dScenes/Test_flower'
+import { Suspense } from 'react';
+import { Canvas, useLoader } from '@react-three/fiber';
+import { OrbitControls, Plane, TransformControls, useCursor } from '@react-three/drei';
+import create from 'zustand';
+import DuckScene from './3dScenes/DuckScene';
+import SimpleFlower from './3dScenes/Test_flower';
+import { TextureLoader } from 'three'; // Import TextureLoader from Three.js
 
+// Import THREE from Three.js
+import * as THREE from 'three';
 
-
-const useStore = create((set) => ({ target: null, setTarget: (target) => set({ target }) }))
-
-function Box(props) {
-  const setTarget = useStore((state) => state.setTarget)
-  const [hovered, setHovered] = useState(false)
-  
-  useCursor(hovered)
-  return (
-    <mesh {...props} onClick={(e) => setTarget(e.object)} onPointerOver={() => setHovered(true)} onPointerOut={() => setHovered(false)}>
-      <boxGeometry />
-      <meshNormalMaterial />
-    </mesh>
-  )
-}
+// For moving objects around
+const useStore = create((set) => ({ target: null, setTarget: (target) => set({ target }) }));
 
 export default function TemplateScene(props) {
   const { target, setTarget } = useStore();
-  const templateScene = props.scene;
+  const sceneObjs = props.scene;
 
+  const textureLoader = new TextureLoader();
+  const colorMap = textureLoader.load('https://firebasestorage.googleapis.com/v0/b/layered-5fb29.appspot.com/o/PMjmiBCAdebvZabW0gRb3ys7QoR2%2Fproject_-Ncchl6YZ6wd-4rSIp2Z%2Fimages%2Fflower_petal.png0d9ef143-3986-4983-9cf5-426ac9e3b4dd?alt=media&token=445dd45b-5c9e-4298-9fca-5b1f534564f4')
+
+  const instantiateObjects = () => {
+    if (sceneObjs && sceneObjs.objects) {
+      return sceneObjs.objects.map((item, index) => {
+        console.log(item);
+
+        // Load the texture from the item.material URL
+        const textureLoader = new TextureLoader();
+        const texture = textureLoader.load(item.material);
+
+        // Create a material with the loaded texture
+        const material = new THREE.MeshBasicMaterial({
+          map: texture,
+          transparent: true, // Enable transparency
+          alphaTest: 0.5, // Adjust the alphaTest value as needed
+          side: THREE.DoubleSide, // Render both sides of the mesh
+        });
+
+
+        return (
+          <mesh
+            key={index}
+            position={[item.position.x, item.position.y, item.position.z]}
+            rotation={[item.rotation.x, item.rotation.y, item.rotation.z]}
+            scale={[item.scale.x, item.scale.y, item.scale.z]}
+            material={material} // Apply the material with the texture
+          >
+            <planeGeometry />
+          </mesh>
+        );
+      });
+    }
+
+    return null; // Return null if sceneObjs.objects is not available
+  };
+
+  
   return (
     <Canvas dpr={[1, 2]} onPointerMissed={() => setTarget(null)}>
       <Suspense fallback={null}>
@@ -34,22 +62,7 @@ export default function TemplateScene(props) {
         <ambientLight intensity={1.0} />
         <pointLight position={[10, 10, 10]} intensity={1} castShadow={true} />
 
-        {templateScene === 0 &&
-          <Box/>
-        }
-
-        {templateScene === 1 &&
-          <mesh>
-            <DuckScene />
-          </mesh>
-        }
-
-        {templateScene === 2 &&
-          <mesh>
-            <SimpleFlower />
-          </mesh>
-        }
-
+        {instantiateObjects()}
 
         {target && <TransformControls object={target} mode="translate" />}
         <OrbitControls makeDefault />

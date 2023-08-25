@@ -28,22 +28,29 @@ import { updateProjectTitle } from '../../firebase/config';
 import { useLocation } from 'react-router-dom';
 
 
-
-
-
 const Template = () => {
+
   const dispatch = useDispatch();
   const projID = useSelector(selectProjectID);
   const proTemplate = useSelector(selectProjectTemplate);
   const proTemplateInteger = useSelector(selectProjectTemplateInteger);
   const projTitle = useSelector(selectProjectTitle);
+
+
   const [imageUpload, setImageUpload] = useState(null);
   const [imageList, setImageList] = useState([]);
+
+
   const userID = useSelector(selectUserID);
+
+
   const [activeTab, setActiveTab] = useState(null);
   const [isEditingTitle, setIsEditingTitle] = useState(false); // State to track if the title is being edited
   const [editedTitle, setEditedTitle] = useState(projTitle); // State to hold the edited title
 
+
+
+  const [projectScene, setProjectScene] = useState(null);
 
 
   // i keep losing data when refreshing so...
@@ -77,6 +84,7 @@ const Template = () => {
   
         // Update the editedTitle state
         setEditedTitle(projectData.title);
+        setProjectScene(projectData.projectScene);
         // ... update other relevant states here
       } catch (error) {
         console.error('Error fetching project:', error);
@@ -93,9 +101,8 @@ const Template = () => {
     setActiveTab(tab);
   };
 
-  const stemGroupName = 'flower_stem';
-  const pollenGroupName = 'flower_pollen';
-  const petalsGroupName = 'petals';
+
+
 
   const uploadImage = () => {
     if (imageUpload == null) return;
@@ -104,6 +111,7 @@ const Template = () => {
       storage,
       userID + '/project_' + projID + `/images/${imageUpload.name + v4()}`
     );
+
     uploadBytes(imageRef, imageUpload).then((snapshot) => {
       getDownloadURL(snapshot.ref).then((url) => {
         setImageList((prev) => [...prev, url]);
@@ -161,7 +169,6 @@ const Template = () => {
 
       
       <div className={templateCSS.leftEditor}>
-        Project ID: {projID}
         <div className={templateCSS.leftEditorTitle}>
         <h2 className={templateCSS.projectTitle} onClick={handleTitleEdit}>
           {isEditingTitle ? (
@@ -179,7 +186,7 @@ const Template = () => {
           <h5 className={templateCSS.projectSubTitle}> {[proTemplate]} template </h5>
         </div>
         <div className={templateCSS.actualEditor}>
-          <TemplateScene scene={proTemplateInteger} />
+          <TemplateScene scene={projectScene} />
         </div>
       </div>
 
@@ -199,36 +206,15 @@ const Template = () => {
             <div className={templateCSS.rightImageEditor}>
               
 
-            <div className={templateCSS.choicesContainer}>
-              {proTemplateInteger === 0 &&
-              <div className='templateCSS.choices'>
-                  <button onClick={() => handleClick('folder1')} id={stemGroupName}>box</button>
+              <div className={templateCSS.choicesContainer}>
+                choose an object to edit
               </div>
-              }
 
-              {proTemplateInteger === 1 &&
-              <div className='templateCSS.choices'>
-                  <button onClick={() => handleClick('folder1')} id={stemGroupName}>Beak </button>
-                  <button onClick={() => handleClick('folder2')} id={pollenGroupName}>Duck Skin</button>
-                  <button onClick={() => handleClick('folder3')} id={petalsGroupName}>Pond</button>
-                </div>
-              }
 
-              {proTemplateInteger === 2 &&
-              <div className ='templateCSS.choices'>
-                  <button onClick={() => handleClick('folder1')} id={stemGroupName}>Stem Group</button>
-                  <button onClick={() => handleClick('folder2')} id={pollenGroupName}>Pollen Group</button>
-                  <button onClick={() => handleClick('folder3')} id={petalsGroupName}>Petals Group</button>
-                  </div>
-              }
-            </div>
-            <div className={templateCSS.choicedInfo}>
-            <div className="folder-container">
-              {activeTab === 'folder1' && <ImageEditor />}
-              {activeTab === 'folder2' && <ImageEditor />}
-              {activeTab === 'folder3' && <ImageEditor />}
-            </div>
-            </div>
+              
+              <div className={templateCSS.choicedInfo}>
+                chosen object info
+              </div>
             </div>
                       
           <div className={templateCSS.fileUploadContainer}>
