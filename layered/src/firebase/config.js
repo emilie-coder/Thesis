@@ -89,7 +89,7 @@ export async function createUserProject(userID, username, title, templateID, tem
 
 export async function updateProjectTitle(userID, editedTitle, projectID) {
   try {
-    console.log(projectID);
+    // console.log(projectID);
     // Reference to the specific project in Firebase Realtime Database
     const projectRef = ref(db, `users/${userID}/AllUserProjects/${projectID}`);
 
@@ -158,7 +158,7 @@ export function fetchTemplates(userID, callback) {
     const templates = ref(myDb, 'templates');
     onValue(templates, (snapshot) => {
       const data = snapshot.val();
-      console.log("in fetch templates");
+      // console.log("in fetch templates");
       // console.log(data);
       callback(data);
     });
