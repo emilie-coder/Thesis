@@ -28,6 +28,10 @@ import { updateProjectTitle } from '../../firebase/config';
 import { useLocation } from 'react-router-dom';
 
 
+import { selectObjectID, selectObjectName, selectObjectChosen, selectObjectMaterial, SET_OBJECT_IMAGE } from '../../redux/slice/objectImageSlice';
+
+
+
 const Template = () => {
 
   const dispatch = useDispatch();
@@ -36,6 +40,11 @@ const Template = () => {
   const proTemplateInteger = useSelector(selectProjectTemplateInteger);
   const projTitle = useSelector(selectProjectTitle);
 
+
+  const selectedObjectID = useSelector(selectObjectID);
+  const selectedObjectName = useSelector(selectObjectName);
+  const selectedObjectChosen = useSelector(selectObjectChosen);
+  const selectedObjectMaterial = useSelector(selectObjectMaterial);
 
   const [imageUpload, setImageUpload] = useState(null);
   const [imageList, setImageList] = useState([]);
@@ -95,14 +104,9 @@ const Template = () => {
   }, [dispatch, projectIDURL, userID]);
    
 
-
-
   const handleClick = (tab) => {
     setActiveTab(tab);
   };
-
-
-
 
   const uploadImage = () => {
     if (imageUpload == null) return;
@@ -199,6 +203,8 @@ const Template = () => {
           </div>
 
           <div className={templateCSS.rightEditorSub}>
+
+
             <div className={templateCSS.rightImageEditorTitle}>
               select image
             </div>
@@ -206,15 +212,26 @@ const Template = () => {
             <div className={templateCSS.rightImageEditor}>
               
 
-              <div className={templateCSS.choicesContainer}>
+              {/* <div className={templateCSS.choicesContainer}>
                 choose an object to edit
-              </div>
+              </div> */}
 
 
               
               <div className={templateCSS.choicedInfo}>
-                chosen object info
+                chosen object info:
+
+                <div>
+                  object ID: {selectedObjectID}
+                </div>
+                <div>
+                  object Name: {selectedObjectName}
+                </div>
+
+                {selectedObjectChosen && <img src={selectedObjectMaterial} alt='objectImg'/>}
               </div>
+
+
             </div>
                       
           <div className={templateCSS.fileUploadContainer}>

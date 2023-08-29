@@ -6,10 +6,15 @@ import DuckScene from './3dScenes/DuckScene';
 import SimpleFlower from './3dScenes/Test_flower';
 import { TextureLoader } from 'three'; // Import TextureLoader from Three.js
 
+import { SET_OBJECT_IMAGE } from '../redux/slice/objectImageSlice';
+
 // Import THREE from Three.js
 import * as THREE from 'three';
+import { useDispatch } from 'react-redux';
 
 const useStore = create((set) => ({ 
+  targetID: 'none',
+  setTargetID: (targetID) => set({ targetID }),
   targetName: 'currently editing',
   setTargetName: (targetName) => set({ targetName }),
   target: null, 
@@ -18,8 +23,11 @@ const useStore = create((set) => ({
 
 
   function Box(props) {
+    const dispatch = useDispatch();
+
     const setTarget = useStore((state) => state.setTarget);
     const setTargetName = useStore((state) => state.setTargetName);
+    const setTargetID = useStore((state) => state.setTargetID);
     const [hovered, setHovered] = useState(false);
     useCursor(hovered);
   
@@ -30,12 +38,17 @@ const useStore = create((set) => ({
           console.log(e)
           setTarget(e.object);
           setTargetName(props.itemName); 
+          setTargetID(props.itemID)
 
 
-          // update object point here
-
-
-          console.log((props.itemID));
+          const objectInfo = {
+            objectName: props.itemName,
+            objectID: props.itemID,
+            objectMaterial: props.materialString,
+          };
+    
+          // Dispatch the project information to Redux
+          dispatch(SET_OBJECT_IMAGE(objectInfo));
 
         }}
         onPointerOver={() => setHovered(true)}
@@ -50,6 +63,7 @@ const useStore = create((set) => ({
 export default function TemplateScene(props) {
   const { target, setTarget } = useStore();
   const { targetName, setTargetName } = useStore();
+  const { targetID, setTargetID} = useStore();
   const sceneObjs = props.scene;
 
   const textureLoader = new TextureLoader();
@@ -78,6 +92,7 @@ export default function TemplateScene(props) {
             rotation={[item.rotation.x, item.rotation.y, item.rotation.z]}
             scale={[item.scale.x, item.scale.y, item.scale.z]}
             material={material} // Apply the material with the texture
+            materialString={item.material}
             itemName={item.objectTypeName}
             itemID={index}
           />
@@ -90,8 +105,8 @@ export default function TemplateScene(props) {
 
   return (
     < div>
-    targetName--> 
-    {targetName && <>{targetName}</>}
+    targetName : 
+    {targetName && <>{targetName} - target ID : {targetID} </>}
     <Canvas dpr={[1, 2]} onPointerMissed={() => setTarget(null)}>
       <Suspense fallback={null}>
         <gridHelper args={[400, 200, '#151515', '#020202']} position={[0, -4, 0]} />

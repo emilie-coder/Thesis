@@ -60,10 +60,7 @@ const SimpleFlower = (props) => {
         <mesh geometry={nodes.flower_pasted__flower_petal_set_1_flower_pet_set_2_pasted__pSphere5.geometry}  />
         <mesh geometry={nodes.flower_pasted__flower_petal_set_1_flower_pet_set_2_pasted__pSphere3.geometry}  />
         <mesh geometry={nodes.flower_pasted__flower_petal_set_1_flower_pet_set_2_pasted__pSphere4.geometry}  />
-      </group>
-
-
-      
+      </group>      
     </group>
   )
 }

@@ -172,6 +172,11 @@ export function fetchTemplates(userID, callback) {
 
 
 
+// export function updateUserObjectPosition
+
+
+
+
 
 
 export default app;
