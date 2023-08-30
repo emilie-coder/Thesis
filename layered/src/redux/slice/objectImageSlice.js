@@ -10,21 +10,30 @@ const initialState = {
 
 // these are the reducers
 const objectImageSlice = createSlice({
-  name: "objectImage",
-  initialState,
-  reducers: {
-    SET_OBJECT_IMAGE: (state, action) => {
-        state.objectChosen = true;
-        state.objectName = action.payload.objectName;
-        state.objectID = action.payload.objectID;
-        state.objectMaterial = action.payload.objectMaterial;
-    },
-  }
-});
-
+    name: "objectImage",
+    initialState,
+    reducers: {
+      SET_OBJECT_IMAGE: (state, action) => {
+        return {
+          ...state,
+          objectChosen: true,
+          objectName: action.payload.objectName,
+          objectID: action.payload.objectID,
+          objectMaterial: action.payload.objectMaterial,
+        };
+      },
+      SET_OBJECT_MATERIAL: (state, action) => {
+        return {
+          ...state,
+          objectMaterial: action.payload.objectMaterial,
+        };
+      }
+    }
+  });
+  
 
 // these are the actions
-export const {SET_OBJECT_IMAGE} = objectImageSlice.actions
+export const {SET_OBJECT_IMAGE, SET_OBJECT_MATERIAL} = objectImageSlice.actions
 
 export const selectObjectChosen = (state) => state.objectImage.objectChosen;
 export const selectObjectName = (state) => state.objectImage.objectName;

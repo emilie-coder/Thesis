@@ -9,7 +9,7 @@ import {
   selectProjectTitle,
 } from '../../redux/slice/projectSlice';
 import TemplateScene from '../../threejs/templateScene';
-import { fetchProject, storage } from '../../firebase/config';
+import { fetchProject, storage, updateObjectTexture } from '../../firebase/config';
 import { selectUserID } from '../../redux/slice/authSlice';
 import { v4 } from 'uuid';
 import {
@@ -28,7 +28,7 @@ import { updateProjectTitle } from '../../firebase/config';
 import { useLocation } from 'react-router-dom';
 
 
-import { selectObjectID, selectObjectName, selectObjectChosen, selectObjectMaterial, SET_OBJECT_IMAGE } from '../../redux/slice/objectImageSlice';
+import { selectObjectID, selectObjectName, selectObjectChosen, selectObjectMaterial, SET_OBJECT_IMAGE, SET_OBJECT_MATERIAL } from '../../redux/slice/objectImageSlice';
 
 
 
@@ -123,10 +123,40 @@ const Template = () => {
     });
   };
 
+
+  const uploadUpdateImage = () => {
+    if (imageUpload == null) return;
+
+    const imageRef = ref(
+      storage,
+      userID + '/project_' + projID + `/images/${imageUpload.name + v4()}`
+    );
+
+    uploadBytes(imageRef, imageUpload).then((snapshot) => {
+      getDownloadURL(snapshot.ref).then((url) => {
+
+      // update in firebase
+      updateObjectTexture(userID, projID, selectedObjectID, url);
+
+        setImageList((prev) => [...prev, url]);
+        dispatch(SET_OBJECT_MATERIAL(
+          {objectMaterial: url}))
+      });
+    });
+  }
+
   useEffect(() => {
-    const imageListRef = ref(storage, userID + '/project_null/images/');
+    if (!userID || !projID) {
+      console.warn('userID or projID is not available.');
+      return;
+    }
+  
+    const imageListRef = ref(storage, userID + '/project_' + projID + '/images');
+    console.log('imageListRef:', imageListRef);
+  
     listAll(imageListRef)
       .then((response) => {
+        console.log('ListAll response:', response);
         response.items.forEach((item) => {
           getDownloadURL(item)
             .then((url) => {
@@ -140,7 +170,8 @@ const Template = () => {
       .catch((error) => {
         console.error('Error listing images:', error);
       });
-  }, []);
+  }, [userID, projID]);
+
 
   // Function to handle title editing
   const handleTitleEdit = () => {
@@ -228,9 +259,14 @@ const Template = () => {
                   object Name: {selectedObjectName}
                 </div>
 
-                {selectedObjectChosen && <img src={selectedObjectMaterial} alt='objectImg'/>}
+                {selectedObjectChosen && <img src={selectedObjectMaterial} alt='objectImg' className={templateCSS.displayedObjectImage} />
+}
               </div>
 
+              <div className={templateCSS.fileUpload}>
+                <input type="file" onChange={((event) => {setImageUpload(event.target.files[0])})}/>
+                <button onClick={uploadUpdateImage}>change image</button>
+              </div>
 
             </div>
                       
@@ -242,13 +278,12 @@ const Template = () => {
               <button onClick={uploadImage}>upload image</button>
             </div>
 
-            <div className={templateCSS.userImages}>
-
-
+            {/* <div className={templateCSS.userImages}>
               {imageList.map((url) => {
                 return <UserImageFile key={url} imageURL={url} />
               })}
-            </div>
+
+            </div> */}
           </div>
 
           </div>

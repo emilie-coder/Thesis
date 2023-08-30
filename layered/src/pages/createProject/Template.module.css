@@ -131,3 +131,8 @@
     display: flex;
     flex-direction: row;
   }
+
+  .displayedObjectImage{
+    display: flex;
+    width: 150px;
+  }

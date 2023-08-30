@@ -65,10 +65,7 @@ export default function TemplateScene(props) {
   const { targetName, setTargetName } = useStore();
   const { targetID, setTargetID} = useStore();
   const sceneObjs = props.scene;
-
-  const textureLoader = new TextureLoader();
-  const colorMap = textureLoader.load('https://firebasestorage.googleapis.com/v0/b/layered-5fb29.appspot.com/o/PMjmiBCAdebvZabW0gRb3ys7QoR2%2Fproject_-Ncchl6YZ6wd-4rSIp2Z%2Fimages%2Fflower_petal.png0d9ef143-3986-4983-9cf5-426ac9e3b4dd?alt=media&token=445dd45b-5c9e-4298-9fca-5b1f534564f4');
-
+  
   const instantiateObjects = () => {
     if (sceneObjs && sceneObjs.objects) {
       return sceneObjs.objects.map((item, index) => {

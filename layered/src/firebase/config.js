@@ -109,6 +109,20 @@ export async function updateProjectTitle(userID, editedTitle, projectID) {
 }
 
 
+export async function updateObjectTexture(userID, projectID, objectID, newTexture) {
+  try {
+    // console.log(projectID);
+    // Reference to the specific project in Firebase Realtime Database
+    const objectRef = ref(db, `users/${userID}/AllUserProjects/${projectID}/projectScene/objects/${objectID}/material`);
+
+    // Update the entire object with the modified data
+    await set(objectRef, newTexture);
+  } catch (error) {
+    console.error('Error updating object texture', error);
+    throw error; // Rethrow the error to handle it at the calling site
+  }
+}
+
 
 // fetch
 export function fetchUserProjects(userID, callback) {
@@ -147,7 +161,6 @@ export async function fetchProject(userID, projectID) {
     throw error;
   }
 }
-
 
 
 
