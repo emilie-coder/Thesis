@@ -4,6 +4,8 @@ import { OrbitControls, Plane, TransformControls, useCursor } from '@react-three
 import create from 'zustand';
 import DuckScene from './3dScenes/DuckScene';
 import SimpleFlower from './3dScenes/Test_flower';
+import Man from './3dScenes/Man';
+import Woman from './3dScenes/Woman';
 import { TextureLoader } from 'three'; // Import TextureLoader from Three.js
 
 import { SET_OBJECT_IMAGE } from '../redux/slice/objectImageSlice';
@@ -65,7 +67,8 @@ export default function TemplateScene(props) {
   const { targetName, setTargetName } = useStore();
   const { targetID, setTargetID} = useStore();
   const sceneObjs = props.scene;
-  
+
+
   const instantiateObjects = () => {
     if (sceneObjs && sceneObjs.objects) {
       return sceneObjs.objects.map((item, index) => {
@@ -112,6 +115,7 @@ export default function TemplateScene(props) {
 
         {instantiateObjects()}
         <SimpleFlower/>
+        <Man scale={0.01} position={[3,-2,0]}/>
         {target && <TransformControls object={target} mode="translate" />}
         <OrbitControls makeDefault />
       </Suspense>

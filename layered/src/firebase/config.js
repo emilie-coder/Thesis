@@ -123,6 +123,27 @@ export async function updateObjectTexture(userID, projectID, objectID, newTextur
   }
 }
 
+export async function fetchObjectTexture(userID, projectID, objectID) {
+  try {
+    // console.log(projectID);
+    // Reference to the specific project in Firebase Realtime Database
+    const objectRef = ref(db, `users/${userID}/AllUserProjects/${projectID}/projectScene/objects/${objectID}/material`);
+
+    const objectSnap = await get(objectRef);
+
+    if (objectSnap.exists()) {
+      const projectData = objectSnap.val();
+      return projectData; // Return the project data
+    } else {
+      throw new Error("Project not found"); // Handle the case where the project doesn't exist
+    }
+
+  } catch (error) {
+    console.error('Error updating object texture', error);
+    throw error; // Rethrow the error to handle it at the calling site
+  }
+}
+
 
 // fetch
 export function fetchUserProjects(userID, callback) {
