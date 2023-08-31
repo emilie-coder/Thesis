@@ -13,6 +13,7 @@ import { SET_OBJECT_IMAGE } from '../redux/slice/objectImageSlice';
 // Import THREE from Three.js
 import * as THREE from 'three';
 import { useDispatch } from 'react-redux';
+import Mountains from './3dScenes/MyMountains';
 
 const useStore = create((set) => ({ 
   targetID: 'none',
@@ -25,41 +26,73 @@ const useStore = create((set) => ({
 
 
   function Box(props) {
+    console.log("here i am")
+    console.log(props);
     const dispatch = useDispatch();
-
+  
     const setTarget = useStore((state) => state.setTarget);
     const setTargetName = useStore((state) => state.setTargetName);
     const setTargetID = useStore((state) => state.setTargetID);
     const [hovered, setHovered] = useState(false);
     useCursor(hovered);
   
-    return (
-      <mesh
-        {...props}
-        onClick={(e) => {
-          console.log(e)
-          setTarget(e.object);
-          setTargetName(props.itemName); 
-          setTargetID(props.itemID)
-
-
-          const objectInfo = {
-            objectName: props.itemName,
-            objectID: props.itemID,
-            objectMaterial: props.materialString,
-          };
-    
-          // Dispatch the project information to Redux
-          dispatch(SET_OBJECT_IMAGE(objectInfo));
-
-        }}
-        onPointerOver={() => setHovered(true)}
-        onPointerOut={() => setHovered(false)}
-      >
-        <planeGeometry />
-        <meshNormalMaterial />
-      </mesh>
-    );
+    if (props.itemName && props.itemName === 'plane') {
+      const planeGeometry = new THREE.PlaneGeometry(); // Create a plane geometry
+      return (
+        <mesh
+          {...props}
+          geometry={planeGeometry} // Set the geometry
+          onClick={(e) => {
+            console.log(e);
+            setTarget(e.object);
+            setTargetName(props.itemName);
+            setTargetID(props.itemID);
+  
+            const objectInfo = {
+              objectName: props.itemName,
+              objectID: props.itemID,
+              objectMaterial: props.materialString,
+            };
+  
+            // Dispatch the project information to Redux
+            dispatch(SET_OBJECT_IMAGE(objectInfo));
+          }}
+          onPointerOver={() => setHovered(true)}
+          onPointerOut={() => setHovered(false)}
+        >
+          <meshNormalMaterial />
+          <planeGeometry />
+        </mesh>
+      );
+    } else if (props.itemName && props.itemName === 'cylinder') {
+      return (
+        <mesh
+          {...props}
+          onClick={(e) => {
+            console.log(e);
+            setTarget(e.object);
+            setTargetName(props.itemName);
+            setTargetID(props.itemID);
+  
+            const objectInfo = {
+              objectName: props.itemName,
+              objectID: props.itemID,
+              objectMaterial: props.materialString,
+            };
+  
+            // Dispatch the project information to Redux
+            dispatch(SET_OBJECT_IMAGE(objectInfo));
+          }}
+          onPointerOver={() => setHovered(true)}
+          onPointerOut={() => setHovered(false)}
+        >
+          {/* Define your <Mountains /> component here or use another geometry */}
+          <Mountains />
+           <meshNormalMaterial />
+           
+        </mesh>
+      );
+    }
   }
 
 export default function TemplateScene(props) {
@@ -72,7 +105,7 @@ export default function TemplateScene(props) {
   const instantiateObjects = () => {
     if (sceneObjs && sceneObjs.objects) {
       return sceneObjs.objects.map((item, index) => {
-        // console.log(item);
+        console.log(item);
 
         // Load the texture from the item.material URL
         const textureLoader = new TextureLoader();
@@ -95,6 +128,7 @@ export default function TemplateScene(props) {
             materialString={item.material}
             itemName={item.objectTypeName}
             itemID={index}
+            objectType={item.objectType}
           />
         );
       });
@@ -114,7 +148,7 @@ export default function TemplateScene(props) {
         <pointLight position={[10, 10, 10]} intensity={1} castShadow={true} />
 
         {instantiateObjects()}
-        <SimpleFlower/>
+
         <Man scale={0.01} position={[3,-2,0]}/>
         {target && <TransformControls object={target} mode="translate" />}
         <OrbitControls makeDefault />
