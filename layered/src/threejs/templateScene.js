@@ -12,88 +12,96 @@ import { SET_OBJECT_IMAGE } from '../redux/slice/objectImageSlice';
 
 // Import THREE from Three.js
 import * as THREE from 'three';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Mountains from './3dScenes/MyMountains';
+import { updateObjectPosition } from '../firebase/config';
+import { selectUserID } from '../redux/slice/authSlice';
+import { selectProjectID } from '../redux/slice/projectSlice';
 
-const useStore = create((set) => ({ 
+const useStore = create((set) => ({
   targetID: 'none',
   setTargetID: (targetID) => set({ targetID }),
   targetName: 'currently editing',
   setTargetName: (targetName) => set({ targetName }),
-  target: null, 
-  setTarget: (target) => set({ target }) }));
+  target: null,
+  setTarget: (target) => set({ target }),
+}));
 
+function Box(props) {
+  // console.log("here i am");
+  // console.log(props);
+  const dispatch = useDispatch();
 
+  const setTarget = useStore((state) => state.setTarget);
+  const setTargetName = useStore((state) => state.setTargetName);
+  const setTargetID = useStore((state) => state.setTargetID);
+  const [hovered, setHovered] = useState(false);
+  useCursor(hovered);
 
-  function Box(props) {
-    console.log("here i am")
-    console.log(props);
-    const dispatch = useDispatch();
-  
-    const setTarget = useStore((state) => state.setTarget);
-    const setTargetName = useStore((state) => state.setTargetName);
-    const setTargetID = useStore((state) => state.setTargetID);
-    const [hovered, setHovered] = useState(false);
-    useCursor(hovered);
-  
-    if (props.itemName && props.itemName === 'plane') {
-      const planeGeometry = new THREE.PlaneGeometry(); // Create a plane geometry
-      return (
-        <mesh
-          {...props}
-          geometry={planeGeometry} // Set the geometry
-          onClick={(e) => {
-            console.log(e);
-            setTarget(e.object);
-            setTargetName(props.itemName);
-            setTargetID(props.itemID);
-  
-            const objectInfo = {
-              objectName: props.itemName,
-              objectID: props.itemID,
-              objectMaterial: props.materialString,
-            };
-  
-            // Dispatch the project information to Redux
-            dispatch(SET_OBJECT_IMAGE(objectInfo));
-          }}
-          onPointerOver={() => setHovered(true)}
-          onPointerOut={() => setHovered(false)}
-        >
-          <meshNormalMaterial />
-          <planeGeometry />
-        </mesh>
-      );
-    } else if (props.itemName && props.itemName === 'cylinder') {
-      return (
-        <mesh
-          {...props}
-          onClick={(e) => {
-            console.log(e);
-            setTarget(e.object);
-            setTargetName(props.itemName);
-            setTargetID(props.itemID);
-  
-            const objectInfo = {
-              objectName: props.itemName,
-              objectID: props.itemID,
-              objectMaterial: props.materialString,
-            };
-  
-            // Dispatch the project information to Redux
-            dispatch(SET_OBJECT_IMAGE(objectInfo));
-          }}
-          onPointerOver={() => setHovered(true)}
-          onPointerOut={() => setHovered(false)}
-        >
-          {/* Define your <Mountains /> component here or use another geometry */}
-          <Mountains />
-           <meshNormalMaterial />
-           
-        </mesh>
-      );
-    }
+  const userID = useSelector(selectUserID); // Move this into the functional component
+  const projID = useSelector(selectProjectID); // Move this into the functional component
+
+  if (props.itemName && props.itemName === 'plane') {
+    const planeGeometry = new THREE.PlaneGeometry(); // Create a plane geometry
+    return (
+      <mesh
+        {...props}
+        geometry={planeGeometry} // Set the geometry
+        onClick={(e) => {
+          console.log(e);
+          updateObjectPosition(userID, projID, props.itemID, e.object.position);
+          setTarget(e.object);
+          setTargetName(props.itemName);
+          setTargetID(props.itemID);
+
+          const objectInfo = {
+            objectName: props.itemName,
+            objectID: props.itemID,
+            objectMaterial: props.materialString,
+          };
+
+          // Dispatch the project information to Redux
+          dispatch(SET_OBJECT_IMAGE(objectInfo));
+        }}
+
+        onPointerOver={() => setHovered(true)}
+        onPointerOut={() => setHovered(false)}
+      >
+        <meshNormalMaterial />
+        <planeGeometry />
+      </mesh>
+    );
+  } else if (props.itemName && props.itemName === 'cylinder') {
+    return (
+      <mesh
+        {...props}
+        onClick={(e) => {
+          console.log(e);
+          updateObjectPosition(userID, projID, props.itemID, e.object.position);
+
+          setTarget(e.object);
+          setTargetName(props.itemName);
+          setTargetID(props.itemID);
+
+          const objectInfo = {
+            objectName: props.itemName,
+            objectID: props.itemID,
+            objectMaterial: props.materialString,
+          };
+
+          // Dispatch the project information to Redux
+          dispatch(SET_OBJECT_IMAGE(objectInfo));
+        }}
+        onPointerOver={() => setHovered(true)}
+        onPointerOut={() => setHovered(false)}
+      >
+        {/* Define your <Mountains /> component here or use another geometry */}
+        <Mountains />
+         <meshNormalMaterial />
+      </mesh>
+    );
   }
+}
 
 export default function TemplateScene(props) {
   const { target, setTarget } = useStore();
@@ -101,11 +109,10 @@ export default function TemplateScene(props) {
   const { targetID, setTargetID} = useStore();
   const sceneObjs = props.scene;
 
-
   const instantiateObjects = () => {
     if (sceneObjs && sceneObjs.objects) {
       return sceneObjs.objects.map((item, index) => {
-        console.log(item);
+        // console.log(item);
 
         // Load the texture from the item.material URL
         const textureLoader = new TextureLoader();
@@ -138,22 +145,26 @@ export default function TemplateScene(props) {
   };
 
   return (
-    < div>
-    targetName : 
-    {targetName && <>{targetName} - target ID : {targetID} </>}
-    <Canvas dpr={[1, 2]} onPointerMissed={() => setTarget(null)}>
-      <Suspense fallback={null}>
-        <gridHelper args={[400, 200, '#151515', '#020202']} position={[0, -4, 0]} />
-        <ambientLight intensity={1.0} />
-        <pointLight position={[10, 10, 10]} intensity={1} castShadow={true} />
+    <div>
+      {/* targetName */}
+      {targetName && (
+        <>
+          {targetName} - target ID: {targetID}
+        </>
+      )}
+      <Canvas dpr={[1, 2]} onPointerMissed={() => setTarget(null)}>
+        <Suspense fallback={null}>
+          <gridHelper args={[400, 200, '#151515', '#020202']} position={[0, -4, 0]} />
+          <ambientLight intensity={1.0} />
+          <pointLight position={[10, 10, 10]} intensity={1} castShadow={true} />
 
-        {instantiateObjects()}
+          {instantiateObjects()}
 
-        <Man scale={0.01} position={[3,-2,0]}/>
-        {target && <TransformControls object={target} mode="translate" />}
-        <OrbitControls makeDefault />
-      </Suspense>
-    </Canvas>
+          <Man scale={0.01} position={[3,-2,0]}/>
+          {target && <TransformControls object={target} mode="translate" />}
+          <OrbitControls makeDefault />
+        </Suspense>
+      </Canvas>
     </div>
   );
 }

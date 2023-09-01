@@ -123,6 +123,29 @@ export async function updateObjectTexture(userID, projectID, objectID, newTextur
   }
 }
 
+export async function updateObjectPosition(userID, projectID, objectID, newPosition) {
+  // Check if userID, projectID, and objectID exist
+  console.log(userID, projectID, objectID, newPosition);
+
+  // if (!userID || !projectID || !objectID) {
+  //   console.error('Invalid parameters for updating object position');
+  //   return; // Exit the function if any of the parameters are missing
+  // }
+  
+  try {
+    // Reference to the specific project in Firebase Realtime Database
+    const objectRefPositionRef = ref(db, `users/${userID}/AllUserProjects/${projectID}/projectScene/objects/${objectID}/position`);
+
+    // Update the entire object with the modified data
+    await set(objectRefPositionRef, { x: newPosition.x, y: newPosition.y, z: newPosition.z });
+  } catch (error) {
+    console.error('Error updating object position', error);
+    throw error; // Rethrow the error to handle it at the calling site
+  }
+}
+
+
+
 export async function fetchObjectTexture(userID, projectID, objectID) {
   try {
     // console.log(projectID);

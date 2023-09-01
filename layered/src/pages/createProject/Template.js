@@ -278,12 +278,12 @@ const Template = () => {
               <button onClick={uploadImage}>upload image</button>
             </div>
 
-            <div className={templateCSS.userImages}>
+            {/* <div className={templateCSS.userImages}>
               {imageList.map((url) => {
                 return <UserImageFile key={url} imageURL={url} />
               })}
 
-            </div>
+            </div> */}
           </div>
 
           </div>
