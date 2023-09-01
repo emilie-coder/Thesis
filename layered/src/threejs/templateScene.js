@@ -17,6 +17,7 @@ import Mountains from './3dScenes/MyMountains';
 import { updateObjectPosition } from '../firebase/config';
 import { selectUserID } from '../redux/slice/authSlice';
 import { selectProjectID } from '../redux/slice/projectSlice';
+import { useControls } from 'leva'
 
 const useStore = create((set) => ({
   targetID: 'none',
@@ -49,7 +50,7 @@ function Box(props) {
         geometry={planeGeometry} // Set the geometry
         onClick={(e) => {
           console.log(e);
-          updateObjectPosition(userID, projID, props.itemID, e.object.position);
+          updateObjectPosition(userID, projID, props.itemID, e.object.position, e.object.scale, e.object.rotation);
           setTarget(e.object);
           setTargetName(props.itemName);
           setTargetID(props.itemID);
@@ -77,7 +78,7 @@ function Box(props) {
         {...props}
         onClick={(e) => {
           console.log(e);
-          updateObjectPosition(userID, projID, props.itemID, e.object.position);
+          updateObjectPosition(userID, projID, props.itemID, e.object.position, e.object.scale, e.object.rotation);
 
           setTarget(e.object);
           setTargetName(props.itemName);
@@ -108,6 +109,8 @@ export default function TemplateScene(props) {
   const { targetName, setTargetName } = useStore();
   const { targetID, setTargetID} = useStore();
   const sceneObjs = props.scene;
+
+  const { mode } = useControls({ mode: { value: 'translate', options: ['translate', 'rotate', 'scale'] } })
 
   const instantiateObjects = () => {
     if (sceneObjs && sceneObjs.objects) {
@@ -161,7 +164,7 @@ export default function TemplateScene(props) {
           {instantiateObjects()}
 
           <Man scale={0.01} position={[3,-2,0]}/>
-          {target && <TransformControls object={target} mode="translate" />}
+          {target && <TransformControls object={target} mode={mode} />}
           <OrbitControls makeDefault />
         </Suspense>
       </Canvas>

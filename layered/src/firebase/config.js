@@ -123,7 +123,7 @@ export async function updateObjectTexture(userID, projectID, objectID, newTextur
   }
 }
 
-export async function updateObjectPosition(userID, projectID, objectID, newPosition) {
+export async function updateObjectPosition(userID, projectID, objectID, newPosition, newScale, newRotation) {
   // Check if userID, projectID, and objectID exist
   console.log(userID, projectID, objectID, newPosition);
 
@@ -135,11 +135,56 @@ export async function updateObjectPosition(userID, projectID, objectID, newPosit
   try {
     // Reference to the specific project in Firebase Realtime Database
     const objectRefPositionRef = ref(db, `users/${userID}/AllUserProjects/${projectID}/projectScene/objects/${objectID}/position`);
+    const objectRefScaleRef = ref(db, `users/${userID}/AllUserProjects/${projectID}/projectScene/objects/${objectID}/scale`);
+    const objectRefRotRef = ref(db, `users/${userID}/AllUserProjects/${projectID}/projectScene/objects/${objectID}/rotation`);
 
     // Update the entire object with the modified data
-    await set(objectRefPositionRef, { x: newPosition.x, y: newPosition.y, z: newPosition.z });
+    set(objectRefPositionRef, { x: newPosition.x, y: newPosition.y, z: newPosition.z });
+    set(objectRefScaleRef, { x: newScale.x, y: newScale.y, z: newScale.z });
+    set(objectRefRotRef, { x: newRotation._x, y: newRotation._y, z: newRotation._z });
   } catch (error) {
     console.error('Error updating object position', error);
+    throw error; // Rethrow the error to handle it at the calling site
+  }
+}
+
+
+export async function createNewLayerFB(userID, projectID) {
+  try {
+    // Reference to the specific project in Firebase Realtime Database
+    const projectRef = ref(db, `users/${userID}/AllUserProjects/${projectID}/projectScene/objects`);
+
+    const newObjectIndex = await get(projectRef, 'length'); // Get the current length of the array
+
+    const newKey = `${newObjectIndex._node.children_.count()}`;
+
+    const layerObject = {
+      material: "https://firebasestorage.googleapis.com/v0/b/layered-5fb29.appspot.com/o/sqaure.png?alt=media&token=dd1d81ad-6eb2-4048-a518-576ce1a8766a",
+      objectType: 0,
+      objectTypeName: "plane", // Fixed a typo here (oobjectTypeName -> objectTypeName)
+      position: {
+        x: "0",
+        y: "0",
+        z: "0"
+      },
+      scale: {
+        x: "1",
+        y: "1",
+        z: "1"
+      },
+      rotation: {
+        x: "0",
+        y: "0",
+        z: "0"
+      }
+    }
+
+    // Use the newObjectKey as the key for the pushed object
+    const newObjectRef = child(projectRef, newKey);
+    await set(newObjectRef, layerObject);
+
+  } catch (error) {
+    console.error('Error adding object:', error);
     throw error; // Rethrow the error to handle it at the calling site
   }
 }

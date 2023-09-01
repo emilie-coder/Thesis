@@ -9,7 +9,7 @@ import {
   selectProjectTitle,
 } from '../../redux/slice/projectSlice';
 import TemplateScene from '../../threejs/templateScene';
-import { fetchProject, storage, updateObjectTexture } from '../../firebase/config';
+import { createNewLayerFB, fetchProject, storage, updateObjectTexture } from '../../firebase/config';
 import { selectUserID } from '../../redux/slice/authSlice';
 import { v4 } from 'uuid';
 import {
@@ -197,6 +197,10 @@ const Template = () => {
     updateProjectTitle(userID, editedTitle, projID);
   };
 
+  const createNewLayer = () => {
+    createNewLayerFB(userID, projID);
+  }
+
 
   return (
     <div className={templateCSS.templatePage}>
@@ -219,6 +223,7 @@ const Template = () => {
           )}
         </h2>
           <h5 className={templateCSS.projectSubTitle}> {[proTemplate]} template </h5>
+          <button onClick={createNewLayer}> newLayer </button>
         </div>
         <div className={templateCSS.actualEditor}>
           <TemplateScene scene={projectScene} />
