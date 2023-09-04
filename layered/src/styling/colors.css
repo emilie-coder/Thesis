@@ -1,9 +1,12 @@
 :root {
     --white: #fff;
     --black: #000;
-    --main-color: #79155B;
-    --secondary-color: #C23373;
-    --accent-color-a: #FFBA86;
-    --accent-color-b: #F6635C;
+    --main-color: #889293;
+    --secondary-color: #d9d7d8;
+    --accent-color-a: #a8c6f4;
+    --accent-color-b: #5c9af6;
+
+
+    --page-background-color: #fff;
   }
   

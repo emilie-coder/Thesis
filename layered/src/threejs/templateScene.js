@@ -19,6 +19,9 @@ import { selectUserID } from '../redux/slice/authSlice';
 import { selectProjectID } from '../redux/slice/projectSlice';
 import { useControls } from 'leva'
 
+import templateCSS from './TemplateScene.module.css';
+
+
 const useStore = create((set) => ({
   targetID: 'none',
   setTargetID: (targetID) => set({ targetID }),
@@ -148,7 +151,7 @@ export default function TemplateScene(props) {
   };
 
   return (
-    <div>
+    <div className={templateCSS.canvasHolder}>
       {/* targetName */}
       {targetName && (
         <>

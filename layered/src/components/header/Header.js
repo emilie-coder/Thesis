@@ -74,7 +74,7 @@ const Header = () => {
 
 
           <div className={headerCSS.leftLogo}>
-            <Link to='/'> Echo VR </Link>
+            <Link to='/'> EVRO </Link>
           </div>
 
           <div className={headerCSS.middleLinks} >

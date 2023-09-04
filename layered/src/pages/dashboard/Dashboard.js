@@ -62,12 +62,8 @@ const Dashboard = () => {
   return (
     <div className={styles.dashboard}>
       <div className={styles.personalInfo}>
-        <h2>Personal Information:</h2>
         <div>
           <span className={styles.infoLabel}>Username:</span> {userName}
-        </div>
-        <div>
-          <span className={styles.infoLabel}>UserID:</span> {userID}
         </div>
         <div>
           <span className={styles.infoLabel}>Email:</span> {email}
@@ -75,8 +71,7 @@ const Dashboard = () => {
       </div>
 
       <div className={styles.projectsSection}>
-        <h2>My Projects List:</h2>
-        <MyProjects projects={userProjects} />
+        <h2>My Projects:</h2>
         {userProjects && (
           <div className={styles.projectList}>
             {Object.keys(userProjects).map((projectId) => (
@@ -85,7 +80,19 @@ const Dashboard = () => {
                 className={styles.projectItem}
                 onClick={loadUserProject(projectId)} // Pass projectId as an argument to the function
               >
-                {userProjects[projectId].title}
+                <div className={styles.projectItemTitle}>
+                  {userProjects[projectId].title}
+                </div>
+                <div className={styles.projectSubtitle}>
+                {
+                  new Date(userProjects[projectId].createdAt).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit'
+                  })
+                }
+                </div>
+                <img className={styles.projectImg} src="https://firebasestorage.googleapis.com/v0/b/layered-5fb29.appspot.com/o/temp.jpg?alt=media&token=f07645b2-3f6a-4ff7-ae7a-cf6fbf313647" alt="temp"/>
               </div>
             ))}
           </div>
@@ -94,12 +101,11 @@ const Dashboard = () => {
           Create New Project
         </button>
       </div>
-
+{/* 
       <div className={styles.collectionsSection}>
         <h2>My Collections:</h2>
-        <MyCollections />
         <button className={styles.createButton}>Create New Collection</button>
-      </div>
+      </div> */}
     </div>
   );
 };
