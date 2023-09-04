@@ -14,13 +14,15 @@ import { SET_OBJECT_IMAGE } from '../redux/slice/objectImageSlice';
 import * as THREE from 'three';
 import { useDispatch, useSelector } from 'react-redux';
 import Mountains from './3dScenes/MyMountains';
+import Walls from './3dScenes/Walls';
+
 import { updateObjectPosition } from '../firebase/config';
 import { selectUserID } from '../redux/slice/authSlice';
 import { selectProjectID } from '../redux/slice/projectSlice';
 import { useControls } from 'leva'
 
 import templateCSS from './TemplateScene.module.css';
-
+import { useGLTF } from '@react-three/drei'
 
 const useStore = create((set) => ({
   targetID: 'none',
@@ -44,6 +46,9 @@ function Box(props) {
 
   const userID = useSelector(selectUserID); // Move this into the functional component
   const projID = useSelector(selectProjectID); // Move this into the functional component
+
+
+  const { nodes, materials } = useGLTF('/3dAssets/walls.glb')
 
   if (props.itemName && props.itemName === 'plane') {
     const planeGeometry = new THREE.PlaneGeometry(); // Create a plane geometry
@@ -72,13 +77,15 @@ function Box(props) {
         onPointerOut={() => setHovered(false)}
       >
         <meshNormalMaterial />
-        <planeGeometry />
+        {/* <planeGeometry /> */}
       </mesh>
     );
   } else if (props.itemName && props.itemName === 'cylinder') {
     return (
+      
       <mesh
         {...props}
+        geometry={nodes.mesh_0.geometry}
         onClick={(e) => {
           console.log(e);
           updateObjectPosition(userID, projID, props.itemID, e.object.position, e.object.scale, e.object.rotation);
@@ -99,8 +106,6 @@ function Box(props) {
         onPointerOver={() => setHovered(true)}
         onPointerOut={() => setHovered(false)}
       >
-        {/* Define your <Mountains /> component here or use another geometry */}
-        <Mountains />
          <meshNormalMaterial />
       </mesh>
     );
@@ -113,7 +118,7 @@ export default function TemplateScene(props) {
   const { targetID, setTargetID} = useStore();
   const sceneObjs = props.scene;
 
-  const { mode } = useControls({ mode: { value: 'translate', options: ['translate', 'rotate', 'scale'] } })
+  // const { mode } = useControls({ mode: { value: 'translate', options: ['translate', 'rotate', 'scale'] } })
 
   const instantiateObjects = () => {
     if (sceneObjs && sceneObjs.objects) {
@@ -128,7 +133,7 @@ export default function TemplateScene(props) {
         const material = new THREE.MeshBasicMaterial({
           map: texture,
           transparent: true, // Enable transparency
-          // side: THREE.DoubleSide, // Render both sides of the mesh
+          side: THREE.DoubleSide, // Render both sides of the mesh
         });
 
         return (
@@ -167,7 +172,7 @@ export default function TemplateScene(props) {
           {instantiateObjects()}
 
           <Man scale={0.01} position={[3,-2,0]}/>
-          {target && <TransformControls object={target} mode={mode} />}
+          {/* {target && <TransformControls object={target} mode={mode} />} */}
           <OrbitControls makeDefault />
         </Suspense>
       </Canvas>

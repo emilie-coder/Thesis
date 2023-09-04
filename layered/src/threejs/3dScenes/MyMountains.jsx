@@ -8,7 +8,7 @@ const Mountains = (props) => {
   const { nodes } = useGLTF('/3dAssets/MyMountains.glb');
 
   const textureLoader = new THREE.TextureLoader();
-  const texturePath = '/path/to/your/texture.jpg'; // Replace with the correct texture path
+  const texturePath = '/3dassets/f_mountains.png'; // Replace with the correct texture path
 
   textureLoader.load(texturePath, (texture) => {
     // This callback ensures the texture is fully loaded before using it.

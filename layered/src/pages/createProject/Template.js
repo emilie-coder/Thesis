@@ -197,36 +197,32 @@ const Template = () => {
     updateProjectTitle(userID, editedTitle, projID);
   };
 
-  const createNewLayer = () => {
-    createNewLayerFB(userID, projID);
-  }
 
 
   return (
     <div className={templateCSS.templatePage}>
-
-
       
       <div className={templateCSS.leftEditor}>
-        <div className={templateCSS.leftEditorTitle}>
-        <h2 className={templateCSS.projectTitle} onClick={handleTitleEdit}>
-          {isEditingTitle ? (
-            <input
-              type="text"
-              value={editedTitle}
-              onChange={handleTitleChange}
-              onBlur={handleTitleUpdate}
-              autoFocus
-            />
-          ) : (
-            editedTitle
-          )}
-        </h2>
-          <h5 className={templateCSS.projectSubTitle}> {[proTemplate]} template </h5>
-          <button onClick={createNewLayer}> newLayer </button>
-        </div>
-        <div className={templateCSS.actualEditor}>
+        <div className={templateCSS.leftEditorTop}>
+          <h2 className={templateCSS.projectTitle} onClick={handleTitleEdit}>
+            {isEditingTitle ? (
+              <input
+                type="text"
+                value={editedTitle}
+                onChange={handleTitleChange}
+                onBlur={handleTitleUpdate}
+                autoFocus
+              />
+            ) : (
+              editedTitle
+            )}
+          </h2>
+          <div className={templateCSS.actualEditor}>
           <TemplateScene scene={projectScene} />
+          </div>
+        </div>
+        <div className={templateCSS.leftEditorBottomt}>
+          animation timeline
         </div>
       </div>
 
@@ -234,49 +230,75 @@ const Template = () => {
 
 
     <div className={templateCSS.rightEditor}>
-          <div className={templateCSS.rightEditorTitle} >
-            <h4>Image Editor</h4>
-          </div>
 
-          <div className={templateCSS.rightEditorSub}>
-
-
-            <div className={templateCSS.rightImageEditorTitle}>
-              select image
-            </div>
+          <div className={templateCSS.rightEditorTop}>
 
             <div className={templateCSS.rightImageEditor}>
-              
-
-              {/* <div className={templateCSS.choicesContainer}>
-                choose an object to edit
-              </div> */}
-
-
-              
+                            
               <div className={templateCSS.choicedInfo}>
-                chosen object info:
 
-                <div>
-                  object ID: {selectedObjectID}
-                </div>
-                <div>
-                  object Name: {selectedObjectName}
+                <div className={templateCSS.tab}>
+                  <div>
+                    {selectedObjectID} - {selectedObjectName}
+                  </div>
                 </div>
 
-                {selectedObjectChosen && <img src={selectedObjectMaterial} alt='objectImg' className={templateCSS.displayedObjectImage} />
-}
+
+                <div className={templateCSS.geometry}>
+
+                  <h3 className={templateCSS.geometryTitle}>
+                    geometry editor
+                  </h3>
+                  <div className={templateCSS.geometryEditor}>
+                    <div className={templateCSS.partEditor}>
+                      <div className={templateCSS.partTitle}>
+                        Position
+                      </div>
+                      <div className={templateCSS.partInput}>
+                        <input placeholder="x" />
+                        <input placeholder="y" />
+                        <input placeholder="z" />
+                      </div>
+                    </div>
+                    <div className={templateCSS.partEditor}>
+                      <div className={templateCSS.partTitle}>
+                        Scale
+                      </div>
+                      <div className={templateCSS.partInput}>
+                        <input placeholder="x" />
+                        <input placeholder="y" />
+                        <input placeholder="z" />
+                      </div>
+                    </div>
+                    <div className={templateCSS.partEditor}>
+                      <div className={templateCSS.partTitle}>
+                        Rotation
+                      </div>
+                      <div className={templateCSS.partInput}>
+                        <input placeholder="x" />
+                        <input placeholder="y" />
+                        <input placeholder="z" />
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+                <div className={templateCSS.texture}>
+                  texture editor
+                  {selectedObjectChosen && <img src={selectedObjectMaterial} alt='objectImg' className={templateCSS.displayedObjectImage} />}
+                  <div className={templateCSS.fileUpload}>
+                    <input type="file" onChange={((event) => {setImageUpload(event.target.files[0])})}/>
+                    <button onClick={uploadUpdateImage}>change image</button>
+                  </div>
+                </div>
               </div>
 
-              <div className={templateCSS.fileUpload}>
-                <input type="file" onChange={((event) => {setImageUpload(event.target.files[0])})}/>
-                <button onClick={uploadUpdateImage}>change image</button>
-              </div>
+
 
             </div>
                       
-          <div className={templateCSS.fileUploadContainer}>
-
+          <div className={templateCSS.imgList}>
 
             <div className={templateCSS.fileUpload}>
               <input type="file" onChange={((event) => {setImageUpload(event.target.files[0])})}/>
@@ -291,6 +313,10 @@ const Template = () => {
             </div> */}
           </div>
 
+          </div>
+
+          <div className={templateCSS.saveActions} >
+            <h4>save actions</h4>
           </div>
 
 

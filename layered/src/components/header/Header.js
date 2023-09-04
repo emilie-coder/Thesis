@@ -77,11 +77,14 @@ const Header = () => {
             <Link to='/'> EVRO </Link>
           </div>
 
+{/* 
           <div className={headerCSS.middleLinks} >
             <Link to='/Research'> Research </Link>
             <Link to='/Browse'> Browse </Link>
             <Link to='/Contact'> Contact </Link>
-          </div>
+          </div> */}
+
+          
 
           <div className={headerCSS.userStates}>
             <ShowOnLogOut>
