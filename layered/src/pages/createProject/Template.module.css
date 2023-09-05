@@ -15,7 +15,7 @@
   display: flex;
   flex-direction: column;
   width: 75%;
-  height: 90%;
+  height: 95%;
   margin-left: 20px;
   margin-top: 20px;
   border-radius: 2px;
@@ -23,11 +23,25 @@
 
 
 .leftEditorTop{
+  display: flex;
+  flex-direction: column;
   width: 100%;
   height: 90%;
   background-color: aquamarine;
   border-radius: 3px;
   margin-bottom: 5px;
+  align-items: center;
+  justify-content: center;
+}
+
+.projectTitle{
+  margin: 0;
+}
+
+.actualEditor{
+  width: 96%;
+  background-color: blueviolet;
+  height: 94%;
 }
 
 .leftEditorBottomt{
@@ -38,15 +52,12 @@
 }
 
 
-
-
-
 .rightEditor {
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 25%;
-  height: 90%;
+  height: 95%;
   margin: 5px;
   margin-top: 20px;
   margin-right:20px;
@@ -83,6 +94,7 @@
 
 .imgList{
   display: flex;
+  flex-direction: column;
   background-color: blueviolet;
   width: 96%;
   align-self: center;
@@ -115,16 +127,12 @@
 
 .geometry{
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   background-color: bisque;
   margin-left: 5px;
   margin-right: 5px;
   border-top-right-radius: 3px;
   height: 20%;
-}
-
-.displayedObjectImage{
-  width: 200px;
 }
 
 .texture{
@@ -138,10 +146,16 @@
 
 
 .geometryTitle {
-  font-size: 6%;
+  font-size: 10pt;
+  margin: 10px;
 }
 
-.geometryEditor{
+.textureTitle{
+  font-size: 10pt;
+  margin: 10px;
+}
+
+.xyzEditor{
   display: flex;
   flex-direction: column;
 }
@@ -150,22 +164,83 @@
   display: flex;
   flex-direction: row;
   width: 100%;
+  justify-content: space-between;
+
 }
 .partTitle{
   margin: 10px;
   margin: 4px;
   margin-left: 10px;
+  font-size: 10pt;
 }
 
 .partInput {
-  width: 90%;
+  width: 60%;
+  max-width: 60%;
+  min-width: 60%;
   display: flex;
-  justify-content: end;
-  align-items: center;
 }
 .partInput *{
   width: 20%;
   margin-bottom: 0;
   margin-top: 0;
   margin: 4px;
+}
+
+
+.imgEditor{
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;;
+  margin-left: 5px;
+  margin-right: 5px;
+  height: 68%;
+  background-color: blue;
+  align-items: center;
+  justify-content: end;
+}
+
+
+.displayedObjectImage{
+  width: 100%;
+}
+
+.fileUpload{
+  display: flex;
+  width: 100%;
+  height: 10%;
+  margin-top: 10px;
+}
+
+
+.fileUpload2{
+  display: flex;
+  width: 100%;
+  height: 20%;
+  margin-top: 10px;
+
+}
+
+.changeImgButton{
+  font-size: 8pt;
+  border-radius: 20px;
+
+}
+
+.fileUploadButton{
+  font-size: 8pt;
+  border-radius: 5px;
+}
+
+
+.userImages{
+  display: flex;
+  width: 100%;
+  min-width: 100%;
+  background-color: rgb(0, 255, 98);
+  overflow-y: hidden;
+}
+
+.uploadedImgs{
+  height: 75px;
 }

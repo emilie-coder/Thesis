@@ -44,8 +44,8 @@ function Box(props) {
   const [hovered, setHovered] = useState(false);
   useCursor(hovered);
 
-  const userID = useSelector(selectUserID); // Move this into the functional component
-  const projID = useSelector(selectProjectID); // Move this into the functional component
+  const userID = useSelector(selectUserID); 
+  const projID = useSelector(selectProjectID); 
 
 
   const { nodes, materials } = useGLTF('/3dAssets/walls.glb')
@@ -158,11 +158,14 @@ export default function TemplateScene(props) {
   return (
     <div className={templateCSS.canvasHolder}>
       {/* targetName */}
-      {targetName && (
-        <>
-          {targetName} - target ID: {targetID}
-        </>
-      )}
+      <div className={templateCSS.tempargs}>
+        {targetName && (
+          <>
+            {targetName} - target ID: {targetID}
+          </>
+        )}
+      </div>
+
       <Canvas dpr={[1, 2]} onPointerMissed={() => setTarget(null)}>
         <Suspense fallback={null}>
           <gridHelper args={[400, 200, '#151515', '#020202']} position={[0, -4, 0]} />

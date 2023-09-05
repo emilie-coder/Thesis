@@ -218,7 +218,7 @@ const Template = () => {
             )}
           </h2>
           <div className={templateCSS.actualEditor}>
-          <TemplateScene scene={projectScene} />
+            <TemplateScene scene={projectScene} className={templateCSS.canvasHolder} />
           </div>
         </div>
         <div className={templateCSS.leftEditorBottomt}>
@@ -245,11 +245,51 @@ const Template = () => {
 
 
                 <div className={templateCSS.geometry}>
-
                   <h3 className={templateCSS.geometryTitle}>
                     geometry editor
                   </h3>
-                  <div className={templateCSS.geometryEditor}>
+                  <div className={templateCSS.xyzEditorWrapper}>
+                  <div className={templateCSS.xyzEditor}>
+                    <div className={templateCSS.partEditor}>
+                      <div className={templateCSS.partTitle}>
+                        Position
+                      </div>
+                      <div className={templateCSS.partInput}>
+                        <input placeholder="x" />
+                        <input placeholder="y" />
+                        <input placeholder="z" />
+                      </div>
+                    </div>
+                    <div className={templateCSS.partEditor}>
+                      <div className={templateCSS.partTitle}>
+                        Scale
+                      </div>
+                      <div className={templateCSS.partInput}>
+                        <input placeholder="x" />
+                        <input placeholder="y" />
+                        <input placeholder="z" />
+                      </div>
+                    </div>
+                    <div className={templateCSS.partEditor}>
+                      <div className={templateCSS.partTitle}>
+                        Rotation
+                      </div>
+                      <div className={templateCSS.partInput}>
+                        <input placeholder="x" />
+                        <input placeholder="y" />
+                        <input placeholder="z" />
+                      </div>
+                    </div>
+                  </div>
+                  </div>
+
+                </div>
+
+                <div className={templateCSS.texture}>
+                  <h3 className={templateCSS.textureTitle}>
+                    texture editor
+                  </h3>
+                  <div className={templateCSS.xyzEditor}>
                     <div className={templateCSS.partEditor}>
                       <div className={templateCSS.partTitle}>
                         Position
@@ -282,35 +322,37 @@ const Template = () => {
                     </div>
                   </div>
 
-                </div>
 
-                <div className={templateCSS.texture}>
-                  texture editor
-                  {selectedObjectChosen && <img src={selectedObjectMaterial} alt='objectImg' className={templateCSS.displayedObjectImage} />}
-                  <div className={templateCSS.fileUpload}>
-                    <input type="file" onChange={((event) => {setImageUpload(event.target.files[0])})}/>
-                    <button onClick={uploadUpdateImage}>change image</button>
+                  <div className={templateCSS.imgEditor}>
+                    {selectedObjectChosen && <img src={selectedObjectMaterial} alt='objectImg' className={templateCSS.displayedObjectImage} />}
+                    <div className={templateCSS.fileUpload}>
+                      <input className={templateCSS.fileUploadButton} type="file" onChange={((event) => {setImageUpload(event.target.files[0])})}/>
+                      <button className={templateCSS.changeImgButton} onClick={uploadUpdateImage}>change image</button>
+                    </div>
                   </div>
-                </div>
-              </div>
 
+
+                </div>
+
+
+              </div>
 
 
             </div>
                       
           <div className={templateCSS.imgList}>
 
-            <div className={templateCSS.fileUpload}>
-              <input type="file" onChange={((event) => {setImageUpload(event.target.files[0])})}/>
-              <button onClick={uploadImage}>upload image</button>
+            <div className={templateCSS.fileUpload2}>
+              <input className={templateCSS.fileUploadButton} type="file" onChange={((event) => {setImageUpload(event.target.files[0])})}/>
+              <button className={templateCSS.changeImgButton} onClick={uploadImage}>upload image</button>
             </div>
 
-            {/* <div className={templateCSS.userImages}>
+            <div className={templateCSS.userImages}>
               {imageList.map((url) => {
-                return <UserImageFile key={url} imageURL={url} />
+                return <img className={templateCSS.uploadedImgs} src={url} alt="userUploadedImage" key={url}/>
               })}
 
-            </div> */}
+            </div>
           </div>
 
           </div>
