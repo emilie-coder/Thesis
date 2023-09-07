@@ -77,7 +77,6 @@ function Box(props) {
         onPointerOut={() => setHovered(false)}
       >
         <meshNormalMaterial />
-        {/* <planeGeometry /> */}
       </mesh>
     );
   } else if (props.itemName && props.itemName === 'cylinder') {
@@ -110,6 +109,7 @@ function Box(props) {
       </mesh>
     );
   }
+  
 }
 
 export default function TemplateScene(props) {
@@ -118,7 +118,7 @@ export default function TemplateScene(props) {
   const { targetID, setTargetID} = useStore();
   const sceneObjs = props.scene;
 
-  // const { mode } = useControls({ mode: { value: 'translate', options: ['translate', 'rotate', 'scale'] } })
+  const { mode } = useControls({ mode: { value: 'translate', options: ['translate', 'rotate', 'scale'] } })
 
   const instantiateObjects = () => {
     if (sceneObjs && sceneObjs.objects) {
@@ -157,7 +157,6 @@ export default function TemplateScene(props) {
 
   return (
     <div className={templateCSS.canvasHolder}>
-      {/* targetName */}
       <div className={templateCSS.tempargs}>
         {targetName && (
           <>
@@ -175,7 +174,7 @@ export default function TemplateScene(props) {
           {instantiateObjects()}
 
           <Man scale={0.01} position={[3,-2,0]}/>
-          {/* {target && <TransformControls object={target} mode={mode} />} */}
+          {target && <TransformControls object={target} mode={mode} />}
           <OrbitControls makeDefault />
         </Suspense>
       </Canvas>
