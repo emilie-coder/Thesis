@@ -36,8 +36,6 @@ const Template = () => {
 
   const dispatch = useDispatch();
   const projID = useSelector(selectProjectID);
-  const proTemplate = useSelector(selectProjectTemplate);
-  const proTemplateInteger = useSelector(selectProjectTemplateInteger);
   const projTitle = useSelector(selectProjectTitle);
 
 
@@ -52,8 +50,6 @@ const Template = () => {
 
   const userID = useSelector(selectUserID);
 
-
-  const [activeTab, setActiveTab] = useState(null);
   const [isEditingTitle, setIsEditingTitle] = useState(false); // State to track if the title is being edited
   const [editedTitle, setEditedTitle] = useState(projTitle); // State to hold the edited title
 
@@ -61,6 +57,12 @@ const Template = () => {
 
   const [projectScene, setProjectScene] = useState(null);
 
+  const [selectedObjectGeoProps, setSelectedObjectGeoProps] = useState({
+    position: {x:'', y:'', z:''},
+    scale: {x: '', y:'', z: ''},
+    rotation: {x: '', y:'', z: ''},
+
+  })
 
   // i keep losing data when refreshing so...
   // Get the current location using useLocation
@@ -76,7 +78,10 @@ const Template = () => {
       try {
         // Fetch the project data using your fetchProject function
         const projectData = await fetchProject(userID, projectIDURL);
-  
+        
+        console.log("PROJECT DATA");
+        console.log(projectData);
+
         // Create an object to hold the project information
         const projectInfo = {
           projectID: projectIDURL,
@@ -104,9 +109,6 @@ const Template = () => {
   }, [dispatch, projectIDURL, userID]);
    
 
-  const handleClick = (tab) => {
-    setActiveTab(tab);
-  };
 
   const uploadImage = () => {
     if (imageUpload == null) return;
@@ -197,6 +199,25 @@ const Template = () => {
     updateProjectTitle(userID, editedTitle, projID);
   };
 
+  const instantiateTabs = (sceneObjs) => {
+    if (sceneObjs && sceneObjs.objects) {
+      return sceneObjs.objects.map((item, index) => {
+
+        const isSelected = index === selectedObjectID; // Check if the item is selected
+
+        // Determine the CSS class based on whether the item is selected
+        const tabClassName = isSelected ? templateCSS.selectedTab : templateCSS.unselectedTab;
+
+        return (
+          <div key={`tabID_` + item.id} className={`${tabClassName}`}>
+            {index}_{item.objectTypeName}
+          </div>
+        );
+      });
+    }
+
+    return null; // Return null if sceneObjs.objects is not available
+  };
 
 
   return (
@@ -237,10 +258,9 @@ const Template = () => {
                             
               <div className={templateCSS.choicedInfo}>
 
-                <div className={templateCSS.tab}>
-                  <div>
-                    {selectedObjectID} - {selectedObjectName}
-                  </div>
+              {selectedObjectID} - {selectedObjectName}
+                <div className={templateCSS.tabs}>
+                {instantiateTabs(projectScene)}
                 </div>
 
 
@@ -255,9 +275,37 @@ const Template = () => {
                         Position
                       </div>
                       <div className={templateCSS.partInput}>
-                        <input placeholder="x" />
-                        <input placeholder="y" />
-                        <input placeholder="z" />
+                      
+                      {projectScene &&
+                        projectScene.objects &&
+                        selectObjectID !== null &&
+                        projectScene.objects[selectObjectID] &&
+                        projectScene.objects[selectObjectID].position ? (
+                          <input placeholder="x" value={projectScene.objects[selectObjectID].position.x || ''} />
+                        ) : (
+                          <input placeholder="x" />
+                        )}
+
+                      {projectScene &&
+                        projectScene.objects &&
+                        selectObjectID !== null &&
+                        projectScene.objects[selectObjectID] &&
+                        projectScene.objects[selectObjectID].position ? (
+                          <input placeholder="y" value={projectScene.objects[selectObjectID].position.y || ''} />
+                        ) : (
+                          <input placeholder="y" />
+                        )}
+
+
+                      {projectScene &&
+                        projectScene.objects &&
+                        selectObjectID !== null &&
+                        projectScene.objects[selectObjectID] &&
+                        projectScene.objects[selectObjectID].position ? (
+                          <input placeholder="z" value={projectScene.objects[selectObjectID].position.z || ''} />
+                        ) : (
+                          <input placeholder="z" />
+                        )}
                       </div>
                     </div>
                     <div className={templateCSS.partEditor}>

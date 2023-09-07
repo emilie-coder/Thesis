@@ -103,6 +103,11 @@
   border-radius: 3px;
 }
 
+
+.imgList::-webkit-scrollbar {
+  display: none;
+}
+
 .choicedInfo{
   display: flex;
   flex-direction: column;
@@ -113,11 +118,35 @@
 }
 
 
-.tab {
+.tabs {
+  display: flex;
+  overflow-y: scroll;
+  margin-left: 5px;
+  margin-right: 5px;
+  scrollbar-width: none;
+  font-size: 8pt;
+  
+}
+
+.tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.selectedTab {
   margin-top: 5px;
-  margin-left: 5px;;
   display: flex;
   background-color: bisque;
+  width: fit-content;
+  padding: 5px;
+  border-radius: 5px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.unselectedTab {
+  margin-top: 5px;
+  display: flex;
+  background-color: rgb(248, 184, 106);
   width: fit-content;
   padding: 5px;
   border-radius: 5px;
@@ -243,6 +272,12 @@
   background-color: rgb(0, 255, 98);
   overflow-y: hidden;
 }
+
+.userImages::-webkit-scrollbar {
+  display: none;
+}
+
+
 
 .uploadedImgs{
   height: 75px;
