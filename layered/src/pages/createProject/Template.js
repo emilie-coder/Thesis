@@ -204,20 +204,84 @@ const Template = () => {
       return sceneObjs.objects.map((item, index) => {
 
         const isSelected = index === selectedObjectID; // Check if the item is selected
-
+  
         // Determine the CSS class based on whether the item is selected
         const tabClassName = isSelected ? templateCSS.selectedTab : templateCSS.unselectedTab;
-
+  
+        // Generate the key for the <div> element
+        const tabKey = `tabID_${index}`;
+  
         return (
-          <div key={`tabID_` + item.id} className={`${tabClassName}`}>
+          <div key={tabKey} className={`${tabClassName}`}>
             {index}_{item.objectTypeName}
           </div>
         );
       });
     }
-
+  
     return null; // Return null if sceneObjs.objects is not available
   };
+  
+
+  const geometryPositions = (projectScene) => {
+    if (projectScene){
+      if(projectScene.objects){
+        return(
+          <>
+          <input placeholder="x value" value={projectScene.objects[selectedObjectID].position.x} />
+          <input placeholder="y value" value={projectScene.objects[selectedObjectID].position.y} />
+          <input placeholder="z value" value={projectScene.objects[selectedObjectID].position.z} />
+          </>
+        )
+      }
+    }
+
+    return(
+      null
+    );
+
+  }
+
+
+  const geometryScales = (projectScene) => {
+    if (projectScene){
+      if(projectScene.objects){
+        return(
+          <>
+          <input placeholder="x value" value={projectScene.objects[selectedObjectID].scale.x} />
+          <input placeholder="y value" value={projectScene.objects[selectedObjectID].scale.y} />
+          <input placeholder="z value" value={projectScene.objects[selectedObjectID].scale.z} />
+          </>
+        )
+      }
+    }
+
+    return(
+      null
+    );
+
+  }
+
+
+  const geometryRotations = (projectScene) => {
+    if (projectScene){
+      if(projectScene.objects){
+        return(
+          <>
+          <input placeholder="x value" value={projectScene.objects[selectedObjectID].rotation.x} />
+          <input placeholder="y value" value={projectScene.objects[selectedObjectID].rotation.y} />
+          <input placeholder="z value" value={projectScene.objects[selectedObjectID].rotation.z} />
+          </>
+        )
+      }
+    }
+
+    return(
+      null
+    );
+
+  }
+
 
 
   return (
@@ -257,8 +321,6 @@ const Template = () => {
             <div className={templateCSS.rightImageEditor}>
                             
               <div className={templateCSS.choicedInfo}>
-
-              {selectedObjectID} - {selectedObjectName}
                 <div className={templateCSS.tabs}>
                 {instantiateTabs(projectScene)}
                 </div>
@@ -276,36 +338,8 @@ const Template = () => {
                       </div>
                       <div className={templateCSS.partInput}>
                       
-                      {projectScene &&
-                        projectScene.objects &&
-                        selectObjectID !== null &&
-                        projectScene.objects[selectObjectID] &&
-                        projectScene.objects[selectObjectID].position ? (
-                          <input placeholder="x" value={projectScene.objects[selectObjectID].position.x || ''} />
-                        ) : (
-                          <input placeholder="x" />
-                        )}
+                        {geometryPositions(projectScene)}
 
-                      {projectScene &&
-                        projectScene.objects &&
-                        selectObjectID !== null &&
-                        projectScene.objects[selectObjectID] &&
-                        projectScene.objects[selectObjectID].position ? (
-                          <input placeholder="y" value={projectScene.objects[selectObjectID].position.y || ''} />
-                        ) : (
-                          <input placeholder="y" />
-                        )}
-
-
-                      {projectScene &&
-                        projectScene.objects &&
-                        selectObjectID !== null &&
-                        projectScene.objects[selectObjectID] &&
-                        projectScene.objects[selectObjectID].position ? (
-                          <input placeholder="z" value={projectScene.objects[selectObjectID].position.z || ''} />
-                        ) : (
-                          <input placeholder="z" />
-                        )}
                       </div>
                     </div>
                     <div className={templateCSS.partEditor}>
@@ -313,9 +347,7 @@ const Template = () => {
                         Scale
                       </div>
                       <div className={templateCSS.partInput}>
-                        <input placeholder="x" />
-                        <input placeholder="y" />
-                        <input placeholder="z" />
+                        {geometryScales(projectScene)}
                       </div>
                     </div>
                     <div className={templateCSS.partEditor}>
@@ -323,9 +355,7 @@ const Template = () => {
                         Rotation
                       </div>
                       <div className={templateCSS.partInput}>
-                        <input placeholder="x" />
-                        <input placeholder="y" />
-                        <input placeholder="z" />
+                        {geometryRotations(projectScene)}
                       </div>
                     </div>
                   </div>
