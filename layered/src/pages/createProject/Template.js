@@ -4,12 +4,10 @@ import {
   SET_ACTIVE_PROJECT,
   SET_PROJECT_TITLE,
   selectProjectID,
-  selectProjectTemplate,
-  selectProjectTemplateInteger,
   selectProjectTitle,
 } from '../../redux/slice/projectSlice';
-import TemplateScene from '../../threejs/templateScene';
-import { createNewLayerFB, fetchProject, storage, updateObjectTexture } from '../../firebase/config';
+import TemplateScene from '../../threejs/threeJSScene';
+import { fetchProject, storage, updateObjectTexture } from '../../firebase/config';
 import { selectUserID } from '../../redux/slice/authSlice';
 import { v4 } from 'uuid';
 import {
@@ -17,22 +15,20 @@ import {
   uploadBytes,
   listAll,
   getDownloadURL,
-  update,
 } from 'firebase/storage';
+
 import templateCSS from './Template.module.css';
-import UserImageFile from './imageComponents/UserImageFile';
-import ImageEditor from '../../components/editing/ImageEditor';
 
 
-import { updateProjectTitle } from '../../firebase/config';
+import { updateProjectTitle, updateProject, createTemplate } from '../../firebase/config';
 import { useLocation } from 'react-router-dom';
 
 
-import { selectObjectID, selectObjectName, selectObjectChosen, selectObjectMaterial, SET_OBJECT_IMAGE, SET_OBJECT_MATERIAL } from '../../redux/slice/objectImageSlice';
+import { selectObjectID, selectObjectChosen, selectObjectMaterial, SET_OBJECT_MATERIAL } from '../../redux/slice/objectImageSlice';
 
 
 
-const Template = () => {
+const Editor = () => {
 
   const dispatch = useDispatch();
   const projID = useSelector(selectProjectID);
@@ -40,7 +36,6 @@ const Template = () => {
 
 
   const selectedObjectID = useSelector(selectObjectID);
-  const selectedObjectName = useSelector(selectObjectName);
   const selectedObjectChosen = useSelector(selectObjectChosen);
   const selectedObjectMaterial = useSelector(selectObjectMaterial);
 
@@ -52,17 +47,7 @@ const Template = () => {
 
   const [isEditingTitle, setIsEditingTitle] = useState(false); // State to track if the title is being edited
   const [editedTitle, setEditedTitle] = useState(projTitle); // State to hold the edited title
-
-
-
   const [projectScene, setProjectScene] = useState(null);
-
-  const [selectedObjectGeoProps, setSelectedObjectGeoProps] = useState({
-    position: {x:'', y:'', z:''},
-    scale: {x: '', y:'', z: ''},
-    rotation: {x: '', y:'', z: ''},
-
-  })
 
   // i keep losing data when refreshing so...
   // Get the current location using useLocation
@@ -79,9 +64,6 @@ const Template = () => {
         // Fetch the project data using your fetchProject function
         const projectData = await fetchProject(userID, projectIDURL);
         
-        console.log("PROJECT DATA");
-        console.log(projectData);
-
         // Create an object to hold the project information
         const projectInfo = {
           projectID: projectIDURL,
@@ -154,11 +136,9 @@ const Template = () => {
     }
   
     const imageListRef = ref(storage, userID + '/project_' + projID + '/images');
-    console.log('imageListRef:', imageListRef);
   
     listAll(imageListRef)
       .then((response) => {
-        console.log('ListAll response:', response);
         response.items.forEach((item) => {
           getDownloadURL(item)
             .then((url) => {
@@ -222,13 +202,17 @@ const Template = () => {
     return null; // Return null if sceneObjs.objects is not available
   };
   
+  const handleGeometryPosX = (e) => {
+    console.log("sda");
+
+  }
 
   const geometryPositions = (projectScene) => {
     if (projectScene){
       if(projectScene.objects){
         return(
           <>
-          <input placeholder="x value" value={projectScene.objects[selectedObjectID].position.x} />
+          <input placeholder="x value" value={projectScene.objects[selectedObjectID].position.x} onChange={handleGeometryPosX}/>
           <input placeholder="y value" value={projectScene.objects[selectedObjectID].position.y} />
           <input placeholder="z value" value={projectScene.objects[selectedObjectID].position.z} />
           </>
@@ -282,6 +266,14 @@ const Template = () => {
 
   }
 
+  const saveProject = () => {
+    updateProject(userID, projID, projectScene);
+
+  }
+
+  const makeTemplate = () => {
+    createTemplate(projectScene);
+  }
 
 
   return (
@@ -436,7 +428,8 @@ const Template = () => {
           </div>
 
           <div className={templateCSS.saveActions} >
-            <h4>save actions</h4>
+            <button onClick={saveProject} > save </button>
+            <button onClick={makeTemplate}> make template </button>
           </div>
 
 
@@ -446,4 +439,4 @@ const Template = () => {
     )
 }
 
-export default Template
+export default Editor

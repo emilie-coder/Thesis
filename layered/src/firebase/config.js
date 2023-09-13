@@ -32,8 +32,6 @@ export function createUser(userID) {
 
     // Set a value for the user node (using userID as the key)
     set(userRef, { AllUserProjects: true });
-
-    // console.log("User and AllUserProjects added successfully");
   } catch (error) {
     console.error("Error adding user:", error);
   }
@@ -73,8 +71,6 @@ export async function createUserProject(userID, username, title, templateID, tem
     // now push it as a child of the projectScene 
     const projectBranchRef = child(newProjectRef, 'projectScene');
     await set(projectBranchRef, templateData)
-
-    // console.log("Project added under AllUserProjects with ID:", newProjectID);
     return newProjectID;
   } catch (error) {
     console.error("Error adding project:", error);
@@ -89,8 +85,6 @@ export async function createUserProject(userID, username, title, templateID, tem
 
 export async function updateProjectTitle(userID, editedTitle, projectID) {
   try {
-    // console.log(projectID);
-    // Reference to the specific project in Firebase Realtime Database
     const projectRef = ref(db, `users/${userID}/AllUserProjects/${projectID}`);
 
     // Retrieve the current project data
@@ -111,8 +105,6 @@ export async function updateProjectTitle(userID, editedTitle, projectID) {
 
 export async function updateObjectTexture(userID, projectID, objectID, newTexture) {
   try {
-    // console.log(projectID);
-    // Reference to the specific project in Firebase Realtime Database
     const objectRef = ref(db, `users/${userID}/AllUserProjects/${projectID}/projectScene/objects/${objectID}/material`);
 
     // Update the entire object with the modified data
@@ -124,14 +116,6 @@ export async function updateObjectTexture(userID, projectID, objectID, newTextur
 }
 
 export async function updateObjectPosition(userID, projectID, objectID, newPosition, newScale, newRotation) {
-  // Check if userID, projectID, and objectID exist
-  console.log(userID, projectID, objectID, newPosition);
-
-  // if (!userID || !projectID || !objectID) {
-  //   console.error('Invalid parameters for updating object position');
-  //   return; // Exit the function if any of the parameters are missing
-  // }
-  
   try {
     // Reference to the specific project in Firebase Realtime Database
     const objectRefPositionRef = ref(db, `users/${userID}/AllUserProjects/${projectID}/projectScene/objects/${objectID}/position`);
@@ -193,8 +177,6 @@ export async function createNewLayerFB(userID, projectID) {
 
 export async function fetchObjectTexture(userID, projectID, objectID) {
   try {
-    // console.log(projectID);
-    // Reference to the specific project in Firebase Realtime Database
     const objectRef = ref(db, `users/${userID}/AllUserProjects/${projectID}/projectScene/objects/${objectID}/material`);
 
     const objectSnap = await get(objectRef);
@@ -252,6 +234,36 @@ export async function fetchProject(userID, projectID) {
 }
 
 
+export async function updateProject(userID, projectID, project) {
+  try {
+    const myDb = getDatabase();
+    const projectRef = ref(myDb, `users/${userID}/AllUserProjects/${projectID}`);
+    console.log('trying to save project');
+    console.log(userID, projectID, project);
+
+    return update(projectRef, project);
+  } catch (error) {
+    console.error("Error fetching project:", error);
+    throw error;
+  }
+  
+}
+
+
+
+export async function createTemplate(project) {
+  try {
+    const myDb = getDatabase();
+    const projectRef = ref(myDb, `templates`);
+    return push(projectRef, project);
+  } catch (error) {
+    console.error("Error fetching project:", error);
+    throw error;
+  }
+  
+}
+
+
 
 export function fetchTemplates(userID, callback) {
 
@@ -260,8 +272,6 @@ export function fetchTemplates(userID, callback) {
     const templates = ref(myDb, 'templates');
     onValue(templates, (snapshot) => {
       const data = snapshot.val();
-      // console.log("in fetch templates");
-      // console.log(data);
       callback(data);
     });
 

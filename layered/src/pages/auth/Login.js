@@ -19,7 +19,6 @@ const Login = () => {
 
     const loginUser = (e) => {
         e.preventDefault();
-        // console.log(email, password);
 
         signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {

@@ -74,7 +74,7 @@ const Header = () => {
 
 
           <div className={headerCSS.leftLogo}>
-            <Link to='/'> EVRO </Link>
+            <Link to='/'> ECHO </Link>
           </div>
 
 {/* 

@@ -11,10 +11,10 @@ const Home = () => {
             E
           </h1>
           <h1 className={myStyle.titleLetter}>
-            V
+            C
           </h1>
           <h1 className={myStyle.titleLetter}>
-            R
+            H
           </h1>
           <h1 className={myStyle.titleLetter}>
             O
@@ -54,7 +54,7 @@ const Home = () => {
               Design
             </div>
             <div className={myStyle.subTitle}>
-              Design your VR space by uplaoding your art into EVRO
+              Design your VR space by uplaoding your art into ECHO
             </div>
           </div>
         </div>

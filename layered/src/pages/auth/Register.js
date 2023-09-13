@@ -22,8 +22,6 @@ const Register = () => {
     const registerUser = (e) => {
         e.preventDefault();
 
-        // console.log(email, password, cPassword);
-
         if(password !== cPassword){
             toast.error("Passwords do not match :( ")
         }
@@ -34,7 +32,6 @@ const Register = () => {
         .then((userCredential) => {
             // Signed in 
             const user = userCredential.user;
-            // console.log(user);
             setIsLoading(false);
             success();
             db.createUser((user.uid));
@@ -45,8 +42,6 @@ const Register = () => {
             const errorMessage = error.message;
             toast.error(errorMessage);
             setIsLoading(false);
-            // console.log("failed");
-            // console.log(errorMessage);
         });
         }
 

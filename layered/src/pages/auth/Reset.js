@@ -20,9 +20,6 @@ const Reset = () => {
 
   const resetPassword = (e) => {
     e.preventDefault();
-    // console.log("resetting password");
-
-
     const auth = getAuth();
     sendPasswordResetEmail(auth, email)
       .then(() => {

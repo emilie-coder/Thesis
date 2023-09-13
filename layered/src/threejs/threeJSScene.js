@@ -16,12 +16,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import Mountains from './3dScenes/MyMountains';
 import Walls from './3dScenes/Walls';
 
-import { updateObjectPosition } from '../firebase/config';
+// import { updateObjectPosition } from '../firebase/config';
 import { selectUserID } from '../redux/slice/authSlice';
 import { selectProjectID } from '../redux/slice/projectSlice';
 import { useControls } from 'leva'
 
-import templateCSS from './TemplateScene.module.css';
+import templateCSS from './ThreeJSScene.module.css';
 import { useGLTF } from '@react-three/drei'
 
 const useStore = create((set) => ({
@@ -34,8 +34,6 @@ const useStore = create((set) => ({
 }));
 
 function Box(props) {
-  // console.log("here i am");
-  // console.log(props);
   const dispatch = useDispatch();
 
   const setTarget = useStore((state) => state.setTarget);
@@ -44,11 +42,8 @@ function Box(props) {
   const [hovered, setHovered] = useState(false);
   useCursor(hovered);
 
-  const userID = useSelector(selectUserID); 
-  const projID = useSelector(selectProjectID); 
 
-
-  const { nodes, materials } = useGLTF('/3dAssets/walls.glb')
+  const { nodes } = useGLTF('/3dAssets/walls.glb')
 
   if (props.itemName && props.itemName === 'plane') {
     const planeGeometry = new THREE.PlaneGeometry(); // Create a plane geometry
@@ -56,22 +51,21 @@ function Box(props) {
       <mesh
         {...props}
         geometry={planeGeometry} // Set the geometry
-        onClick={(e) => {
-          console.log(e);
-          updateObjectPosition(userID, projID, props.itemID, e.object.position, e.object.scale, e.object.rotation);
-          setTarget(e.object);
-          setTargetName(props.itemName);
-          setTargetID(props.itemID);
+        // onClick={(e) => {
+        //   // updateObjectPosition(userID, projID, props.itemID, e.object.position, e.object.scale, e.object.rotation);
+        //   setTarget(e.object);
+        //   setTargetName(props.itemName);
+        //   setTargetID(props.itemID);
 
-          const objectInfo = {
-            objectName: props.itemName,
-            objectID: props.itemID,
-            objectMaterial: props.materialString,
-          };
+        //   const objectInfo = {
+        //     objectName: props.itemName,
+        //     objectID: props.itemID,
+        //     objectMaterial: props.materialString,
+        //   };
 
-          // Dispatch the project information to Redux
-          dispatch(SET_OBJECT_IMAGE(objectInfo));
-        }}
+        //   // Dispatch the project information to Redux
+        //   dispatch(SET_OBJECT_IMAGE(objectInfo));
+        // }}
 
         onPointerOver={() => setHovered(true)}
         onPointerOut={() => setHovered(false)}
@@ -85,23 +79,23 @@ function Box(props) {
       <mesh
         {...props}
         geometry={nodes.mesh_0.geometry}
-        onClick={(e) => {
-          console.log(e);
-          updateObjectPosition(userID, projID, props.itemID, e.object.position, e.object.scale, e.object.rotation);
+        // onClick={(e) => {
+        //   console.log(e);
+        //   // updateObjectPosition(userID, projID, props.itemID, e.object.position, e.object.scale, e.object.rotation);
 
-          setTarget(e.object);
-          setTargetName(props.itemName);
-          setTargetID(props.itemID);
+        //   setTarget(e.object);
+        //   setTargetName(props.itemName);
+        //   setTargetID(props.itemID);
 
-          const objectInfo = {
-            objectName: props.itemName,
-            objectID: props.itemID,
-            objectMaterial: props.materialString,
-          };
+        //   const objectInfo = {
+        //     objectName: props.itemName,
+        //     objectID: props.itemID,
+        //     objectMaterial: props.materialString,
+        //   };
 
-          // Dispatch the project information to Redux
-          dispatch(SET_OBJECT_IMAGE(objectInfo));
-        }}
+        //   // Dispatch the project information to Redux
+        //   dispatch(SET_OBJECT_IMAGE(objectInfo));
+        // }}
         onPointerOver={() => setHovered(true)}
         onPointerOut={() => setHovered(false)}
       >
@@ -112,7 +106,7 @@ function Box(props) {
   
 }
 
-export default function TemplateScene(props) {
+export default function ThreeJSScene(props) {
   const { target, setTarget } = useStore();
   const { targetName, setTargetName } = useStore();
   const { targetID, setTargetID} = useStore();
@@ -123,8 +117,6 @@ export default function TemplateScene(props) {
   const instantiateObjects = () => {
     if (sceneObjs && sceneObjs.objects) {
       return sceneObjs.objects.map((item, index) => {
-        // console.log(item);
-
         // Load the texture from the item.material URL
         const textureLoader = new TextureLoader();
         const texture = textureLoader.load(item.material);
