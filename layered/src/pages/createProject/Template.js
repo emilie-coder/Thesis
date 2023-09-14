@@ -119,6 +119,8 @@ const Editor = () => {
     uploadBytes(imageRef, imageUpload).then((snapshot) => {
       getDownloadURL(snapshot.ref).then((url) => {
 
+      projectScene[selectedObjectID].material = url;
+
       // update in firebase
       updateObjectTexture(userID, projID, selectedObjectID, url);
 

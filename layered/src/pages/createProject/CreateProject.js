@@ -107,21 +107,33 @@ const CreateProject = () => {
 
 
     return (
-        <div>
-            CreateProject
+        <div className={cpCSS.createProjectPage}>
+            <div className={cpCSS.title} >CreateProject </div>
 
             <form onSubmit={createDBProject}>
-                <input type='text' placeholder="Project title" value={title} onChange={(e) => SetTitle(e.target.value)}/>
-                <div>
+                <input type='text' placeholder="Project title" value={title} onChange={(e) => SetTitle(e.target.value)} className={cpCSS.inputbox}/>
+                <div className={cpCSS.chooseTemplate}>
                   Choose Template
                   {templates && (
                   <div>
-                    {templates.map((templateValue) => (
-                      <button key={templateValue.key} className={cpCSS.templateButton} onClick={(e) => chooseTemplate(e, templateValue.templateTitle, templateValue.key)} >
-                        <img src= {templateValue.templateCover} alt={'template cover'} className={cpCSS.templateImage}/>
-                        {templateValue.templateTitle}
-                      </button>
-                    ))}
+                  {templates.map((templateValue) => (
+                  <button
+                    key={templateValue.key}
+                    className={`${cpCSS.templateButton} ${
+                      chosenTemplate === templateValue.templateTitle &&
+                      chosenTemplateInteger === templateValue.key // Check both name and integer
+                        ? cpCSS.selectedTemplateButton
+                        : ''
+                    }`}
+                    onClick={(e) =>
+                      chooseTemplate(e, templateValue.templateTitle, templateValue.key)
+                    }
+                  >
+                    <img src={templateValue.templateCover} alt={'template cover'} className={cpCSS.templateImage} />
+                    {templateValue.templateTitle}
+                  </button>
+                ))}
+
                   </div>
                 )}
                 </div>

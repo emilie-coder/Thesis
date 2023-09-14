@@ -1,8 +1,23 @@
-.templateImage{
-    display: flex;
-    flex-direction: column;
-    width: 100px;
-    height: 100px;
+.createProjectPage {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  padding-top: 50px;
+}
+
+.templateImage {
+  display: flex;
+  flex-direction: column;
+  width: 100px;
+  height: 100px;
+}
+
+.title {
+  padding-bottom: 10px;
+}
+
+.chooseTemplate {
+  padding-top: 20px;
 }
 
 .templateButton {
@@ -26,4 +41,10 @@
   user-select: none;
   -webkit-user-select: none;
   touch-action: manipulation;
+}
+
+/* Add this CSS for the selected button */
+.selectedTemplateButton {
+  background-color: #333333; /* Change the background color to your desired darker color */
+  color: #ffffff; /* Change the text color to a suitable color for dark background */
 }
