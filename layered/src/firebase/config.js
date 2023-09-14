@@ -233,23 +233,28 @@ export async function fetchProject(userID, projectID) {
   }
 }
 
-
 export async function updateProject(userID, projectID, project) {
   try {
-    const myDb = getDatabase();
-    const projectRef = ref(myDb, `users/${userID}/AllUserProjects/${projectID}`);
-    console.log('trying to save project');
-    console.log(userID, projectID, project);
 
-    return update(projectRef, project);
+    const myDb = getDatabase();
+    const projectRef = ref(myDb, `users/${userID}/AllUserProjects/${projectID}/projectScene`);
+
+    // Retrieve the current project data
+    const projectSnapshot = await get(projectRef);
+    const currentProjectData = projectSnapshot.val();
+
+    // Create a deep copy of project.objects and assign it to currentProjectData.objects
+    currentProjectData.objects = { ...project.objects };
+
+
+
+    const result =  await set(projectRef, currentProjectData);
+    return result;
   } catch (error) {
-    console.error("Error fetching project:", error);
+    console.error("Error updating project:", error);
     throw error;
   }
-  
 }
-
-
 
 export async function createTemplate(project) {
   try {

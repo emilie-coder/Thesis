@@ -40,6 +40,7 @@ function Box(props) {
   const setTargetName = useStore((state) => state.setTargetName);
   const setTargetID = useStore((state) => state.setTargetID);
   const [hovered, setHovered] = useState(false);
+  const updateThreeObject = props.updateThreeObject; 
   useCursor(hovered);
 
 
@@ -51,21 +52,27 @@ function Box(props) {
       <mesh
         {...props}
         geometry={planeGeometry} // Set the geometry
-        // onClick={(e) => {
-        //   // updateObjectPosition(userID, projID, props.itemID, e.object.position, e.object.scale, e.object.rotation);
-        //   setTarget(e.object);
-        //   setTargetName(props.itemName);
-        //   setTargetID(props.itemID);
+        onClick={(e) => {
 
-        //   const objectInfo = {
-        //     objectName: props.itemName,
-        //     objectID: props.itemID,
-        //     objectMaterial: props.materialString,
-        //   };
+          props.updateThreeObject(props.itemID, {
+            position: e.object.position,
+            scale: e.object.scale,
+            rotation: e.object.rotation,
+          });
 
-        //   // Dispatch the project information to Redux
-        //   dispatch(SET_OBJECT_IMAGE(objectInfo));
-        // }}
+          setTarget(e.object);
+          setTargetName(props.itemName);
+          setTargetID(props.itemID);
+
+          const objectInfo = {
+            objectName: props.itemName,
+            objectID: props.itemID,
+            objectMaterial: props.materialString,
+          };
+
+          // Dispatch the project information to Redux
+          dispatch(SET_OBJECT_IMAGE(objectInfo));
+        }}
 
         onPointerOver={() => setHovered(true)}
         onPointerOut={() => setHovered(false)}
@@ -79,23 +86,26 @@ function Box(props) {
       <mesh
         {...props}
         geometry={nodes.mesh_0.geometry}
-        // onClick={(e) => {
-        //   console.log(e);
-        //   // updateObjectPosition(userID, projID, props.itemID, e.object.position, e.object.scale, e.object.rotation);
+        onClick={(e) => {
+          props.updateThreeObject(props.itemID, {
+            position: e.object.position,
+            scale: e.object.scale,
+            rotation: e.object.rotation,
+          });
 
-        //   setTarget(e.object);
-        //   setTargetName(props.itemName);
-        //   setTargetID(props.itemID);
+          setTarget(e.object);
+          setTargetName(props.itemName);
+          setTargetID(props.itemID);
 
-        //   const objectInfo = {
-        //     objectName: props.itemName,
-        //     objectID: props.itemID,
-        //     objectMaterial: props.materialString,
-        //   };
+          const objectInfo = {
+            objectName: props.itemName,
+            objectID: props.itemID,
+            objectMaterial: props.materialString,
+          };
 
-        //   // Dispatch the project information to Redux
-        //   dispatch(SET_OBJECT_IMAGE(objectInfo));
-        // }}
+          // Dispatch the project information to Redux
+          dispatch(SET_OBJECT_IMAGE(objectInfo));
+        }}
         onPointerOver={() => setHovered(true)}
         onPointerOut={() => setHovered(false)}
       >
@@ -106,7 +116,10 @@ function Box(props) {
   
 }
 
+
+
 export default function ThreeJSScene(props) {
+
   const { target, setTarget } = useStore();
   const { targetName, setTargetName } = useStore();
   const { targetID, setTargetID} = useStore();
@@ -139,6 +152,7 @@ export default function ThreeJSScene(props) {
             itemName={item.objectTypeName}
             itemID={index}
             objectType={item.objectType}
+            updateThreeObject={updateThreeObject}
           />
         );
       });
@@ -146,6 +160,11 @@ export default function ThreeJSScene(props) {
 
     return null; // Return null if sceneObjs.objects is not available
   };
+
+  const updateThreeObject = (objectID, newObjectData) => {
+    props.updateObject(objectID, newObjectData);
+  }
+
 
   return (
     <div className={templateCSS.canvasHolder}>
@@ -163,7 +182,7 @@ export default function ThreeJSScene(props) {
           <ambientLight intensity={1.0} />
           <pointLight position={[10, 10, 10]} intensity={1} castShadow={true} />
 
-          {instantiateObjects()}
+          {instantiateObjects(props, updateThreeObject)}
 
           <Man scale={0.01} position={[3,-2,0]}/>
           {target && <TransformControls object={target} mode={mode} />}

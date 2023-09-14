@@ -203,7 +203,7 @@ const Editor = () => {
   };
   
   const handleGeometryPosX = (e) => {
-    console.log("sda");
+    console.log("-----");
 
   }
 
@@ -213,8 +213,8 @@ const Editor = () => {
         return(
           <>
           <input placeholder="x value" value={projectScene.objects[selectedObjectID].position.x} onChange={handleGeometryPosX}/>
-          <input placeholder="y value" value={projectScene.objects[selectedObjectID].position.y} />
-          <input placeholder="z value" value={projectScene.objects[selectedObjectID].position.z} />
+          <input placeholder="y value" value={projectScene.objects[selectedObjectID].position.y} onChange={handleGeometryPosX}/>
+          <input placeholder="z value" value={projectScene.objects[selectedObjectID].position.z} onChange={handleGeometryPosX}/>
           </>
         )
       }
@@ -232,9 +232,9 @@ const Editor = () => {
       if(projectScene.objects){
         return(
           <>
-          <input placeholder="x value" value={projectScene.objects[selectedObjectID].scale.x} />
-          <input placeholder="y value" value={projectScene.objects[selectedObjectID].scale.y} />
-          <input placeholder="z value" value={projectScene.objects[selectedObjectID].scale.z} />
+          <input placeholder="x value" value={projectScene.objects[selectedObjectID].scale.x} onChange={handleGeometryPosX}/>
+          <input placeholder="y value" value={projectScene.objects[selectedObjectID].scale.y} onChange={handleGeometryPosX}/>
+          <input placeholder="z value" value={projectScene.objects[selectedObjectID].scale.z} onChange={handleGeometryPosX}/>
           </>
         )
       }
@@ -266,15 +266,57 @@ const Editor = () => {
 
   }
 
-  const saveProject = () => {
-    updateProject(userID, projID, projectScene);
-
+  const saveProject = async () => { // Add "async" here
+    try {
+      await updateProject(userID, projID, projectScene);
+      console.log('Project successfully updated.');
+    } catch (error) {
+      console.error('Error updating project:', error);
+    }
   }
 
   const makeTemplate = () => {
     createTemplate(projectScene);
   }
 
+  const updateObjectArc = (objectID, newObjectData) => {
+  
+    if (projectScene && projectScene.objects) {
+
+      if (objectID !== null) {
+
+        // Create a copy of the object to update
+        const updatedObject = { ...projectScene.objects[objectID] };
+
+  
+        updatedObject.position.x = newObjectData.position.x;
+        updatedObject.position.y = newObjectData.position.y;
+        updatedObject.position.z = newObjectData.position.z;
+
+
+        updatedObject.scale.x = newObjectData.scale.x;
+        updatedObject.scale.y = newObjectData.scale.y;
+        updatedObject.scale.z = newObjectData.scale.z;
+
+        updatedObject.rotation.x = newObjectData.rotation.x;
+        updatedObject.rotation.y = newObjectData.rotation.y;
+        updatedObject.rotation.z = newObjectData.rotation.z;
+
+
+        // Create a copy of the projectScene and update the specific object
+        const updatedProjectScene = { ...projectScene };
+        updatedProjectScene.objects[objectID] = updatedObject;
+  
+        // Update the state with the modified projectScene
+        setProjectScene(updatedProjectScene);
+  
+        // Now, the projectScene state has been updated with the modified object.
+        console.log("the new projectscene")
+        console.log(projectScene)
+      }
+    }
+  };
+  
 
   return (
     <div className={templateCSS.templatePage}>
@@ -295,7 +337,7 @@ const Editor = () => {
             )}
           </h2>
           <div className={templateCSS.actualEditor}>
-            <TemplateScene scene={projectScene} className={templateCSS.canvasHolder} />
+            <TemplateScene scene={projectScene} className={templateCSS.canvasHolder} updateObject={updateObjectArc} />
           </div>
         </div>
         <div className={templateCSS.leftEditorBottomt}>
@@ -362,35 +404,14 @@ const Editor = () => {
                   <div className={templateCSS.xyzEditor}>
                     <div className={templateCSS.partEditor}>
                       <div className={templateCSS.partTitle}>
-                        Position
+                        Tiling
                       </div>
                       <div className={templateCSS.partInput}>
                         <input placeholder="x" />
                         <input placeholder="y" />
-                        <input placeholder="z" />
                       </div>
                     </div>
-                    <div className={templateCSS.partEditor}>
-                      <div className={templateCSS.partTitle}>
-                        Scale
-                      </div>
-                      <div className={templateCSS.partInput}>
-                        <input placeholder="x" />
-                        <input placeholder="y" />
-                        <input placeholder="z" />
-                      </div>
                     </div>
-                    <div className={templateCSS.partEditor}>
-                      <div className={templateCSS.partTitle}>
-                        Rotation
-                      </div>
-                      <div className={templateCSS.partInput}>
-                        <input placeholder="x" />
-                        <input placeholder="y" />
-                        <input placeholder="z" />
-                      </div>
-                    </div>
-                  </div>
 
 
                   <div className={templateCSS.imgEditor}>
