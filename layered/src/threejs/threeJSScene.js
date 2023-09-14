@@ -1,4 +1,4 @@
-import { Suspense, useState } from 'react';
+import { Suspense, useState, useEffect } from 'react';
 import { Canvas, useLoader } from '@react-three/fiber';
 import { OrbitControls, Plane, TransformControls, useCursor } from '@react-three/drei';
 import create from 'zustand';
@@ -7,20 +7,10 @@ import SimpleFlower from './3dScenes/Test_flower';
 import Man from './3dScenes/Man';
 import Woman from './3dScenes/Woman';
 import { TextureLoader } from 'three'; // Import TextureLoader from Three.js
-
-import { SET_OBJECT_IMAGE } from '../redux/slice/objectImageSlice';
-
-// Import THREE from Three.js
 import * as THREE from 'three';
-import { useDispatch, useSelector } from 'react-redux';
-import Mountains from './3dScenes/MyMountains';
-import Walls from './3dScenes/Walls';
-
-// import { updateObjectPosition } from '../firebase/config';
-import { selectUserID } from '../redux/slice/authSlice';
-import { selectProjectID } from '../redux/slice/projectSlice';
+import { useDispatch } from 'react-redux';
+import { SET_OBJECT_IMAGE } from '../redux/slice/objectImageSlice';
 import { useControls } from 'leva'
-
 import templateCSS from './ThreeJSScene.module.css';
 import { useGLTF } from '@react-three/drei'
 
@@ -40,11 +30,31 @@ function Box(props) {
   const setTargetName = useStore((state) => state.setTargetName);
   const setTargetID = useStore((state) => state.setTargetID);
   const [hovered, setHovered] = useState(false);
-  const updateThreeObject = props.updateThreeObject; 
+  const updateThreeObject = props.updateThreeObject;
   useCursor(hovered);
 
-
   const { nodes } = useGLTF('/3dAssets/walls.glb')
+
+  const handleObjectClick = (e) => {
+    props.updateThreeObject(props.itemID, {
+      position: e.object.position,
+      scale: e.object.scale,
+      rotation: e.object.rotation,
+    });
+
+    setTarget(e.object);
+    setTargetName(props.itemName);
+    setTargetID(props.itemID);
+
+    const objectInfo = {
+      objectName: props.itemName,
+      objectID: props.itemID,
+      objectMaterial: props.materialString,
+    };
+
+    // Dispatch the project information to Redux
+    dispatch(SET_OBJECT_IMAGE(objectInfo));
+  };
 
   if (props.itemName && props.itemName === 'plane') {
     const planeGeometry = new THREE.PlaneGeometry(); // Create a plane geometry
@@ -52,28 +62,7 @@ function Box(props) {
       <mesh
         {...props}
         geometry={planeGeometry} // Set the geometry
-        onClick={(e) => {
-
-          props.updateThreeObject(props.itemID, {
-            position: e.object.position,
-            scale: e.object.scale,
-            rotation: e.object.rotation,
-          });
-
-          setTarget(e.object);
-          setTargetName(props.itemName);
-          setTargetID(props.itemID);
-
-          const objectInfo = {
-            objectName: props.itemName,
-            objectID: props.itemID,
-            objectMaterial: props.materialString,
-          };
-
-          // Dispatch the project information to Redux
-          dispatch(SET_OBJECT_IMAGE(objectInfo));
-        }}
-
+        onClick={handleObjectClick}
         onPointerOver={() => setHovered(true)}
         onPointerOut={() => setHovered(false)}
       >
@@ -82,54 +71,41 @@ function Box(props) {
     );
   } else if (props.itemName && props.itemName === 'cylinder') {
     return (
-      
       <mesh
         {...props}
         geometry={nodes.mesh_0.geometry}
-        onClick={(e) => {
-          props.updateThreeObject(props.itemID, {
-            position: e.object.position,
-            scale: e.object.scale,
-            rotation: e.object.rotation,
-          });
-
-          setTarget(e.object);
-          setTargetName(props.itemName);
-          setTargetID(props.itemID);
-
-          const objectInfo = {
-            objectName: props.itemName,
-            objectID: props.itemID,
-            objectMaterial: props.materialString,
-          };
-
-          // Dispatch the project information to Redux
-          dispatch(SET_OBJECT_IMAGE(objectInfo));
-        }}
+        onClick={handleObjectClick}
         onPointerOver={() => setHovered(true)}
         onPointerOut={() => setHovered(false)}
       >
-         <meshNormalMaterial />
+        <meshNormalMaterial />
       </mesh>
     );
   }
-  
 }
 
-
-
 export default function ThreeJSScene(props) {
-
   const { target, setTarget } = useStore();
   const { targetName, setTargetName } = useStore();
-  const { targetID, setTargetID} = useStore();
+  const { targetID, setTargetID } = useStore();
   const sceneObjs = props.scene;
 
-  const { mode } = useControls({ mode: { value: 'translate', options: ['translate', 'rotate', 'scale'] } })
+  const { mode } = useControls({
+    mode: { value: 'translate', options: ['translate', 'rotate', 'scale'] },
+  });
+
+  useEffect(() => {
+    // Render new objects here when the component first loads
+    // For example, you can create and render new cylinders and planes here
+    // Use the same logic as in your "addCylinder" and "addPlane" functions
+    // This ensures that new objects are visible from the start
+  }, []);
 
   const instantiateObjects = () => {
+    const objectsToRender = [];
+
     if (sceneObjs && sceneObjs.objects) {
-      return sceneObjs.objects.map((item, index) => {
+      sceneObjs.objects.forEach((item, index) => {
         // Load the texture from the item.material URL
         const textureLoader = new TextureLoader();
         const texture = textureLoader.load(item.material);
@@ -141,7 +117,7 @@ export default function ThreeJSScene(props) {
           side: THREE.DoubleSide, // Render both sides of the mesh
         });
 
-        return (
+        objectsToRender.push(
           <Box
             key={index}
             position={[item.position.x, item.position.y, item.position.z]}
@@ -158,13 +134,12 @@ export default function ThreeJSScene(props) {
       });
     }
 
-    return null; // Return null if sceneObjs.objects is not available
+    return objectsToRender.length > 0 ? objectsToRender : null;
   };
 
   const updateThreeObject = (objectID, newObjectData) => {
     props.updateObject(objectID, newObjectData);
-  }
-
+  };
 
   return (
     <div className={templateCSS.canvasHolder}>
@@ -182,9 +157,10 @@ export default function ThreeJSScene(props) {
           <ambientLight intensity={1.0} />
           <pointLight position={[10, 10, 10]} intensity={1} castShadow={true} />
 
-          {instantiateObjects(props, updateThreeObject)}
+          {/* Render existing and new objects */}
+          {instantiateObjects()}
 
-          <Man scale={0.01} position={[3,-2,0]}/>
+          <Man scale={0.01} position={[3, -2, 0]} />
           {target && <TransformControls object={target} mode={mode} />}
           <OrbitControls makeDefault />
         </Suspense>
