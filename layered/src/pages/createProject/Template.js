@@ -119,7 +119,6 @@ const Editor = () => {
     uploadBytes(imageRef, imageUpload).then((snapshot) => {
       getDownloadURL(snapshot.ref).then((url) => {
 
-      projectScene[selectedObjectID].material = url;
 
       // update in firebase
       updateObjectTexture(userID, projID, selectedObjectID, url);
@@ -128,6 +127,8 @@ const Editor = () => {
         dispatch(SET_OBJECT_MATERIAL(
           {objectMaterial: url}))
       });
+
+      // projectScene[selectedObjectID].material = selectObjectMaterial;
     });
   }
 
@@ -321,6 +322,7 @@ const Editor = () => {
   
 
   const addCylinder = () => {
+    console.log('here----');
     // Ensure that projectScene and projectScene.objects exist
     if (!projectScene || !projectScene.objects) {
       console.error("projectScene or projectScene.objects is not defined.");

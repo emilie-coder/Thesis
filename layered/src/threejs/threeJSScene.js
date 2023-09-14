@@ -33,7 +33,7 @@ function Box(props) {
   const updateThreeObject = props.updateThreeObject;
   useCursor(hovered);
 
-  const { nodes } = useGLTF('/3dAssets/walls.glb')
+  const { nodes } = useGLTF('/3dAssets/new_cylinder.glb')
 
   const handleObjectClick = (e) => {
     props.updateThreeObject(props.itemID, {

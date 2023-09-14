@@ -21,9 +21,6 @@
   border-radius: 2px;
 }
 
-.leftEditorShapes {
-  position: absolute;
-}
 
 .leftEditorTop{
   display: flex;
