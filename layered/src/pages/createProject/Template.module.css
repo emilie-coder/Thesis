@@ -21,13 +21,16 @@
   border-radius: 2px;
 }
 
+.leftEditorShapes {
+  position: absolute;
+}
 
 .leftEditorTop{
   display: flex;
   flex-direction: column;
   width: 100%;
   height: 90%;
-  background-color: aquamarine;
+  /* background-color: var(--main-color); */
   border-radius: 3px;
   margin-bottom: 5px;
   align-items: center;
@@ -40,7 +43,7 @@
 
 .actualEditor{
   width: 96%;
-  background-color: rgb(255, 255, 255);
+  background-color: var(--white);
   height: 94%;
 }
 
@@ -48,7 +51,7 @@
   width: 100%;
   height: 10%;
   border-radius: 3px;
-  background-color: rgb(208, 145, 145);
+  background-color: var(--main-color);
 }
 
 
@@ -68,7 +71,7 @@
   flex-direction: column;
   width: 100%;
   height: 90%;
-  background-color: aquamarine;
+  /* background-color: var(--main-color); */
   border-radius: 3px;
   margin-bottom: 5px;
 }
@@ -77,7 +80,7 @@
   width: 100%;
   height: 10%;
   border-radius: 3px;
-  background-color: rgb(208, 145, 145);
+  background-color: var(--main-color);
 }
 
 
@@ -95,7 +98,7 @@
 .imgList{
   display: flex;
   flex-direction: column;
-  background-color: blueviolet;
+  background-color: var(--white);
   width: 96%;
   align-self: center;
   justify-self: center;
@@ -111,7 +114,6 @@
 .choicedInfo{
   display: flex;
   flex-direction: column;
-  background-color: brown;
   width: 100%;
   height: 100%;
   border-radius: 3px;
@@ -135,7 +137,7 @@
 .selectedTab {
   margin-top: 5px;
   display: flex;
-  background-color: bisque;
+  background-color: var(--accent-color-a);
   width: fit-content;
   padding: 5px;
   border-radius: 5px;
@@ -146,7 +148,7 @@
 .unselectedTab {
   margin-top: 5px;
   display: flex;
-  background-color: rgb(248, 184, 106);
+  background-color:var(--accent-color-b);
   width: fit-content;
   padding: 5px;
   border-radius: 5px;
@@ -157,7 +159,7 @@
 .geometry{
   display: flex;
   flex-direction: column;
-  background-color: bisque;
+  background-color: var(--accent-color-a);
   margin-left: 5px;
   margin-right: 5px;
   border-top-right-radius: 3px;
@@ -165,7 +167,7 @@
 }
 
 .texture{
-  background-color: bisque;
+  background-color: var(--accent-color-a);
   margin-left: 5px;
   margin-right: 5px;
   border-bottom-left-radius: 3px;
@@ -225,7 +227,6 @@
   margin-right: 5px;
   height: 60%;
   max-height: 60%;
-  background-color: blue;
   align-items: center;
   justify-content: end;
 }
@@ -272,7 +273,7 @@
   display: flex;
   width: 100%;
   min-width: 100%;
-  background-color: rgb(0, 255, 98);
+
   overflow-y: hidden;
 }
 

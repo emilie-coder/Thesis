@@ -143,13 +143,13 @@ export default function ThreeJSScene(props) {
 
   return (
     <div className={templateCSS.canvasHolder}>
-      <div className={templateCSS.tempargs}>
+      {/* <div className={templateCSS.tempargs}>
         {targetName && (
           <>
             {targetName} - target ID: {targetID}
           </>
         )}
-      </div>
+      </div> */}
 
       <Canvas dpr={[1, 2]} onPointerMissed={() => setTarget(null)}>
         <Suspense fallback={null}>
