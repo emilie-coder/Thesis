@@ -109,28 +109,31 @@ const Editor = () => {
 
 
   const uploadUpdateImage = () => {
-    if (imageUpload == null) return;
 
-    const imageRef = ref(
-      storage,
-      userID + '/project_' + projID + `/images/${imageUpload.name + v4()}`
-    );
+    const saved = saveProject();
 
-    uploadBytes(imageRef, imageUpload).then((snapshot) => {
-      getDownloadURL(snapshot.ref).then((url) => {
+      if (imageUpload == null) return;
 
-
-      // update in firebase
-      updateObjectTexture(userID, projID, selectedObjectID, url);
-
-        setImageList((prev) => [...prev, url]);
-        dispatch(SET_OBJECT_MATERIAL(
-          {objectMaterial: url}))
+      const imageRef = ref(
+        storage,
+        userID + '/project_' + projID + `/images/${imageUpload.name + v4()}`
+      );
+  
+      uploadBytes(imageRef, imageUpload).then((snapshot) => {
+        getDownloadURL(snapshot.ref).then((url) => {
+  
+  
+        // update in firebase
+        updateObjectTexture(userID, projID, selectedObjectID, url);
+  
+          setImageList((prev) => [...prev, url]);
+          dispatch(SET_OBJECT_MATERIAL(
+            {objectMaterial: url}))
+        });
+  
+        // projectScene[selectedObjectID].material = selectObjectMaterial;
       });
-
-      // projectScene[selectedObjectID].material = selectObjectMaterial;
-    });
-  }
+    }
 
   useEffect(() => {
     if (!userID || !projID) {
@@ -273,8 +276,10 @@ const Editor = () => {
     try {
       await updateProject(userID, projID, projectScene);
       console.log('Project successfully updated.');
+      return true;
     } catch (error) {
       console.error('Error updating project:', error);
+      return false;
     }
   }
 
@@ -410,10 +415,18 @@ const Editor = () => {
             )}
           </h2>
           <div className={templateCSS.actualEditor}>
-            <div className={templateCSS.leftEditorShapes}>
-              <button onClick={addCylinder}> Cylinder </button>
-              <button onClick={addPlane}> Plane </button>
+            <div className={templateCSS.leftButtons}>
+              <div className={templateCSS.leftEditorShapes}>
+                <button onClick={addCylinder}> Cylinder </button>
+                <button onClick={addPlane}> Plane </button>
+              </div>
+              <div className={templateCSS.modeButtons}>
+                <button> move </button>
+                <button> scale </button>
+                <button> rotate </button>
+              </div>
             </div>
+
             <TemplateScene scene={projectScene} className={templateCSS.canvasHolder} updateObject={updateObjectArc} />
           </div>
         </div>

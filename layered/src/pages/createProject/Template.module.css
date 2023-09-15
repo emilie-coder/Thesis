@@ -21,6 +21,11 @@
   border-radius: 2px;
 }
 
+.leftButtons{
+  position: absolute;
+  z-index: 10000;
+}
+
 
 .leftEditorTop{
   display: flex;

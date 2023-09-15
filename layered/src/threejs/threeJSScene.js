@@ -114,7 +114,7 @@ export default function ThreeJSScene(props) {
         const material = new THREE.MeshBasicMaterial({
           map: texture,
           transparent: true, // Enable transparency
-          side: THREE.DoubleSide, // Render both sides of the mesh
+          // side: THREE.DoubleSide, // Render both sides of the mesh
         });
 
         objectsToRender.push(
