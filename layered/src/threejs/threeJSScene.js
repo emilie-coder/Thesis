@@ -1,16 +1,12 @@
 import { Suspense, useState, useEffect } from 'react';
 import { Canvas, useLoader } from '@react-three/fiber';
-import { OrbitControls, Plane, TransformControls, useCursor } from '@react-three/drei';
+import { OrbitControls, TransformControls, useCursor } from '@react-three/drei';
 import create from 'zustand';
-import DuckScene from './3dScenes/DuckScene';
-import SimpleFlower from './3dScenes/Test_flower';
 import Man from './3dScenes/Man';
-import Woman from './3dScenes/Woman';
 import { TextureLoader } from 'three'; // Import TextureLoader from Three.js
 import * as THREE from 'three';
 import { useDispatch } from 'react-redux';
 import { SET_OBJECT_IMAGE } from '../redux/slice/objectImageSlice';
-import { useControls } from 'leva'
 import templateCSS from './ThreeJSScene.module.css';
 import { useGLTF } from '@react-three/drei'
 
@@ -90,9 +86,6 @@ export default function ThreeJSScene(props) {
   const { targetID, setTargetID } = useStore();
   const sceneObjs = props.scene;
 
-  const { mode } = useControls({
-    mode: { value: 'translate', options: ['translate', 'rotate', 'scale'] },
-  });
 
   useEffect(() => {
     // Render new objects here when the component first loads
@@ -143,14 +136,6 @@ export default function ThreeJSScene(props) {
 
   return (
     <div className={templateCSS.canvasHolder}>
-      {/* <div className={templateCSS.tempargs}>
-        {targetName && (
-          <>
-            {targetName} - target ID: {targetID}
-          </>
-        )}
-      </div> */}
-
       <Canvas dpr={[1, 2]} onPointerMissed={() => setTarget(null)}>
         <Suspense fallback={null}>
           <gridHelper args={[400, 200, '#151515', '#020202']} position={[0, -4, 0]} />
@@ -161,7 +146,7 @@ export default function ThreeJSScene(props) {
           {instantiateObjects()}
 
           <Man scale={0.01} position={[3, -2, 0]} />
-          {target && <TransformControls object={target} mode={mode} />}
+          {target && <TransformControls object={target} mode={props.editMode} />}
           <OrbitControls makeDefault />
         </Suspense>
       </Canvas>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   SET_ACTIVE_PROJECT,
@@ -54,6 +54,31 @@ const Editor = () => {
   const location = useLocation();
   const pathSegments = location.pathname.split('/');
   const projectIDURL = pathSegments[pathSegments.length - 1]; // Get the last part of the URL
+
+  const [editMode, setEditMode] = useState('translate');
+
+  const handleKeyPress = useCallback((event) => {
+    console.log(`Key pressed: ${event.key}`);
+
+    if(event.key === 'w') {
+      setEditMode('translate');
+    } else if(event.key ==='r') {
+      setEditMode('scale');
+    } else if(event.key ==='e') {
+      setEditMode('rotate');
+    }
+  }, []);
+
+  useEffect(() => {
+    // attach the event listener
+    document.addEventListener('keydown', handleKeyPress);
+
+    // remove the event listener
+    return () => {
+      document.removeEventListener('keydown', handleKeyPress);
+    };
+  }, [handleKeyPress]);
+
 
 
   // Fetch and update project data when the component mounts
@@ -396,6 +421,25 @@ const Editor = () => {
   
 
 
+  const changeEditMode = (mode) => {
+    return () => {
+
+      if (mode === 'translate') {
+        // Handle translate logic
+        setEditMode('translate');
+        console.log('Translate mode selected');
+      } else if (mode === 'scale') {
+        // Handle scale logic
+        setEditMode('scale');
+        console.log('Scale mode selected');
+      } else if (mode === 'rotate') {
+        // Handle rotate logic
+        setEditMode('rotate');
+        console.log('Rotate mode selected');
+      }
+    };
+  };
+  
   return (
     <div className={templateCSS.templatePage}>
       
@@ -421,13 +465,14 @@ const Editor = () => {
                 <button onClick={addPlane}> Plane </button>
               </div>
               <div className={templateCSS.modeButtons}>
-                <button> move </button>
-                <button> scale </button>
-                <button> rotate </button>
-              </div>
+              <button onClick={changeEditMode('translate')}> Translate </button>
+              <button onClick={changeEditMode('scale')}> Scale </button>
+              <button onClick={changeEditMode('rotate')}> Rotate </button>
             </div>
 
-            <TemplateScene scene={projectScene} className={templateCSS.canvasHolder} updateObject={updateObjectArc} />
+            </div>
+
+            <TemplateScene scene={projectScene} className={templateCSS.canvasHolder} updateObject={updateObjectArc} editMode={editMode} />
           </div>
         </div>
         <div className={templateCSS.leftEditorBottomt}>
@@ -511,11 +556,7 @@ const Editor = () => {
                       <button className={templateCSS.changeImgButton} onClick={uploadUpdateImage}>change image</button>
                     </div>
                   </div>
-
-
                 </div>
-
-
               </div>
 
 
