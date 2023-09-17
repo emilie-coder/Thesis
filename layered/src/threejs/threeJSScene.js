@@ -107,8 +107,10 @@ export default function ThreeJSScene(props) {
         const material = new THREE.MeshBasicMaterial({
           map: texture,
           transparent: true, // Enable transparency
-          // side: THREE.DoubleSide, // Render both sides of the mesh
+          side: THREE.DoubleSide, // Render both sides of the mesh
         });
+
+        material.alphaTest = 0.8;
 
         objectsToRender.push(
           <Box
@@ -142,7 +144,6 @@ export default function ThreeJSScene(props) {
           <ambientLight intensity={1.0} />
           <pointLight position={[10, 10, 10]} intensity={1} castShadow={true} />
 
-          {/* Render existing and new objects */}
           {instantiateObjects()}
 
           <Man scale={0.01} position={[3, -2, 0]} />

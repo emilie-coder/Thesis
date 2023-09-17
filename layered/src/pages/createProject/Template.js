@@ -225,28 +225,45 @@ const Editor = () => {
     // update firebase
     updateProjectTitle(userID, editedTitle, projID);
   };
+  
+    const updateTarget = (index) => {
+      console.log('Clicked index:', index);
+  
+      const objectInfo = {
+        objectName: projectScene.objects[index].objectTypeName,
+        objectID: index,
+        objectMaterial: projectScene.objects[index].material,
+      };
+  
+      // Dispatch the project information to Redux
+      dispatch(SET_OBJECT_IMAGE(objectInfo));
+
+
+  };
 
   const instantiateTabs = (sceneObjs) => {
+  
+  
     if (sceneObjs && sceneObjs.objects) {
       return sceneObjs.objects.map((item, index) => {
-
-        const isSelected = index === selectedObjectID; // Check if the item is selected
+        const isSelected = index === selectedObjectID;
   
-        // Determine the CSS class based on whether the item is selected
         const tabClassName = isSelected ? templateCSS.selectedTab : templateCSS.unselectedTab;
-  
-        // Generate the key for the <div> element
         const tabKey = `tabID_${index}`;
   
         return (
-          <div key={tabKey} className={`${tabClassName}`}>
+          <div
+            key={tabKey}
+            className={`${tabClassName}`}
+            onClick={() => updateTarget(index)}  // Call updateTarget on click
+          >
             {index}_{item.objectTypeName}
           </div>
         );
       });
     }
   
-    return null; // Return null if sceneObjs.objects is not available
+    return null;
   };
   
   const handleGeometryPosX = (e) => {
