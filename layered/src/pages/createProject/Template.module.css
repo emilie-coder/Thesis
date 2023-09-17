@@ -100,7 +100,7 @@
 .imgList{
   display: flex;
   flex-direction: column;
-  background-color: var(--white);
+  background-color: var(--main-color);
   width: 96%;
   align-self: center;
   justify-self: center;
@@ -285,6 +285,16 @@
 
 
 
-.uploadedImgs{
+/* .uploadedImgs{
   height: 75px;
+} */
+
+
+.uploadedImg {
+  width: 50px; /* Set the maximum width */
+}
+
+.selectedImageButton {
+  border: 2px solid blue; /* Example border style for selected image */
+
 }

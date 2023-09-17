@@ -225,7 +225,7 @@ export async function fetchProject(userID, projectID) {
       const projectData = projectSnapshot.val();
       return projectData; // Return the project data
     } else {
-      throw new Error("Project not found"); // Handle the case where the project doesn't exist
+      // throw new Error("Project not found"); // Handle the case where the project doesn't exist
     }
   } catch (error) {
     console.error("Error fetching project:", error);

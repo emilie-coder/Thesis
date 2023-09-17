@@ -24,7 +24,7 @@ import { updateProjectTitle, updateProject, createTemplate } from '../../firebas
 import { useLocation } from 'react-router-dom';
 
 
-import { selectObjectID, selectObjectChosen, selectObjectMaterial, SET_OBJECT_MATERIAL } from '../../redux/slice/objectImageSlice';
+import { selectObjectID, selectObjectChosen, selectObjectMaterial, SET_OBJECT_MATERIAL, SET_OBJECT_IMAGE } from '../../redux/slice/objectImageSlice';
 
 
 
@@ -57,15 +57,24 @@ const Editor = () => {
 
   const [editMode, setEditMode] = useState('translate');
 
+  const [lastSelectedImage, setLastSelectedImage] = useState(null);
+
+  const handleImageClick = (url) => {
+    // Handle the image click, for example, update state to keep track of the last selected image
+    setLastSelectedImage(url);
+    // Add more logic as needed based on the selected image
+  };
+
+  
   const handleKeyPress = useCallback((event) => {
-    console.log(`Key pressed: ${event.key}`);
+    // console.log(`Key pressed: ${event.key}`);
 
     if(event.key === 'w') {
       setEditMode('translate');
     } else if(event.key ==='r') {
       setEditMode('scale');
     } else if(event.key ==='e') {
-      setEditMode('rotate');
+      setEditMode('rotate')
     }
   }, []);
 
@@ -108,7 +117,7 @@ const Editor = () => {
         setProjectScene(projectData.projectScene);
         // ... update other relevant states here
       } catch (error) {
-        console.error('Error fetching project:', error);
+        // console.error('Error fetching project:', error);
       }
     };
   
@@ -160,30 +169,37 @@ const Editor = () => {
       });
     }
 
-  useEffect(() => {
-    if (!userID || !projID) {
-      console.warn('userID or projID is not available.');
-      return;
-    }
-  
-    const imageListRef = ref(storage, userID + '/project_' + projID + '/images');
-  
-    listAll(imageListRef)
-      .then((response) => {
-        response.items.forEach((item) => {
-          getDownloadURL(item)
-            .then((url) => {
-              setImageList((prev) => [...prev, url]);
-            })
-            .catch((error) => {
-              console.error('Error getting download URL:', error);
-            });
+    useEffect(() => {
+      if (!userID || !projID) {
+        console.warn('userID or projID is not available.');
+        return;
+      }
+    
+      const imageListRef = ref(storage, userID + '/project_' + projID + '/images');
+    
+      listAll(imageListRef)
+        .then((response) => {
+          response.items.forEach((item) => {
+            getDownloadURL(item)
+              .then((url) => {
+                setImageList((prev) => [...prev, url]);
+              })
+              .catch((error) => {
+                console.error('Error getting download URL:', error);
+              });
+          });
+        })
+        .catch((error) => {
+          console.error('Error listing images:', error);
         });
-      })
-      .catch((error) => {
-        console.error('Error listing images:', error);
-      });
-  }, [userID, projID]);
+    
+        // if (projectScene && projectScene.objects) {
+        //   // Extract image URLs from projectScene objects and add them to the imageList
+        //   const urls = projectScene.objects.map((obj) => obj.material);
+        //   setImageList((prev) => [...prev, ...urls]);
+        // }
+    
+    }, [userID, projID]);  // Add projectScene as a dependency if needed
 
 
   // Function to handle title editing
@@ -283,9 +299,9 @@ const Editor = () => {
       if(projectScene.objects){
         return(
           <>
-          <input placeholder="x value" value={projectScene.objects[selectedObjectID].rotation.x} />
-          <input placeholder="y value" value={projectScene.objects[selectedObjectID].rotation.y} />
-          <input placeholder="z value" value={projectScene.objects[selectedObjectID].rotation.z} />
+          <input placeholder="x value" value={projectScene.objects[selectedObjectID].rotation.x} onChange={handleGeometryPosX}/>
+          <input placeholder="y value" value={projectScene.objects[selectedObjectID].rotation.y} onChange={handleGeometryPosX}/>
+          <input placeholder="z value" value={projectScene.objects[selectedObjectID].rotation.z} onChange={handleGeometryPosX} />
           </>
         )
       }
@@ -420,7 +436,18 @@ const Editor = () => {
   };
   
 
-
+  const insertFromList = (image) => {
+    console.log('wtf');
+    if(projectScene){
+      projectScene.objects[selectedObjectID].material = image;
+      dispatch(SET_OBJECT_MATERIAL({
+        objectMaterial: image,
+      }));
+    } else{
+      console.log("bithc")
+    }
+  }
+  
   const changeEditMode = (mode) => {
     return () => {
 
@@ -550,7 +577,9 @@ const Editor = () => {
 
 
                   <div className={templateCSS.imgEditor}>
-                    {selectedObjectChosen && <img src={selectedObjectMaterial} alt='objectImg' className={templateCSS.displayedObjectImage} />}
+                  {console.log('Selected Object Material:', selectedObjectMaterial)}
+                  {selectedObjectChosen && <img src={selectedObjectMaterial} alt='objectImg' className={templateCSS.displayedObjectImage} />}
+
                     <div className={templateCSS.fileUpload}>
                       <input className={templateCSS.fileUploadButton} type="file" onChange={((event) => {setImageUpload(event.target.files[0])})}/>
                       <button className={templateCSS.changeImgButton} onClick={uploadUpdateImage}>change image</button>
@@ -563,6 +592,7 @@ const Editor = () => {
             </div>
                       
           <div className={templateCSS.imgList}>
+          <button onClick={() => insertFromList(lastSelectedImage)}> CHANGE IMAGE </button>
 
             <div className={templateCSS.fileUpload2}>
               <input className={templateCSS.fileUploadButton} type="file" onChange={((event) => {setImageUpload(event.target.files[0])})}/>
@@ -570,11 +600,18 @@ const Editor = () => {
             </div>
 
             <div className={templateCSS.userImages}>
-              {imageList.map((url) => {
-                return <img className={templateCSS.uploadedImgs} src={url} alt="userUploadedImage" key={url}/>
-              })}
-
+              {imageList.map((url) => (
+                <button
+                  key={url}
+                  className={lastSelectedImage === url ? templateCSS.selectedImageButton : templateCSS.uploadedImageButton}
+                  onClick={() => handleImageClick(url)}
+                >
+                  <img src={url} alt="userUploadedImage" className={templateCSS.uploadedImg} />
+                </button>
+              ))}
+              
             </div>
+
           </div>
 
           </div>
