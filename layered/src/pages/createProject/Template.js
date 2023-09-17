@@ -75,7 +75,12 @@ const Editor = () => {
       setEditMode('scale');
     } else if(event.key ==='e') {
       setEditMode('rotate')
-    }
+    } else if(event.key ==='f') {
+      // move upwards in index
+    } else if(event.key ==='d') {
+      // move backwards in index
+    } 
+
   }, []);
 
   useEffect(() => {
