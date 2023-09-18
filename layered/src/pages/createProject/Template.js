@@ -27,7 +27,7 @@ import { useLocation } from 'react-router-dom';
 import { selectObjectID, selectObjectChosen, selectObjectMaterial, SET_OBJECT_MATERIAL, SET_OBJECT_IMAGE } from '../../redux/slice/objectImageSlice';
 
 import TestRayCast from '../../threejs/testingRayCast';
-
+import NewCanvas from '../../threejs/threeCanvas';
 
 const Editor = () => {
 
@@ -544,7 +544,8 @@ const Editor = () => {
 
             </div>
 
-            <TestRayCast></TestRayCast>
+            {/* <TestRayCast></TestRayCast> */}
+            <NewCanvas scene={projectScene} className={templateCSS.canvasHolder} updateObject={updateObjectArc} editMode={editMode} />
 
             {/* <TemplateScene scene={projectScene} className={templateCSS.canvasHolder} updateObject={updateObjectArc} editMode={editMode} /> */}
           </div>
