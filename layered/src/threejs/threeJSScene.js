@@ -1,6 +1,6 @@
 import { Suspense, useState, useEffect } from 'react';
 import { Canvas, useLoader } from '@react-three/fiber';
-import { OrbitControls, TransformControls, useCursor } from '@react-three/drei';
+import { OrbitControls, Plane, TransformControls, useCursor } from '@react-three/drei';
 import create from 'zustand';
 import Man from './3dScenes/Man';
 import { TextureLoader } from 'three'; // Import TextureLoader from Three.js
@@ -37,6 +37,10 @@ function Box(props) {
       scale: e.object.scale,
       rotation: e.object.rotation,
     });
+
+    console.log("this is the target object: ");
+    console.log(e.object);
+
 
     setTarget(e.object);
     setTargetName(props.itemName);
@@ -107,7 +111,7 @@ export default function ThreeJSScene(props) {
         const material = new THREE.MeshBasicMaterial({
           map: texture,
           transparent: true, // Enable transparency
-          side: THREE.DoubleSide, // Render both sides of the mesh
+          // side: THREE.DoubleSide, // Render both sides of the mesh
         });
 
         material.alphaTest = 0.8;
@@ -138,17 +142,36 @@ export default function ThreeJSScene(props) {
 
   return (
     <div className={templateCSS.canvasHolder}>
-      <Canvas dpr={[1, 2]} onPointerMissed={() => setTarget(null)}>
+    <Canvas
+        colorManagement
+        shadowMap // highlight-line
+        camera={{ position: [-3, 2, 5], fov: 90 }}
+        linear
+        flat
+        >
         <Suspense fallback={null}>
           <gridHelper args={[400, 200, '#151515', '#020202']} position={[0, -4, 0]} />
-          <ambientLight intensity={1.0} />
+          <directionalLight
+            intensity={5.0}
+            castShadow // highlight-line
+            shadow-mapSize-height={512}
+            shadow-mapSize-width={512}
+          />
           <pointLight position={[10, 10, 10]} intensity={1} castShadow={true} />
 
           {instantiateObjects()}
 
-          <Man scale={0.01} position={[3, -2, 0]} />
+          <Man scale={0.01} position={[3, 1.3, 0]} />
           {target && <TransformControls object={target} mode={props.editMode} />}
           <OrbitControls makeDefault />
+          {/* <Plane
+            receiveShadow // highlight-line
+            rotation={[-Math.PI / 2, 0, 0]}
+            position={[0, -1, 0]}
+            args={[1000, 1000]}
+            >
+            <meshStandardMaterial attach="material" color="grey" />
+            </Plane> */}
         </Suspense>
       </Canvas>
     </div>

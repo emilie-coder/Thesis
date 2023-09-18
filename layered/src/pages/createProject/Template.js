@@ -26,6 +26,7 @@ import { useLocation } from 'react-router-dom';
 
 import { selectObjectID, selectObjectChosen, selectObjectMaterial, SET_OBJECT_MATERIAL, SET_OBJECT_IMAGE } from '../../redux/slice/objectImageSlice';
 
+import TestRayCast from '../../threejs/testingRayCast';
 
 
 const Editor = () => {
@@ -77,8 +78,30 @@ const Editor = () => {
       setEditMode('rotate')
     } else if(event.key ==='f') {
       // move upwards in index
+      
+      // const newIndex = ((selectedObjectID + 1)%2);
+      // console.log(`this is the new index: ` + newIndex)
+
+      // console.log('this is project scene');
+      // console.log(projectScene);
+
+      // const objectInfo = {
+      //   objectName: projectScene.objects[newIndex].objectTypeName,
+      //   objectID: newIndex,
+      //   objectMaterial: projectScene.objects[newIndex].material,
+      // };
+  
+      // Dispatch the project information to Redux
+      // dispatch(SET_OBJECT_IMAGE(objectInfo));
+
     } else if(event.key ==='d') {
       // move backwards in index
+    } else if(event.key ==='p') {
+      // addPlane();
+      console.log("trying to make a new plane");
+    }  else if(event.key ==='c') {
+      // addCylinder();
+      console.log("trying to make a new cylinder");
     } 
 
   }, []);
@@ -521,7 +544,9 @@ const Editor = () => {
 
             </div>
 
-            <TemplateScene scene={projectScene} className={templateCSS.canvasHolder} updateObject={updateObjectArc} editMode={editMode} />
+            <TestRayCast></TestRayCast>
+
+            {/* <TemplateScene scene={projectScene} className={templateCSS.canvasHolder} updateObject={updateObjectArc} editMode={editMode} /> */}
           </div>
         </div>
         <div className={templateCSS.leftEditorBottomt}>

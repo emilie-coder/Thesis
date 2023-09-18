@@ -22,6 +22,7 @@
     "three": "^0.155.0",
     "three-orbitcontrols": "^2.110.3",
     "uuid": "^9.0.0",
+    "valtio": "^1.11.2",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
