@@ -374,6 +374,9 @@ const Editor = () => {
   }
 
   const updateObjectArc = (objectID, newObjectData) => {
+
+    console.log(" in template props ");
+    console.log(objectID, newObjectData);
   
     if (projectScene && projectScene.objects) {
 
