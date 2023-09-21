@@ -5,24 +5,23 @@ import { proxy, useSnapshot } from 'valtio';
 import * as THREE from 'three';
 import { Outline } from '@react-three/postprocessing'
 import Man from './3dScenes/Man';
-import { useDispatch } from 'react-redux';
-import { SET_OBJECT_IMAGE, selectObjectID } from '../redux/slice/objectImageSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { SET_OBJECT_IMAGE, selectObjectID, UNSET_OBJECT_IMAGE, selectObjectChosen } from '../redux/slice/objectImageSlice';
 
-const state = proxy({ current: null });
+
 
 
 const textureCache = {}; // Texture cache to store loaded textures
 
 function Model({ name, ...props }) {
+  const selectedID = useSelector(selectObjectID);
   const dispatch = useDispatch();
 
-
-  const snap = useSnapshot(state);
   const { nodes } = useGLTF('/3dAssets/new_cylinder.glb');
   const [hovered, setHovered] = useState(false);
   useCursor(hovered);
 
-  const materialColor = snap.current === name ? '#ADD8E6' : (hovered ? 'grey' : 'white');
+  const materialColor = selectedID === name ? '#ADD8E6' : (hovered ? 'grey' : 'white');
 
   const loadTexture = (textureUrl) => {
     if (textureCache[textureUrl]) {
@@ -56,7 +55,7 @@ function Model({ name, ...props }) {
     <mesh
       onClick={(e) => {
         e.stopPropagation();
-        state.current = name;
+
         props.updateThreeObject(props.itemID, {
           position: e.object.position,
           scale: e.object.scale,
@@ -71,7 +70,7 @@ function Model({ name, ...props }) {
         // Dispatch the project information to Redux
         dispatch(SET_OBJECT_IMAGE(objectInfo));
       }}
-      onPointerMissed={(e) => e.type === 'click' && (state.current = null)}
+      onPointerMissed={(e) => e.type === 'click' && (dispatch(UNSET_OBJECT_IMAGE()))}
       onPointerOver={(e) => {
         e.stopPropagation();
         setHovered(true);
@@ -96,19 +95,20 @@ function Model({ name, ...props }) {
 }
 
 function Controls(props) {
-  const snap = useSnapshot(state);
+  const selectedID = useSelector(selectObjectID);
+  const ifSelected = useSelector(selectObjectChosen);
   const scene = useThree((state) => state.scene);
 
   const handleDrag = (event) => {
 
     // update the object here too
-    const objectToUpdate = scene.getObjectByName(snap.current);
+    const objectToUpdate = scene.getObjectByName(`${selectedID}`);
 
-    const newPostion = new THREE.Vector3([objectToUpdate.position.x, objectToUpdate.position.y, objectToUpdate.position.z ]);
-    const newScale = new THREE.Vector3([objectToUpdate.scale.x, objectToUpdate.scale.y, objectToUpdate.scale.z ]);
-    const newRotation = new THREE.Vector3([objectToUpdate.rotation._x, objectToUpdate.rotation._y, objectToUpdate.rotation._z]);
+    const newPostion = {x: objectToUpdate.position.x, y: objectToUpdate.position.y, z: objectToUpdate.position.z};
+    const newScale = {x: objectToUpdate.scale.x, y: objectToUpdate.scale.y, z: objectToUpdate.scale.z};
+    const newRotation = {x:objectToUpdate.rotation._x, y: objectToUpdate.rotation._y, z:objectToUpdate.rotation._z};
 
-    props.updateThreeObject(snap.current, {
+    props.updateThreeObject(selectedID, {
       position: newPostion,
       scale: newScale,
       rotation: newRotation,
@@ -118,7 +118,7 @@ function Controls(props) {
 
   return (
     <>
-      {snap.current && <TransformControls object={scene.getObjectByName(snap.current)} mode={props.editMode} onMouseUp={handleDrag}/>}
+      {ifSelected && <TransformControls object={scene.getObjectByName(`${selectedID}`)} mode={props.editMode} onMouseUp={handleDrag}/>}
     </>
   );
 }

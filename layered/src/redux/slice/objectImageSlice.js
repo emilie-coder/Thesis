@@ -27,13 +27,21 @@ const objectImageSlice = createSlice({
           ...state,
           objectMaterial: action.payload.objectMaterial,
         };
+      },
+      UNSET_OBJECT_IMAGE: () => {
+        return {
+        objectChosen: false,
+        objectName: 'none chosen',
+        objectID: 0,
+        objectMaterial: '',
+        }
       }
     }
   });
   
 
 // these are the actions
-export const {SET_OBJECT_IMAGE, SET_OBJECT_MATERIAL} = objectImageSlice.actions
+export const {SET_OBJECT_IMAGE, SET_OBJECT_MATERIAL, UNSET_OBJECT_IMAGE} = objectImageSlice.actions
 
 export const selectObjectChosen = (state) => state.objectImage.objectChosen;
 export const selectObjectName = (state) => state.objectImage.objectName;
