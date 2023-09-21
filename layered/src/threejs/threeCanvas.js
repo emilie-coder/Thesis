@@ -1,4 +1,4 @@
-import { Suspense, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { Canvas, useThree } from '@react-three/fiber';
 import { OrbitControls, TransformControls, ContactShadows, useGLTF, useCursor, PivotControls } from '@react-three/drei';
 import { proxy, useSnapshot } from 'valtio';
@@ -125,12 +125,17 @@ function Controls(props) {
 
 export default function ThreeCanvas(props) {
   const sceneObjs = props.scene;
-
+  const [objectsToRender, setObjectsToRender] = useState([]);
 
   const updateThreeObject = (objectID, newObjectData) => {
-
     props.updateObject(objectID, newObjectData);
   };
+
+  useEffect(() => {
+    // Update the objects to be rendered whenever sceneObjs changes
+    const newObjectsToRender = instantiateObjects();
+    setObjectsToRender(newObjectsToRender);
+  }, [props.scene]);
 
   const instantiateObjects = () => {
     const objectsToRender = [];
@@ -159,12 +164,11 @@ export default function ThreeCanvas(props) {
 
   return (
     <Canvas
-        colorManagement
-        shadowMap // highlight-line
         camera={{ position: [-3, 2, 5], fov: 90 }}
         linear
         flat
         >
+      <gridHelper args={[400, 200, '#151515', '#020202']} position={[0, -4, 0]} />
       <pointLight position={[100, 100, 100]} intensity={0.8} />
       <hemisphereLight color="#ffffff" groundColor="#b9b9b9" position={[-7, 25, 13]} intensity={0.85} />
       <Suspense fallback={null}>

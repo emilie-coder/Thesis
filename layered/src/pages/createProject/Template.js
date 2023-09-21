@@ -60,12 +60,91 @@ const Editor = () => {
 
   const [lastSelectedImage, setLastSelectedImage] = useState(null);
 
+  const [toggleSides, setToggleSides] = useState(true);
+  
   const handleImageClick = (url) => {
     // Handle the image click, for example, update state to keep track of the last selected image
     setLastSelectedImage(url);
     // Add more logic as needed based on the selected image
   };
 
+
+  const addCylinder = () => {
+    // console.log('here----');
+    // Ensure that projectScene and projectScene.objects exist
+    if (!projectScene || !projectScene.objects) {
+      console.error("projectScene or projectScene.objects is not defined.");
+      return;
+    }
+  
+    // Create a new cylinder object with an ID one greater than the maximum
+    const newCylinder = {
+      // objectID: maxId + 1, // Assign the next available ID
+      objectTypeName: "cylinder", // You can customize this
+      objectType: "1", // You can customize this
+      material: "https://firebasestorage.googleapis.com/v0/b/layered-5fb29.appspot.com/o/sqaure.png?alt=media&token=dd1d81ad-6eb2-4048-a518-576ce1a8766a", // Customize with your material
+      position: { x: 0, y: 0, z: 0 }, // Set the initial position
+      rotation: { x: 0, y: 0, z: 0 }, // Set the initial rotation
+      scale: { x: 1, y: 1, z: 1 }, // Set the initial scale
+    };
+  
+    // Append the new cylinder object to projectScene.objects
+    let maxId = projectScene.objects.push(newCylinder) - 1;
+    console.log(maxId);
+
+  
+    // Now you have added a new cylinder object to your projectScene
+    // console.log("New plane added:", newPlane);
+
+      const objectInfo = {
+        objectName: projectScene.objects[maxId].objectTypeName,
+        objectID: maxId,
+        objectMaterial: projectScene.objects[maxId].material,
+      };
+  
+      // Dispatch the project information to Redux
+      dispatch(SET_OBJECT_IMAGE(objectInfo));
+  };
+  
+
+  const addPlane = () => {
+    // Ensure that projectScene and projectScene.objects exist
+    if (!projectScene || !projectScene.objects) {
+      console.error("projectScene or projectScene.objects is not defined.");
+      return;
+    }
+
+  
+    // Create a new cylinder object with an ID one greater than the maximum
+    const newPlane = {
+      // objectID: maxId + 1, // Assign the next available ID
+      objectTypeName: "plane", // You can customize this
+      objectType: "0", // You can customize this
+      material: "https://firebasestorage.googleapis.com/v0/b/layered-5fb29.appspot.com/o/sqaure.png?alt=media&token=dd1d81ad-6eb2-4048-a518-576ce1a8766a", // Customize with your material
+      position: { x: 0, y: 0, z: 0 }, // Set the initial position
+      rotation: { x: 0, y: 0, z: 0 }, // Set the initial rotation
+      scale: { x: 1, y: 1, z: 1 }, // Set the initial scale
+    };
+  
+    // Append the new cylinder object to projectScene.objects
+    let maxId = projectScene.objects.push(newPlane) - 1;
+    console.log(maxId);
+
+  
+    // Now you have added a new cylinder object to your projectScene
+    // console.log("New plane added:", newPlane);
+
+      const objectInfo = {
+        objectName: projectScene.objects[maxId].objectTypeName,
+        objectID: maxId,
+        objectMaterial: projectScene.objects[maxId].material,
+      };
+  
+      // Dispatch the project information to Redux
+      dispatch(SET_OBJECT_IMAGE(objectInfo));
+
+
+  };
   
   const handleKeyPress = useCallback((event) => {
     // console.log(`Key pressed: ${event.key}`);
@@ -96,15 +175,19 @@ const Editor = () => {
 
     } else if(event.key ==='d') {
       // move backwards in index
-    } else if(event.key ==='p') {
-      // addPlane();
-      // console.log("trying to make a new plane");
+    }  else if (event.key === 'p') {
+      if (projectScene && projectScene.objects) {
+        addPlane();
+        console.log('trying to make a new plane');
+      } else {
+        console.log('projectScene or projectScene.objects is not defined.');
+      }
     }  else if(event.key ==='c') {
-      // addCylinder();
-      // console.log("trying to make a new cylinder");
+      addCylinder();
+      console.log("trying to make a new cylinder");
     } 
 
-  }, []);
+  }, [projectScene, addPlane]);
 
   useEffect(() => {
     // attach the event listener
@@ -413,75 +496,7 @@ const Editor = () => {
       }
     }
   };
-  
 
-  const addCylinder = () => {
-    // console.log('here----');
-    // Ensure that projectScene and projectScene.objects exist
-    if (!projectScene || !projectScene.objects) {
-      console.error("projectScene or projectScene.objects is not defined.");
-      return;
-    }
-  
-    // Find the maximum ID among existing objects
-    let maxId = 0;
-    for (const obj of projectScene.objects) {
-      if (obj.objectID > maxId) {
-        maxId = obj.objectID;
-      }
-    }
-  
-    // Create a new cylinder object with an ID one greater than the maximum
-    const newCylinder = {
-      // objectID: maxId + 1, // Assign the next available ID
-      objectTypeName: "cylinder", // You can customize this
-      objectType: "1", // You can customize this
-      material: "https://firebasestorage.googleapis.com/v0/b/layered-5fb29.appspot.com/o/sqaure.png?alt=media&token=dd1d81ad-6eb2-4048-a518-576ce1a8766a", // Customize with your material
-      position: { x: 0, y: 0, z: 0 }, // Set the initial position
-      rotation: { x: 0, y: 0, z: 0 }, // Set the initial rotation
-      scale: { x: 1, y: 1, z: 1 }, // Set the initial scale
-    };
-  
-    // Append the new cylinder object to projectScene.objects
-    projectScene.objects.push(newCylinder);
-  
-    // Now you have added a new cylinder object to your projectScene
-    // console.log("New cylinder added:", newCylinder);
-  };
-  
-
-  const addPlane = () => {
-    // Ensure that projectScene and projectScene.objects exist
-    if (!projectScene || !projectScene.objects) {
-      console.error("projectScene or projectScene.objects is not defined.");
-      return;
-    }
-  
-    // Find the maximum ID among existing objects
-    let maxId = 0;
-    for (const obj of projectScene.objects) {
-      if (obj.objectID > maxId) {
-        maxId = obj.objectID;
-      }
-    }
-  
-    // Create a new cylinder object with an ID one greater than the maximum
-    const newPlane = {
-      // objectID: maxId + 1, // Assign the next available ID
-      objectTypeName: "plane", // You can customize this
-      objectType: "0", // You can customize this
-      material: "https://firebasestorage.googleapis.com/v0/b/layered-5fb29.appspot.com/o/sqaure.png?alt=media&token=dd1d81ad-6eb2-4048-a518-576ce1a8766a", // Customize with your material
-      position: { x: 0, y: 0, z: 0 }, // Set the initial position
-      rotation: { x: 0, y: 0, z: 0 }, // Set the initial rotation
-      scale: { x: 1, y: 1, z: 1 }, // Set the initial scale
-    };
-  
-    // Append the new cylinder object to projectScene.objects
-    projectScene.objects.push(newPlane);
-  
-    // Now you have added a new cylinder object to your projectScene
-    // console.log("New plane added:", newPlane);
-  };
   
 
   const insertFromList = (image) => {
