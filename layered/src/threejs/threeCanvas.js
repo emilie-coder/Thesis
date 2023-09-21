@@ -6,9 +6,11 @@ import * as THREE from 'three';
 import { Outline } from '@react-three/postprocessing'
 import Man from './3dScenes/Man';
 import { useDispatch } from 'react-redux';
-import { SET_OBJECT_IMAGE } from '../redux/slice/objectImageSlice';
+import { SET_OBJECT_IMAGE, selectObjectID } from '../redux/slice/objectImageSlice';
 
-const state = proxy({ current: null, mode: 0 });
+const state = proxy({ current: null });
+
+
 const textureCache = {}; // Texture cache to store loaded textures
 
 function Model({ name, ...props }) {
@@ -39,6 +41,7 @@ function Model({ name, ...props }) {
     map: texture,
     color: materialColor,
     transparent: true,
+    side: THREE.DoubleSide
   });
 
   newMaterial.alphaTest = 0.8;
@@ -48,12 +51,8 @@ function Model({ name, ...props }) {
     myGeometry = new THREE.PlaneGeometry();
   }
 
-  const handleDrag = (event) => {
-    console.log('Drag event:', event);
-  };
 
   return (
-    // <PivotControls onDragEnd ={console.log('ahh')} visible={state.current === name}>
     <mesh
       onClick={(e) => {
         e.stopPropagation();
@@ -78,16 +77,21 @@ function Model({ name, ...props }) {
         setHovered(true);
       }}
       onPointerOut={(e) => setHovered(false)}
-      onDrag={handleDrag} // Add onDrag event listener
       name={name}
       geometry={myGeometry}
       material={newMaterial}
       {...props}
       dispose={null}
       className={hovered ? 'hovered' : ''}
+      onMouseUp={(e) => 
+        
+        props.updateThreeObject(props.itemID, {
+        position: e.object.position,
+        scale: e.object.scale,
+        rotation: e.object.rotation,
+      })}
       
     />
-    // </PivotControls>
   );
 }
 
@@ -95,9 +99,26 @@ function Controls(props) {
   const snap = useSnapshot(state);
   const scene = useThree((state) => state.scene);
 
+  const handleDrag = (event) => {
+
+    // update the object here too
+    const objectToUpdate = scene.getObjectByName(snap.current);
+
+    const newPostion = new THREE.Vector3([objectToUpdate.position.x, objectToUpdate.position.y, objectToUpdate.position.z ]);
+    const newScale = new THREE.Vector3([objectToUpdate.scale.x, objectToUpdate.scale.y, objectToUpdate.scale.z ]);
+    const newRotation = new THREE.Vector3([objectToUpdate.rotation._x, objectToUpdate.rotation._y, objectToUpdate.rotation._z]);
+
+    props.updateThreeObject(snap.current, {
+      position: newPostion,
+      scale: newScale,
+      rotation: newRotation,
+    });
+
+  };
+
   return (
     <>
-      {snap.current && <TransformControls object={scene.getObjectByName(snap.current)} mode={props.editMode} onDrag={console.log('on drag')}/>}
+      {snap.current && <TransformControls object={scene.getObjectByName(snap.current)} mode={props.editMode} onMouseUp={handleDrag}/>}
     </>
   );
 }
@@ -105,9 +126,9 @@ function Controls(props) {
 export default function ThreeCanvas(props) {
   const sceneObjs = props.scene;
 
+
   const updateThreeObject = (objectID, newObjectData) => {
-    console.log(" in three canvas props ");
-    console.log(objectID, newObjectData);
+
     props.updateObject(objectID, newObjectData);
   };
 
@@ -118,7 +139,7 @@ export default function ThreeCanvas(props) {
       sceneObjs.objects.forEach((item, index) => {
         objectsToRender.push(
           <Model
-            name={`name_${index}`}
+            name={`${index}`}
             key={index}
             position={[item.position.x, item.position.y, item.position.z]}
             rotation={[item.rotation.x, item.rotation.y, item.rotation.z]}
@@ -137,7 +158,13 @@ export default function ThreeCanvas(props) {
   };
 
   return (
-    <Canvas camera={{ position: [0, -10, 80], fov: 50 }} dpr={[1, 2]}>
+    <Canvas
+        colorManagement
+        shadowMap // highlight-line
+        camera={{ position: [-3, 2, 5], fov: 90 }}
+        linear
+        flat
+        >
       <pointLight position={[100, 100, 100]} intensity={0.8} />
       <hemisphereLight color="#ffffff" groundColor="#b9b9b9" position={[-7, 25, 13]} intensity={0.85} />
       <Suspense fallback={null}>
@@ -145,7 +172,7 @@ export default function ThreeCanvas(props) {
       </Suspense>
       <OrbitControls makeDefault />
 
-      <Controls editMode={props.editMode}/>
+      <Controls editMode={props.editMode} updateThreeObject={updateThreeObject}/>
     </Canvas>
   );
 }

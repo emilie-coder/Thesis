@@ -98,10 +98,10 @@ const Editor = () => {
       // move backwards in index
     } else if(event.key ==='p') {
       // addPlane();
-      console.log("trying to make a new plane");
+      // console.log("trying to make a new plane");
     }  else if(event.key ==='c') {
       // addCylinder();
-      console.log("trying to make a new cylinder");
+      // console.log("trying to make a new cylinder");
     } 
 
   }, []);
@@ -255,7 +255,7 @@ const Editor = () => {
   };
   
     const updateTarget = (index) => {
-      console.log('Clicked index:', index);
+      // console.log('Clicked index:', index);
   
       const objectInfo = {
         objectName: projectScene.objects[index].objectTypeName,
@@ -375,8 +375,8 @@ const Editor = () => {
 
   const updateObjectArc = (objectID, newObjectData) => {
 
-    console.log(" in template props ");
-    console.log(objectID, newObjectData);
+    // console.log(" in template props ");
+    // console.log(objectID, newObjectData);
   
     if (projectScene && projectScene.objects) {
 
@@ -408,15 +408,15 @@ const Editor = () => {
         setProjectScene(updatedProjectScene);
   
         // Now, the projectScene state has been updated with the modified object.
-        console.log("the new projectscene")
-        console.log(projectScene)
+        // console.log("the new projectscene")
+        // console.log(projectScene)
       }
     }
   };
   
 
   const addCylinder = () => {
-    console.log('here----');
+    // console.log('here----');
     // Ensure that projectScene and projectScene.objects exist
     if (!projectScene || !projectScene.objects) {
       console.error("projectScene or projectScene.objects is not defined.");
@@ -446,7 +446,7 @@ const Editor = () => {
     projectScene.objects.push(newCylinder);
   
     // Now you have added a new cylinder object to your projectScene
-    console.log("New cylinder added:", newCylinder);
+    // console.log("New cylinder added:", newCylinder);
   };
   
 
@@ -480,19 +480,19 @@ const Editor = () => {
     projectScene.objects.push(newPlane);
   
     // Now you have added a new cylinder object to your projectScene
-    console.log("New plane added:", newPlane);
+    // console.log("New plane added:", newPlane);
   };
   
 
   const insertFromList = (image) => {
-    console.log('wtf');
+    // console.log('wtf');
     if(projectScene){
       projectScene.objects[selectedObjectID].material = image;
       dispatch(SET_OBJECT_MATERIAL({
         objectMaterial: image,
       }));
     } else{
-      console.log("bithc")
+      // console.log("bithc")
     }
   }
   
@@ -502,15 +502,15 @@ const Editor = () => {
       if (mode === 'translate') {
         // Handle translate logic
         setEditMode('translate');
-        console.log('Translate mode selected');
+        // console.log('Translate mode selected');
       } else if (mode === 'scale') {
         // Handle scale logic
         setEditMode('scale');
-        console.log('Scale mode selected');
+        // console.log('Scale mode selected');
       } else if (mode === 'rotate') {
         // Handle rotate logic
         setEditMode('rotate');
-        console.log('Rotate mode selected');
+        // console.log('Rotate mode selected');
       }
     };
   };
@@ -628,7 +628,7 @@ const Editor = () => {
 
 
                   <div className={templateCSS.imgEditor}>
-                  {console.log('Selected Object Material:', selectedObjectMaterial)}
+                  {/* {console.log('Selected Object Material:', selectedObjectMaterial)} */}
                   {selectedObjectChosen && <img src={selectedObjectMaterial} alt='objectImg' className={templateCSS.displayedObjectImage} />}
 
                     <div className={templateCSS.fileUpload}>
