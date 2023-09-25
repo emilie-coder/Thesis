@@ -38,8 +38,8 @@ function Box(props) {
       rotation: e.object.rotation,
     });
 
-    console.log("this is the target object: ");
-    console.log(e.object);
+    // console.log("this is the target object: ");
+    // console.log(e.object);
 
 
     setTarget(e.object);

@@ -90,12 +90,10 @@ const CreateProject = () => {
         Object.keys(snapshot).forEach((key) => {
           const templateData = snapshot[key];
     
-          // Do whatever you need to do with the key and data
           templates.push({
             key: key,
             templateTitle: templateData.templateTitle,
             templateCover: templateData.templateCover,
-            // Add other properties you need
           });
         });
     

@@ -24,7 +24,7 @@ import { updateProjectTitle, updateProject, createTemplate } from '../../firebas
 import { useLocation } from 'react-router-dom';
 
 
-import { selectObjectID, selectObjectChosen, selectObjectMaterial, SET_OBJECT_MATERIAL, SET_OBJECT_IMAGE } from '../../redux/slice/objectImageSlice';
+import { selectObjectID, selectObjectChosen, selectObjectMaterial, SET_OBJECT_MATERIAL, SET_OBJECT_IMAGE, UNSET_OBJECT_IMAGE } from '../../redux/slice/objectImageSlice';
 
 import TestRayCast from '../../threejs/testingRayCast';
 import NewCanvas from '../../threejs/threeCanvas';
@@ -63,9 +63,7 @@ const Editor = () => {
   const [toggleSides, setToggleSides] = useState(true);
   
   const handleImageClick = (url) => {
-    // Handle the image click, for example, update state to keep track of the last selected image
     setLastSelectedImage(url);
-    // Add more logic as needed based on the selected image
   };
 
 
@@ -86,11 +84,12 @@ const Editor = () => {
       position: { x: 0, y: 0, z: 0 }, // Set the initial position
       rotation: { x: 0, y: 0, z: 0 }, // Set the initial rotation
       scale: { x: 1, y: 1, z: 1 }, // Set the initial scale
+      tiling: { x: 1, y: 1}, // Set the initial scale
     };
   
     // Append the new cylinder object to projectScene.objects
     let maxId = projectScene.objects.push(newCylinder) - 1;
-    console.log(maxId);
+    // console.log(maxId);
 
   
     // Now you have added a new cylinder object to your projectScene
@@ -124,11 +123,12 @@ const Editor = () => {
       position: { x: 0, y: 0, z: 0 }, // Set the initial position
       rotation: { x: 0, y: 0, z: 0 }, // Set the initial rotation
       scale: { x: 1, y: 1, z: 1 }, // Set the initial scale
+      tiling: { x: 1, y: 1}, // Set the initial scale
     };
   
     // Append the new cylinder object to projectScene.objects
     let maxId = projectScene.objects.push(newPlane) - 1;
-    console.log(maxId);
+    // console.log(maxId);
 
   
     // Now you have added a new cylinder object to your projectScene
@@ -153,38 +153,18 @@ const Editor = () => {
       setEditMode('translate');
     } else if(event.key ==='r') {
       setEditMode('scale');
-    } else if(event.key ==='e') {
-      setEditMode('rotate')
-    } else if(event.key ==='f') {
-      // move upwards in index
-      
-      // const newIndex = ((selectedObjectID + 1)%2);
-      // console.log(`this is the new index: ` + newIndex)
-
-      // console.log('this is project scene');
-      // console.log(projectScene);
-
-      // const objectInfo = {
-      //   objectName: projectScene.objects[newIndex].objectTypeName,
-      //   objectID: newIndex,
-      //   objectMaterial: projectScene.objects[newIndex].material,
-      // };
-  
-      // Dispatch the project information to Redux
-      // dispatch(SET_OBJECT_IMAGE(objectInfo));
-
-    } else if(event.key ==='d') {
-      // move backwards in index
+    } else if(event.keyCode === 46 || event.keyCode === 8){
+      deleteObject();
     }  else if (event.key === 'p') {
       if (projectScene && projectScene.objects) {
         addPlane();
-        console.log('trying to make a new plane');
+        // console.log('trying to make a new plane');
       } else {
-        console.log('projectScene or projectScene.objects is not defined.');
+        // console.log('projectScene or projectScene.objects is not defined.');
       }
     }  else if(event.key ==='c') {
       addCylinder();
-      console.log("trying to make a new cylinder");
+      // console.log("trying to make a new cylinder");
     } 
 
   }, [projectScene, addPlane]);
@@ -310,7 +290,7 @@ const Editor = () => {
         //   setImageList((prev) => [...prev, ...urls]);
         // }
     
-    }, [userID, projID]);  // Add projectScene as a dependency if needed
+    }, [userID, projID]);  
 
 
   // Function to handle title editing
@@ -376,72 +356,231 @@ const Editor = () => {
   
     return null;
   };
+
+const handleGeometryPosX = (e) => {
+  if (projectScene && projectScene.objects) {
+    const updatedObjects = [...projectScene.objects];
+    updatedObjects[selectedObjectID].position.x = e.target.value;
+    // Update the projectScene with the updated position
+    setProjectScene(prevScene => ({
+      ...prevScene,
+      objects: updatedObjects
+    }));
+  }
+}
+
+const handleGeometryPosY = (e) => {
+  if (projectScene && projectScene.objects) {
+    const updatedObjects = [...projectScene.objects];
+    updatedObjects[selectedObjectID].position.y = e.target.value;
+    // Update the projectScene with the updated position
+    setProjectScene(prevScene => ({
+      ...prevScene,
+      objects: updatedObjects
+    }));
+  }
+}
+
+const handleGeometryPosZ = (e) => {
+  if (projectScene && projectScene.objects) {
+    const updatedObjects = [...projectScene.objects];
+    updatedObjects[selectedObjectID].position.z = e.target.value;
+    // Update the projectScene with the updated position
+    setProjectScene(prevScene => ({
+      ...prevScene,
+      objects: updatedObjects
+    }));
+  }
+}
+
+const geometryPositions = (projectScene) => {
+    if (projectScene){
+      if(projectScene.objects && projectScene.objects.length !== 0){
+        if(selectObjectChosen){
+          return(
+            <>
+            <input placeholder="x value" type="number" value={projectScene.objects[selectedObjectID].position.x} onChange={handleGeometryPosX}/>
+            <input placeholder="y value" type="number" value={projectScene.objects[selectedObjectID].position.y} onChange={handleGeometryPosY}/>
+            <input placeholder="z value" type="number" value={projectScene.objects[selectedObjectID].position.z} onChange={handleGeometryPosZ}/>
+            </>
+          )
+        }
+
+      }
+    }
+
+    return(
+      null
+    );
+
+  }
+
+
+
+const handleGeometryScaleX = (e) => {
+  if (projectScene && projectScene.objects) {
+    const updatedObjects = [...projectScene.objects];
+    updatedObjects[selectedObjectID].scale.x = e.target.value;
+    // Update the projectScene with the updated position
+    setProjectScene(prevScene => ({
+      ...prevScene,
+      objects: updatedObjects
+    }));
+  }
+}
+
+const handleGeometryScaleY = (e) => {
+  if (projectScene && projectScene.objects) {
+    const updatedObjects = [...projectScene.objects];
+    updatedObjects[selectedObjectID].scale.y = e.target.value;
+    // Update the projectScene with the updated position
+    setProjectScene(prevScene => ({
+      ...prevScene,
+      objects: updatedObjects
+    }));
+  }
+}
+
+const handleGeometryScaleZ = (e) => {
+  if (projectScene && projectScene.objects) {
+    const updatedObjects = [...projectScene.objects];
+    updatedObjects[selectedObjectID].scale.z = e.target.value;
+    // Update the projectScene with the updated position
+    setProjectScene(prevScene => ({
+      ...prevScene,
+      objects: updatedObjects
+    }));
+  }
+}
   
-  const handleGeometryPosX = (e) => {
-    console.log("-----");
-
-  }
-
-  const geometryPositions = (projectScene) => {
-    if (projectScene){
-      if(projectScene.objects){
-        return(
-          <>
-          <input placeholder="x value" value={projectScene.objects[selectedObjectID].position.x} onChange={handleGeometryPosX}/>
-          <input placeholder="y value" value={projectScene.objects[selectedObjectID].position.y} onChange={handleGeometryPosX}/>
-          <input placeholder="z value" value={projectScene.objects[selectedObjectID].position.z} onChange={handleGeometryPosX}/>
-          </>
-        )
-      }
+const geometryScales = (projectScene) => {
+  if (projectScene){
+    if(projectScene.objects && projectScene.objects.length !== 0){
+      if(selectObjectChosen){
+      return(
+        <>
+        <input placeholder="x value" type="number" value={projectScene.objects[selectedObjectID].scale.x} onChange={handleGeometryScaleX}/>
+        <input placeholder="y value" type="number" value={projectScene.objects[selectedObjectID].scale.y} onChange={handleGeometryScaleY}/>
+        <input placeholder="z value" type="number" value={projectScene.objects[selectedObjectID].scale.z} onChange={handleGeometryScaleZ}/>
+        </>
+      )
     }
-
-    return(
-      null
-    );
-
+  }
   }
 
+  return(
+    null
+  );
 
-  const geometryScales = (projectScene) => {
-    if (projectScene){
-      if(projectScene.objects){
-        return(
-          <>
-          <input placeholder="x value" value={projectScene.objects[selectedObjectID].scale.x} onChange={handleGeometryPosX}/>
-          <input placeholder="y value" value={projectScene.objects[selectedObjectID].scale.y} onChange={handleGeometryPosX}/>
-          <input placeholder="z value" value={projectScene.objects[selectedObjectID].scale.z} onChange={handleGeometryPosX}/>
-          </>
-        )
-      }
+}
+
+
+const handleGeometryRotX = (e) => {
+  if (projectScene && projectScene.objects) {
+    const updatedObjects = [...projectScene.objects];
+    updatedObjects[selectedObjectID].rotation.x = e.target.value;
+    // Update the projectScene with the updated position
+    setProjectScene(prevScene => ({
+      ...prevScene,
+      objects: updatedObjects
+    }));
+  }
+}
+
+const handleGeometryRotY = (e) => {
+  if (projectScene && projectScene.objects) {
+    const updatedObjects = [...projectScene.objects];
+    updatedObjects[selectedObjectID].rotation.y = e.target.value;
+    // Update the projectScene with the updated position
+    setProjectScene(prevScene => ({
+      ...prevScene,
+      objects: updatedObjects
+    }));
+  }
+}
+
+const handleGeometryRotZ = (e) => {
+  if (projectScene && projectScene.objects) {
+    const updatedObjects = [...projectScene.objects];
+    updatedObjects[selectedObjectID].rotation.z = e.target.value;
+    // Update the projectScene with the updated position
+    setProjectScene(prevScene => ({
+      ...prevScene,
+      objects: updatedObjects
+    }));
+  }
+}
+  
+
+const handleTilingX = (e) => {
+  if (projectScene && projectScene.objects) {
+    const updatedObjects = [...projectScene.objects];
+    updatedObjects[selectedObjectID].tiling.x = e.target.value;
+    // Update the projectScene with the updated position
+    setProjectScene(prevScene => ({
+      ...prevScene,
+      objects: updatedObjects
+    }));
+  }
+}
+
+const handleTilingY = (e) => {
+  if (projectScene && projectScene.objects) {
+    const updatedObjects = [...projectScene.objects];
+    updatedObjects[selectedObjectID].tiling.y = e.target.value;
+    // Update the projectScene with the updated position
+    setProjectScene(prevScene => ({
+      ...prevScene,
+      objects: updatedObjects
+    }));
+  }
+}
+  
+  
+
+const geometryRotations = (projectScene) => {
+  if (projectScene){
+    if(projectScene.objects && projectScene.objects.length !== 0){
+      if(selectObjectChosen){
+      return(
+        <>
+        <input placeholder="x value" type="number" value={projectScene.objects[selectedObjectID].rotation.x} onChange={handleGeometryRotX} step="0.5"/>
+        <input placeholder="y value" type="number" value={projectScene.objects[selectedObjectID].rotation.y} onChange={handleGeometryRotY} step="0.5"/>
+        <input placeholder="z value" type="number" value={projectScene.objects[selectedObjectID].rotation.z} onChange={handleGeometryRotZ} step="0.5"/>
+        </>
+      )
     }
-
-    return(
-      null
-    );
-
+  }
   }
 
+  
+  return(
+    null
+  );
 
-  const geometryRotations = (projectScene) => {
-    if (projectScene){
-      if(projectScene.objects){
-        return(
-          <>
-          <input placeholder="x value" value={projectScene.objects[selectedObjectID].rotation.x} onChange={handleGeometryPosX}/>
-          <input placeholder="y value" value={projectScene.objects[selectedObjectID].rotation.y} onChange={handleGeometryPosX}/>
-          <input placeholder="z value" value={projectScene.objects[selectedObjectID].rotation.z} onChange={handleGeometryPosX} />
-          </>
-        )
-      }
+}
+
+const geometryTiling = (projectScene) => {
+  if (projectScene){
+    if(projectScene.objects && projectScene.objects.length !== 0){
+      if(selectObjectChosen){
+      return(
+        <>
+          <input placeholder="x" value={projectScene.objects[selectedObjectID].tiling.x} onChange={handleTilingX} type="number"/>
+          <input placeholder="y" value={projectScene.objects[selectedObjectID].tiling.y} onChange={handleTilingY} type="number"/>
+        </>
+      )
     }
-
-    return(
-      null
-    );
-
   }
+  }
+  
+  return(
+    null
+  );
 
-  const saveProject = async () => { // Add "async" here
+}
+
+  const saveProject = async () => { 
     try {
       await updateProject(userID, projID, projectScene);
       console.log('Project successfully updated.');
@@ -530,6 +669,23 @@ const Editor = () => {
     };
   };
   
+
+  const deleteObject = () => {
+    if (selectedObjectChosen && selectedObjectID !== null) {
+      if (projectScene && projectScene.objects) {
+        const updatedObjects = projectScene.objects.filter((obj, index) => index !== selectedObjectID);
+        setProjectScene(prevScene => ({
+          ...prevScene,
+          objects: updatedObjects
+        }));
+  
+        // Dispatch an action to update the Redux state
+        dispatch(UNSET_OBJECT_IMAGE());
+      }
+    }
+  };
+  
+
   return (
     <div className={templateCSS.templatePage}>
       
@@ -558,14 +714,14 @@ const Editor = () => {
               <button onClick={changeEditMode('translate')}> Translate </button>
               <button onClick={changeEditMode('scale')}> Scale </button>
               <button onClick={changeEditMode('rotate')}> Rotate </button>
+              <button onClick={deleteObject}>Delete</button>
+              <button>Undo</button>
+              <button>Redo</button>
             </div>
 
             </div>
 
-            {/* <TestRayCast></TestRayCast> */}
             <NewCanvas scene={projectScene} className={templateCSS.canvasHolder} updateObject={updateObjectArc} editMode={editMode} />
-
-            {/* <TemplateScene scene={projectScene} className={templateCSS.canvasHolder} updateObject={updateObjectArc} editMode={editMode} /> */}
           </div>
         </div>
         <div className={templateCSS.leftEditorBottomt}>
@@ -635,8 +791,8 @@ const Editor = () => {
                         Tiling
                       </div>
                       <div className={templateCSS.partInput}>
-                        <input placeholder="x" />
-                        <input placeholder="y" />
+                        {geometryTiling(projectScene)}
+                        
                       </div>
                     </div>
                     </div>

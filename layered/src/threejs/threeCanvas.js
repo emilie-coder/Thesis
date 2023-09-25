@@ -9,8 +9,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { SET_OBJECT_IMAGE, selectObjectID, UNSET_OBJECT_IMAGE, selectObjectChosen } from '../redux/slice/objectImageSlice';
 
 
-
-
 const textureCache = {}; // Texture cache to store loaded textures
 
 function Model({ name, ...props }) {
@@ -35,12 +33,14 @@ function Model({ name, ...props }) {
   };
 
   const texture = loadTexture(props.materialString);
+  texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+  texture.repeat.set(props.tiling[0], props.tiling[1]);
 
   const newMaterial = new THREE.MeshBasicMaterial({
     map: texture,
     color: materialColor,
     transparent: true,
-    side: THREE.DoubleSide
+    // side: THREE.DoubleSide
   });
 
   newMaterial.alphaTest = 0.8;
@@ -154,6 +154,7 @@ export default function ThreeCanvas(props) {
             itemID={index}
             objectType={item.objectTypeName}
             updateThreeObject={updateThreeObject}
+            tiling={[item.tiling.x, item.tiling.y]}
           />
         );
       });
@@ -175,7 +176,7 @@ export default function ThreeCanvas(props) {
         {instantiateObjects()}
       </Suspense>
       <OrbitControls makeDefault />
-
+      <Man scale={0.01} position={[0,-1.7, 0]} />
       <Controls editMode={props.editMode} updateThreeObject={updateThreeObject}/>
     </Canvas>
   );
