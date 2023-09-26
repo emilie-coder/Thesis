@@ -158,14 +158,13 @@ const Editor = () => {
     }  else if (event.key === 'p') {
       if (projectScene && projectScene.objects) {
         addPlane();
-        // console.log('trying to make a new plane');
-      } else {
-        // console.log('projectScene or projectScene.objects is not defined.');
       }
     }  else if(event.key ==='c') {
       addCylinder();
-      // console.log("trying to make a new cylinder");
-    } 
+    } else if(event.metaKey && event.key === 's') {
+      console.log('saved');
+      saveProject();
+    }
 
   }, [projectScene, addPlane]);
 
