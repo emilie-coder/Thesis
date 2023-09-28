@@ -6,7 +6,6 @@ import {
   selectProjectID,
   selectProjectTitle,
 } from '../../redux/slice/projectSlice';
-import TemplateScene from '../../threejs/threeJSScene';
 import { fetchProject, storage, updateObjectTexture } from '../../firebase/config';
 import { selectUserID } from '../../redux/slice/authSlice';
 import { v4 } from 'uuid';
@@ -18,15 +17,9 @@ import {
 } from 'firebase/storage';
 
 import templateCSS from './Template.module.css';
-
-
 import { updateProjectTitle, updateProject, createTemplate } from '../../firebase/config';
 import { useLocation } from 'react-router-dom';
-
-
 import { selectObjectID, selectObjectChosen, selectObjectMaterial, SET_OBJECT_MATERIAL, SET_OBJECT_IMAGE, UNSET_OBJECT_IMAGE } from '../../redux/slice/objectImageSlice';
-
-import TestRayCast from '../../threejs/testingRayCast';
 import NewCanvas from '../../threejs/threeCanvas';
 
 const Editor = () => {
@@ -61,11 +54,28 @@ const Editor = () => {
   const [lastSelectedImage, setLastSelectedImage] = useState(null);
 
   const [toggleSides, setToggleSides] = useState(true);
+
+  const [copiedObject, setCopiedObject] = useState({});
   
   const handleImageClick = (url) => {
     setLastSelectedImage(url);
   };
 
+
+  const copyObject = () => {
+    if(selectObjectChosen && selectObjectID){
+      if(projectScene){
+        console.log(projectScene.objects)
+        console.log(selectedObjectID);
+        console.log(projectScene.objects[selectedObjectID]);
+        const temp = projectScene.objects[selectedObjectID];
+        console.log("this is temp");
+        console.log(temp);
+        setCopiedObject(temp);
+      }
+    }
+
+  }
 
   const addCylinder = () => {
     // console.log('here----');
@@ -105,6 +115,30 @@ const Editor = () => {
       dispatch(SET_OBJECT_IMAGE(objectInfo));
   };
   
+  const addObject = () => {
+    if (copiedObject && copiedObject !== null) {
+      if (projectScene && projectScene.objects) {
+        const duplicatedObject = JSON.parse(JSON.stringify(copiedObject)); // Create a deep copy of the selected object
+        duplicatedObject.objectID = projectScene.objects.length; // Assign a new ID for the duplicated object
+        projectScene.objects.push(duplicatedObject); // Push the duplicated object into the objects array
+        setProjectScene((prevScene) => ({
+          ...prevScene,
+          objects: [...prevScene.objects], // Ensure state change by creating a new array reference
+        }));
+  
+        // Dispatch an action to update the Redux state
+        dispatch(
+          SET_OBJECT_IMAGE({
+            objectName: duplicatedObject.objectTypeName,
+            objectID: duplicatedObject.objectID,
+            objectMaterial: duplicatedObject.material,
+          })
+        );
+      }
+    }
+  };
+
+
 
   const addPlane = () => {
     // Ensure that projectScene and projectScene.objects exist
@@ -153,17 +187,40 @@ const Editor = () => {
       setEditMode('translate');
     } else if(event.key ==='r') {
       setEditMode('scale');
+    } else if(event.key ==='e') {
+      setEditMode('rotate');
     } else if(event.keyCode === 46 || event.keyCode === 8){
       deleteObject();
     }  else if (event.key === 'p') {
       if (projectScene && projectScene.objects) {
         addPlane();
       }
-    }  else if(event.key ==='c') {
-      addCylinder();
-    } else if(event.metaKey && event.key === 's') {
+    //----------- save project -------------------
+    } else if (event.metaKey && event.key === 's') {
+      event.preventDefault(); // Prevent the default save behavior
       console.log('saved');
       saveProject();
+
+    //----------- copy selected item -------------------
+    } else if (event.metaKey && event.key === 'c') {
+      event.preventDefault(); // Prevent the default save behavior
+      console.log('copied');
+      copyObject();
+      console.log(copiedObject);
+    } 
+
+    //----------- paste selected item -------------------
+    else if (event.metaKey && event.key === 'v') {
+      event.preventDefault(); // Prevent the default save behavior
+      console.log('pasted');
+      addObject();
+
+    //----------- duplicate selected item -------------------
+    } else if (event.metaKey && event.key === 'd') {
+      event.preventDefault(); // Prevent the default save behavior
+      console.log('duplicate');
+    }  else if(event.key ==='c') {
+      addCylinder();
     }
 
   }, [projectScene, addPlane]);
@@ -177,6 +234,11 @@ const Editor = () => {
       document.removeEventListener('keydown', handleKeyPress);
     };
   }, [handleKeyPress]);
+
+  useEffect(() => {
+    // attach the event listener
+  }, [copiedObject]);
+
 
 
 
@@ -668,6 +730,32 @@ const geometryTiling = (projectScene) => {
     };
   };
   
+  const duplicateObject = () => {
+    if (selectedObjectChosen && selectedObjectID !== null) {
+      if (projectScene && projectScene.objects) {
+        const selectedObject = projectScene.objects[selectedObjectID];
+        const duplicatedObject = JSON.parse(JSON.stringify(selectedObject)); // Create a deep copy of the selected object
+        duplicatedObject.objectID = projectScene.objects.length; // Assign a new ID for the duplicated object
+        projectScene.objects.push(duplicatedObject); // Push the duplicated object into the objects array
+        setProjectScene((prevScene) => ({
+          ...prevScene,
+          objects: [...prevScene.objects], // Ensure state change by creating a new array reference
+        }));
+  
+        // Dispatch an action to update the Redux state
+        dispatch(
+          SET_OBJECT_IMAGE({
+            objectName: duplicatedObject.objectTypeName,
+            objectID: duplicatedObject.objectID,
+            objectMaterial: duplicatedObject.material,
+          })
+        );
+      }
+    }
+  };
+
+
+
 
   const deleteObject = () => {
     if (selectedObjectChosen && selectedObjectID !== null) {
@@ -684,6 +772,10 @@ const geometryTiling = (projectScene) => {
     }
   };
   
+  const toggleSidesButton = () => {
+    setToggleSides(!toggleSides);
+  }
+
 
   return (
     <div className={templateCSS.templatePage}>
@@ -713,14 +805,16 @@ const geometryTiling = (projectScene) => {
               <button onClick={changeEditMode('translate')}> Translate </button>
               <button onClick={changeEditMode('scale')}> Scale </button>
               <button onClick={changeEditMode('rotate')}> Rotate </button>
+              <button onClick={duplicateObject}>duplicate</button>
               <button onClick={deleteObject}>Delete</button>
               <button>Undo</button>
               <button>Redo</button>
+              <button onClick={toggleSidesButton}>toggleSides</button>
             </div>
 
             </div>
 
-            <NewCanvas scene={projectScene} className={templateCSS.canvasHolder} updateObject={updateObjectArc} editMode={editMode} />
+            <NewCanvas scene={projectScene} className={templateCSS.canvasHolder} updateObject={updateObjectArc} editMode={editMode} toggleSides={toggleSides}/>
           </div>
         </div>
         <div className={templateCSS.leftEditorBottomt}>
@@ -801,10 +895,10 @@ const geometryTiling = (projectScene) => {
                   {/* {console.log('Selected Object Material:', selectedObjectMaterial)} */}
                   {selectedObjectChosen && <img src={selectedObjectMaterial} alt='objectImg' className={templateCSS.displayedObjectImage} />}
 
-                    <div className={templateCSS.fileUpload}>
+                    {/* <div className={templateCSS.fileUpload}>
                       <input className={templateCSS.fileUploadButton} type="file" onChange={((event) => {setImageUpload(event.target.files[0])})}/>
                       <button className={templateCSS.changeImgButton} onClick={uploadUpdateImage}>change image</button>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               </div>

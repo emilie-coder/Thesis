@@ -36,12 +36,22 @@ function Model({ name, ...props }) {
   texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
   texture.repeat.set(props.tiling[0], props.tiling[1]);
 
-  const newMaterial = new THREE.MeshBasicMaterial({
-    map: texture,
-    color: materialColor,
-    transparent: true,
-    // side: THREE.DoubleSide
-  });
+  let newMaterial;
+
+  if (props.toggleSides) {
+    newMaterial = new THREE.MeshBasicMaterial({
+      map: texture,
+      color: materialColor,
+      transparent: true,
+      side: THREE.DoubleSide
+    });
+  } else {
+    newMaterial = new THREE.MeshBasicMaterial({
+      map: texture,
+      color: materialColor,
+      transparent: true,
+    });
+  }
 
   newMaterial.alphaTest = 0.8;
 
@@ -125,6 +135,9 @@ function Controls(props) {
 
 export default function ThreeCanvas(props) {
   const sceneObjs = props.scene;
+  const toggleSides = props.toggleSides;
+
+
   const [objectsToRender, setObjectsToRender] = useState([]);
 
   const updateThreeObject = (objectID, newObjectData) => {
@@ -155,6 +168,7 @@ export default function ThreeCanvas(props) {
             objectType={item.objectTypeName}
             updateThreeObject={updateThreeObject}
             tiling={[item.tiling.x, item.tiling.y]}
+            toggleSides = {props.toggleSides}
           />
         );
       });
