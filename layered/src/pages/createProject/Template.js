@@ -48,15 +48,43 @@ const Editor = () => {
   const location = useLocation();
   const pathSegments = location.pathname.split('/');
   const projectIDURL = pathSegments[pathSegments.length - 1]; // Get the last part of the URL
-
   const [editMode, setEditMode] = useState('translate');
-
   const [lastSelectedImage, setLastSelectedImage] = useState(null);
-
   const [toggleSides, setToggleSides] = useState(true);
-
   const [copiedObject, setCopiedObject] = useState({});
+
+  const [undoStack, setUndoStack] = useState([]);
+  const [redoStack, setRedoStack] = useState([]);
   
+
+  const updateProjectScene = (updatedScene) => {
+    setUndoStack((prevUndoStack) => [...prevUndoStack, projectScene]);
+    setProjectScene(updatedScene);
+    setRedoStack([]);
+  };
+
+
+  const undo = () => {
+    if (undoStack.length > 0) {
+      const prevScene = undoStack[undoStack.length - 1];
+      setProjectScene(prevScene);
+      setUndoStack((prevUndoStack) => prevUndoStack.slice(0, -1));
+      setRedoStack((prevRedoStack) => [...prevRedoStack, projectScene]);
+    }
+  };
+  
+  const redo = () => {
+    if (redoStack.length > 0) {
+      const nextScene = redoStack[redoStack.length - 1];
+      setProjectScene(nextScene);
+  
+      setUndoStack((prevUndoStack) => [...prevUndoStack, projectScene]);
+      setRedoStack((prevRedoStack) => prevRedoStack.slice(0, -1));
+    }
+  };
+  
+
+
   const handleImageClick = (url) => {
     setLastSelectedImage(url);
   };
@@ -120,6 +148,10 @@ const Editor = () => {
       if (projectScene && projectScene.objects) {
         const duplicatedObject = JSON.parse(JSON.stringify(copiedObject)); // Create a deep copy of the selected object
         duplicatedObject.objectID = projectScene.objects.length; // Assign a new ID for the duplicated object
+        duplicatedObject.position.x += 0.1;
+        duplicatedObject.position.y += 0.1;
+        duplicatedObject.position.z += 0.1;
+
         projectScene.objects.push(duplicatedObject); // Push the duplicated object into the objects array
         setProjectScene((prevScene) => ({
           ...prevScene,
@@ -208,7 +240,6 @@ const Editor = () => {
       copyObject();
       console.log(copiedObject);
     } 
-
     //----------- paste selected item -------------------
     else if (event.metaKey && event.key === 'v') {
       event.preventDefault(); // Prevent the default save behavior
@@ -292,34 +323,6 @@ const Editor = () => {
       });
     });
   };
-
-
-  const uploadUpdateImage = () => {
-
-    const saved = saveProject();
-
-      if (imageUpload == null) return;
-
-      const imageRef = ref(
-        storage,
-        userID + '/project_' + projID + `/images/${imageUpload.name + v4()}`
-      );
-  
-      uploadBytes(imageRef, imageUpload).then((snapshot) => {
-        getDownloadURL(snapshot.ref).then((url) => {
-  
-  
-        // update in firebase
-        updateObjectTexture(userID, projID, selectedObjectID, url);
-  
-          setImageList((prev) => [...prev, url]);
-          dispatch(SET_OBJECT_MATERIAL(
-            {objectMaterial: url}))
-        });
-  
-        // projectScene[selectedObjectID].material = selectObjectMaterial;
-      });
-    }
 
     useEffect(() => {
       if (!userID || !projID) {
@@ -418,41 +421,86 @@ const Editor = () => {
     return null;
   };
 
-const handleGeometryPosX = (e) => {
-  if (projectScene && projectScene.objects) {
-    const updatedObjects = [...projectScene.objects];
-    updatedObjects[selectedObjectID].position.x = e.target.value;
-    // Update the projectScene with the updated position
-    setProjectScene(prevScene => ({
-      ...prevScene,
-      objects: updatedObjects
-    }));
-  }
-}
+  const handleGeometryPosX = (e) => {
+    if (projectScene && projectScene.objects) {
+      const updatedObjects = projectScene.objects.map((obj, index) => {
+        if (index === selectedObjectID) {
+          return {
+            ...obj,
+            position: {
+              ...obj.position,
+              x: parseFloat(e.target.value)  // Parse the value to a float
+            }
+          };
+        }
+        return obj;
+      });
+  
+      // Update the undo and redo stacks
+      setUndoStack((prevUndoStack) => [...prevUndoStack, projectScene]);
+      setRedoStack([]);
+  
+      // Update the projectScene with the updated position
+      setProjectScene((prevScene) => ({
+        ...prevScene,
+        objects: updatedObjects,
+      }));
+    }
+  };
 
-const handleGeometryPosY = (e) => {
-  if (projectScene && projectScene.objects) {
-    const updatedObjects = [...projectScene.objects];
-    updatedObjects[selectedObjectID].position.y = e.target.value;
-    // Update the projectScene with the updated position
-    setProjectScene(prevScene => ({
-      ...prevScene,
-      objects: updatedObjects
-    }));
-  }
-}
+  const handleGeometryPosY = (e) => {
+    if (projectScene && projectScene.objects) {
+      const updatedObjects = projectScene.objects.map((obj, index) => {
+        if (index === selectedObjectID) {
+          return {
+            ...obj,
+            position: {
+              ...obj.position,
+              y: parseFloat(e.target.value)  // Parse the value to a float
+            }
+          };
+        }
+        return obj;
+      });
+  
+      // Update the undo and redo stacks
+      setUndoStack((prevUndoStack) => [...prevUndoStack, projectScene]);
+      setRedoStack([]);
+  
+      // Update the projectScene with the updated position
+      setProjectScene((prevScene) => ({
+        ...prevScene,
+        objects: updatedObjects,
+      }));
+    }
+  };
 
-const handleGeometryPosZ = (e) => {
-  if (projectScene && projectScene.objects) {
-    const updatedObjects = [...projectScene.objects];
-    updatedObjects[selectedObjectID].position.z = e.target.value;
-    // Update the projectScene with the updated position
-    setProjectScene(prevScene => ({
-      ...prevScene,
-      objects: updatedObjects
-    }));
-  }
-}
+  const handleGeometryPosZ = (e) => {
+    if (projectScene && projectScene.objects) {
+      const updatedObjects = projectScene.objects.map((obj, index) => {
+        if (index === selectedObjectID) {
+          return {
+            ...obj,
+            position: {
+              ...obj.position,
+              z: parseFloat(e.target.value)  // Parse the value to a float
+            }
+          };
+        }
+        return obj;
+      });
+  
+      // Update the undo and redo stacks
+      setUndoStack((prevUndoStack) => [...prevUndoStack, projectScene]);
+      setRedoStack([]);
+  
+      // Update the projectScene with the updated position
+      setProjectScene((prevScene) => ({
+        ...prevScene,
+        objects: updatedObjects,
+      }));
+    }
+  };
 
 const geometryPositions = (projectScene) => {
     if (projectScene){
@@ -480,39 +528,86 @@ const geometryPositions = (projectScene) => {
 
 const handleGeometryScaleX = (e) => {
   if (projectScene && projectScene.objects) {
-    const updatedObjects = [...projectScene.objects];
-    updatedObjects[selectedObjectID].scale.x = e.target.value;
+    const updatedObjects = projectScene.objects.map((obj, index) => {
+      if (index === selectedObjectID) {
+        return {
+          ...obj,
+          scale: {
+            ...obj.scale,
+            x: parseFloat(e.target.value)  // Parse the value to a float
+          }
+        };
+      }
+      return obj;
+    });
+
+    // Update the undo and redo stacks
+    setUndoStack((prevUndoStack) => [...prevUndoStack, projectScene]);
+    setRedoStack([]);
+
     // Update the projectScene with the updated position
-    setProjectScene(prevScene => ({
+    setProjectScene((prevScene) => ({
       ...prevScene,
-      objects: updatedObjects
+      objects: updatedObjects,
     }));
   }
-}
+};
 
 const handleGeometryScaleY = (e) => {
   if (projectScene && projectScene.objects) {
-    const updatedObjects = [...projectScene.objects];
-    updatedObjects[selectedObjectID].scale.y = e.target.value;
+    const updatedObjects = projectScene.objects.map((obj, index) => {
+      if (index === selectedObjectID) {
+        return {
+          ...obj,
+          scale: {
+            ...obj.scale,
+            y: parseFloat(e.target.value)  // Parse the value to a float
+          }
+        };
+      }
+      return obj;
+    });
+
+    // Update the undo and redo stacks
+    setUndoStack((prevUndoStack) => [...prevUndoStack, projectScene]);
+    setRedoStack([]);
+
     // Update the projectScene with the updated position
-    setProjectScene(prevScene => ({
+    setProjectScene((prevScene) => ({
       ...prevScene,
-      objects: updatedObjects
+      objects: updatedObjects,
     }));
   }
-}
+};
+
 
 const handleGeometryScaleZ = (e) => {
   if (projectScene && projectScene.objects) {
-    const updatedObjects = [...projectScene.objects];
-    updatedObjects[selectedObjectID].scale.z = e.target.value;
+    const updatedObjects = projectScene.objects.map((obj, index) => {
+      if (index === selectedObjectID) {
+        return {
+          ...obj,
+          scale: {
+            ...obj.scale,
+            z: parseFloat(e.target.value)  // Parse the value to a float
+          }
+        };
+      }
+      return obj;
+    });
+
+    // Update the undo and redo stacks
+    setUndoStack((prevUndoStack) => [...prevUndoStack, projectScene]);
+    setRedoStack([]);
+
     // Update the projectScene with the updated position
-    setProjectScene(prevScene => ({
+    setProjectScene((prevScene) => ({
       ...prevScene,
-      objects: updatedObjects
+      objects: updatedObjects,
     }));
   }
-}
+};
+
   
 const geometryScales = (projectScene) => {
   if (projectScene){
@@ -537,65 +632,142 @@ const geometryScales = (projectScene) => {
 
 
 const handleGeometryRotX = (e) => {
-  if (projectScene && projectScene.objects) {
-    const updatedObjects = [...projectScene.objects];
-    updatedObjects[selectedObjectID].rotation.x = e.target.value;
-    // Update the projectScene with the updated position
-    setProjectScene(prevScene => ({
-      ...prevScene,
-      objects: updatedObjects
-    }));
-  }
-}
+    if (projectScene && projectScene.objects) {
+      const updatedObjects = projectScene.objects.map((obj, index) => {
+        if (index === selectedObjectID) {
+          return {
+            ...obj,
+            rotation: {
+              ...obj.rotation,
+              x: parseFloat(e.target.value)  // Parse the value to a float
+            }
+          };
+        }
+        return obj;
+      });
+  
+      // Update the undo and redo stacks
+      setUndoStack((prevUndoStack) => [...prevUndoStack, projectScene]);
+      setRedoStack([]);
+  
+      // Update the projectScene with the updated position
+      setProjectScene((prevScene) => ({
+        ...prevScene,
+        objects: updatedObjects,
+      }));
+    }
+  };
+  
 
-const handleGeometryRotY = (e) => {
-  if (projectScene && projectScene.objects) {
-    const updatedObjects = [...projectScene.objects];
-    updatedObjects[selectedObjectID].rotation.y = e.target.value;
-    // Update the projectScene with the updated position
-    setProjectScene(prevScene => ({
-      ...prevScene,
-      objects: updatedObjects
-    }));
-  }
-}
+  const handleGeometryRotY = (e) => {
+    if (projectScene && projectScene.objects) {
+      const updatedObjects = projectScene.objects.map((obj, index) => {
+        if (index === selectedObjectID) {
+          return {
+            ...obj,
+            rotation: {
+              ...obj.rotation,
+              y: parseFloat(e.target.value)  // Parse the value to a float
+            }
+          };
+        }
+        return obj;
+      });
+  
+      // Update the undo and redo stacks
+      setUndoStack((prevUndoStack) => [...prevUndoStack, projectScene]);
+      setRedoStack([]);
+  
+      // Update the projectScene with the updated position
+      setProjectScene((prevScene) => ({
+        ...prevScene,
+        objects: updatedObjects,
+      }));
+    }
+  };
 
-const handleGeometryRotZ = (e) => {
-  if (projectScene && projectScene.objects) {
-    const updatedObjects = [...projectScene.objects];
-    updatedObjects[selectedObjectID].rotation.z = e.target.value;
-    // Update the projectScene with the updated position
-    setProjectScene(prevScene => ({
-      ...prevScene,
-      objects: updatedObjects
-    }));
-  }
-}
+  const handleGeometryRotZ = (e) => {
+    if (projectScene && projectScene.objects) {
+      const updatedObjects = projectScene.objects.map((obj, index) => {
+        if (index === selectedObjectID) {
+          return {
+            ...obj,
+            rotation: {
+              ...obj.rotation,
+              z: parseFloat(e.target.value)  // Parse the value to a float
+            }
+          };
+        }
+        return obj;
+      });
+  
+      // Update the undo and redo stacks
+      setUndoStack((prevUndoStack) => [...prevUndoStack, projectScene]);
+      setRedoStack([]);
+  
+      // Update the projectScene with the updated position
+      setProjectScene((prevScene) => ({
+        ...prevScene,
+        objects: updatedObjects,
+      }));
+    }
+  };
   
 
 const handleTilingX = (e) => {
   if (projectScene && projectScene.objects) {
-    const updatedObjects = [...projectScene.objects];
-    updatedObjects[selectedObjectID].tiling.x = e.target.value;
+    const updatedObjects = projectScene.objects.map((obj, index) => {
+      if (index === selectedObjectID) {
+        return {
+          ...obj,
+          tiling: {
+            ...obj.tiling,
+            x: parseFloat(e.target.value)  // Parse the value to a float
+          }
+        };
+      }
+      return obj;
+    });
+
+    // Update the undo and redo stacks
+    setUndoStack((prevUndoStack) => [...prevUndoStack, projectScene]);
+    setRedoStack([]);
+
     // Update the projectScene with the updated position
-    setProjectScene(prevScene => ({
+    setProjectScene((prevScene) => ({
       ...prevScene,
-      objects: updatedObjects
+      objects: updatedObjects,
     }));
   }
-}
+};
+
 
 const handleTilingY = (e) => {
   if (projectScene && projectScene.objects) {
-    const updatedObjects = [...projectScene.objects];
-    updatedObjects[selectedObjectID].tiling.y = e.target.value;
+    const updatedObjects = projectScene.objects.map((obj, index) => {
+      if (index === selectedObjectID) {
+        return {
+          ...obj,
+          tiling: {
+            ...obj.tiling,
+            y: parseFloat(e.target.value)  // Parse the value to a float
+          }
+        };
+      }
+      return obj;
+    });
+
+    // Update the undo and redo stacks
+    setUndoStack((prevUndoStack) => [...prevUndoStack, projectScene]);
+    setRedoStack([]);
+
     // Update the projectScene with the updated position
-    setProjectScene(prevScene => ({
+    setProjectScene((prevScene) => ({
       ...prevScene,
-      objects: updatedObjects
+      objects: updatedObjects,
     }));
   }
-}
+};
   
   
 
@@ -736,6 +908,9 @@ const geometryTiling = (projectScene) => {
         const selectedObject = projectScene.objects[selectedObjectID];
         const duplicatedObject = JSON.parse(JSON.stringify(selectedObject)); // Create a deep copy of the selected object
         duplicatedObject.objectID = projectScene.objects.length; // Assign a new ID for the duplicated object
+        duplicatedObject.position.x += 0.1;
+        duplicatedObject.position.y += 0.1;
+        duplicatedObject.position.z += 0.1;
         projectScene.objects.push(duplicatedObject); // Push the duplicated object into the objects array
         setProjectScene((prevScene) => ({
           ...prevScene,
@@ -807,8 +982,8 @@ const geometryTiling = (projectScene) => {
               <button onClick={changeEditMode('rotate')}> Rotate </button>
               <button onClick={duplicateObject}>duplicate</button>
               <button onClick={deleteObject}>Delete</button>
-              <button>Undo</button>
-              <button>Redo</button>
+              <button onClick={undo} disabled={undoStack.length === 0}>Undo</button>
+              <button onClick={redo} disabled={redoStack.length === 0}>Redo</button>
               <button onClick={toggleSidesButton}>toggleSides</button>
             </div>
 
