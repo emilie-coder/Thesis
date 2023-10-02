@@ -65,12 +65,17 @@ const Editor = () => {
 
 
   const undo = () => {
+    console.log("BEFORE THE UNDO STACK: ");
+    console.log(undoStack);
     if (undoStack.length > 0) {
       const prevScene = undoStack[undoStack.length - 1];
       setProjectScene(prevScene);
       setUndoStack((prevUndoStack) => prevUndoStack.slice(0, -1));
       setRedoStack((prevRedoStack) => [...prevRedoStack, projectScene]);
+
     }
+    console.log("AFTER THE UNDO STACK: ");
+    console.log(undoStack);
   };
   
   const redo = () => {
@@ -828,46 +833,72 @@ const geometryTiling = (projectScene) => {
     createTemplate(projectScene);
   }
 
-  const updateObjectArc = (objectID, newObjectData) => {
-
-    // console.log(" in template props ");
-    // console.log(objectID, newObjectData);
-  
-    if (projectScene && projectScene.objects) {
-
-      if (objectID !== null) {
-
-        // Create a copy of the object to update
-        const updatedObject = { ...projectScene.objects[objectID] };
-
-  
-        updatedObject.position.x = newObjectData.position.x;
-        updatedObject.position.y = newObjectData.position.y;
-        updatedObject.position.z = newObjectData.position.z;
 
 
-        updatedObject.scale.x = newObjectData.scale.x;
-        updatedObject.scale.y = newObjectData.scale.y;
-        updatedObject.scale.z = newObjectData.scale.z;
+const isPositionEqual = (pos1, pos2) => {
+  return pos1.x === pos2.x && pos1.y === pos2.y && pos1.z === pos2.z;
+};
 
-        updatedObject.rotation.x = newObjectData.rotation.x;
-        updatedObject.rotation.y = newObjectData.rotation.y;
-        updatedObject.rotation.z = newObjectData.rotation.z;
+const isScaleEqual = (pos1, pos2) => {
+  return pos1.x === pos2.x && pos1.y === pos2.y && pos1.z === pos2.z;
+};
+
+const isRotationEqual = (pos1, pos2) => {
+  return pos1.x === pos2._x && pos1.y === pos2._y && pos1.z === pos2._z;
+};
+
+const updateObjectArc = (objectID, newObjectData) => {
+  if (projectScene && projectScene.objects) {
+    // Create a deep copy of the projectScene and objects
+    const updatedProjectScene = JSON.parse(JSON.stringify(projectScene));
+    const updatedObjects = [...updatedProjectScene.objects];
+
+      // Check if the object is actually updated
+      const positionUpdated = !isPositionEqual(projectScene.objects[selectedObjectID].position, newObjectData.position);
+      const scaleUpdated = !isScaleEqual(projectScene.objects[selectedObjectID].scale, newObjectData.scale);
+      const rotationUpdated = !isRotationEqual(projectScene.objects[selectedObjectID].rotation, newObjectData.rotation);
+      
+      // Check if the object is actually updated
+      const isObjectUpdated = (positionUpdated || scaleUpdated || rotationUpdated);
 
 
-        // Create a copy of the projectScene and update the specific object
-        const updatedProjectScene = { ...projectScene };
-        updatedProjectScene.objects[objectID] = updatedObject;
-  
-        // Update the state with the modified projectScene
-        setProjectScene(updatedProjectScene);
-  
-        // Now, the projectScene state has been updated with the modified object.
-        // console.log("the new projectscene")
-        // console.log(projectScene)
-      }
+    if (objectID !== null && isObjectUpdated) {
+      // Create a copy of the object to update
+      const updatedObject = { ...updatedObjects[objectID] };
+
+      // Update the copied object
+      updatedObject.position.x = newObjectData.position.x;
+      updatedObject.position.y = newObjectData.position.y;
+      updatedObject.position.z = newObjectData.position.z;
+      updatedObject.scale.x = newObjectData.scale.x;
+      updatedObject.scale.y = newObjectData.scale.y;
+      updatedObject.scale.z = newObjectData.scale.z;
+      updatedObject.rotation.x = newObjectData.rotation.x;
+      updatedObject.rotation.y = newObjectData.rotation.y;
+      updatedObject.rotation.z = newObjectData.rotation.z;
+
+      // Update the objects array with the modified object
+      updatedObjects[objectID] = updatedObject;
+
+      // Update the projectScene with the modified objects
+      updatedProjectScene.objects = updatedObjects;
+
+      // Update the state with the modified projectScene
+      setProjectScene(updatedProjectScene);
+
+      // Update undo stack
+      setUndoStack((prevUndoStack) => [
+        ...prevUndoStack,
+        JSON.parse(JSON.stringify(projectScene)), // Deep copy of projectScene
+      ]);
+
+      // Clear redo stack
+      setRedoStack([]);
     }
-  };
+  }
+};
+
+
 
   
 
