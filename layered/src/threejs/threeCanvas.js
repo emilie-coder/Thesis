@@ -7,6 +7,10 @@ import { Outline } from '@react-three/postprocessing'
 import Man from './3dScenes/Man';
 import { useDispatch, useSelector } from 'react-redux';
 import { SET_OBJECT_IMAGE, selectObjectID, UNSET_OBJECT_IMAGE, selectObjectChosen } from '../redux/slice/objectImageSlice';
+import AnimatedCylinder from './3dScenes/Animated_cylinder';
+import TestAnim from './3dScenes/Test_anim';
+
+
 
 
 const textureCache = {}; // Texture cache to store loaded textures
@@ -188,6 +192,7 @@ export default function ThreeCanvas(props) {
       <hemisphereLight color="#ffffff" groundColor="#b9b9b9" position={[-7, 25, 13]} intensity={0.85} />
       <Suspense fallback={null}>
         {instantiateObjects()}
+        {/* <TestAnim  /> */}
       </Suspense>
       <OrbitControls makeDefault />
       <Man scale={0.01} position={[0,-1.7, 0]} />

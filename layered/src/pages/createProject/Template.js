@@ -63,19 +63,13 @@ const Editor = () => {
     setRedoStack([]);
   };
 
-
   const undo = () => {
-    console.log("BEFORE THE UNDO STACK: ");
-    console.log(undoStack);
     if (undoStack.length > 0) {
       const prevScene = undoStack[undoStack.length - 1];
-      setProjectScene(prevScene);
+      setProjectScene(JSON.parse(JSON.stringify(prevScene)));  // Set the new projectScene
       setUndoStack((prevUndoStack) => prevUndoStack.slice(0, -1));
-      setRedoStack((prevRedoStack) => [...prevRedoStack, projectScene]);
-
+      setRedoStack((prevRedoStack) => [...prevRedoStack, prevScene]); // Store the current state in redo stack
     }
-    console.log("AFTER THE UNDO STACK: ");
-    console.log(undoStack);
   };
   
   const redo = () => {
@@ -146,6 +140,9 @@ const Editor = () => {
   
       // Dispatch the project information to Redux
       dispatch(SET_OBJECT_IMAGE(objectInfo));
+
+      setUndoStack((prevUndoStack) => [...prevUndoStack, projectScene]);
+      setRedoStack([]);
   };
   
   const addObject = () => {
@@ -214,6 +211,8 @@ const Editor = () => {
       // Dispatch the project information to Redux
       dispatch(SET_OBJECT_IMAGE(objectInfo));
 
+      setUndoStack((prevUndoStack) => [...prevUndoStack, projectScene]);
+      setRedoStack([]);
 
   };
   
@@ -228,36 +227,49 @@ const Editor = () => {
       setEditMode('rotate');
     } else if(event.keyCode === 46 || event.keyCode === 8){
       deleteObject();
-    }  else if (event.key === 'p') {
+    }  else if (event.metaKey && event.key === 'p') {
+      event.preventDefault(); // Prevent the default save behavior
       if (projectScene && projectScene.objects) {
         addPlane();
       }
     //----------- save project -------------------
-    } else if (event.metaKey && event.key === 's') {
+    } else if (event.metaKey && event.key === 'o') {
       event.preventDefault(); // Prevent the default save behavior
-      console.log('saved');
+      if (projectScene && projectScene.objects) {
+        addCylinder();
+      }
+    }
+     else if (event.metaKey && event.key === 's') {
+      event.preventDefault(); // Prevent the default save behavior
       saveProject();
 
     //----------- copy selected item -------------------
     } else if (event.metaKey && event.key === 'c') {
       event.preventDefault(); // Prevent the default save behavior
-      console.log('copied');
       copyObject();
       console.log(copiedObject);
     } 
     //----------- paste selected item -------------------
     else if (event.metaKey && event.key === 'v') {
       event.preventDefault(); // Prevent the default save behavior
-      console.log('pasted');
       addObject();
 
     //----------- duplicate selected item -------------------
     } else if (event.metaKey && event.key === 'd') {
       event.preventDefault(); // Prevent the default save behavior
-      console.log('duplicate');
-    }  else if(event.key ==='c') {
-      addCylinder();
+      duplicateObject();
+
     }
+    else if (event.metaKey && event.shiftKey && event.key === 'z') {
+      event.preventDefault();
+      redo();
+    }
+    else if (event.metaKey && event.key === 'z') {
+      event.preventDefault(); // Prevent the default save behavior
+      undo();
+
+    }
+
 
   }, [projectScene, addPlane]);
 
@@ -508,6 +520,8 @@ const Editor = () => {
   };
 
 const geometryPositions = (projectScene) => {
+  console.log("HERE I AM")
+  console.log(projectScene);
     if (projectScene){
       if(projectScene.objects && projectScene.objects.length !== 0){
         if(selectObjectChosen){
@@ -942,6 +956,7 @@ const updateObjectArc = (objectID, newObjectData) => {
         duplicatedObject.position.x += 0.1;
         duplicatedObject.position.y += 0.1;
         duplicatedObject.position.z += 0.1;
+
         projectScene.objects.push(duplicatedObject); // Push the duplicated object into the objects array
         setProjectScene((prevScene) => ({
           ...prevScene,
@@ -956,6 +971,10 @@ const updateObjectArc = (objectID, newObjectData) => {
             objectMaterial: duplicatedObject.material,
           })
         );
+
+        setUndoStack((prevUndoStack) => [...prevUndoStack, projectScene]);
+        setRedoStack([]);
+
       }
     }
   };
@@ -974,6 +993,11 @@ const updateObjectArc = (objectID, newObjectData) => {
   
         // Dispatch an action to update the Redux state
         dispatch(UNSET_OBJECT_IMAGE());
+
+        setUndoStack((prevUndoStack) => [...prevUndoStack, projectScene]);
+        setRedoStack([]);
+
+
       }
     }
   };
@@ -1024,7 +1048,7 @@ const updateObjectArc = (objectID, newObjectData) => {
           </div>
         </div>
         <div className={templateCSS.leftEditorBottomt}>
-          animation timeline
+          <button> test </button>
         </div>
       </div>
 
