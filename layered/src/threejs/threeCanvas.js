@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { SET_OBJECT_IMAGE, selectObjectID, UNSET_OBJECT_IMAGE, selectObjectChosen } from '../redux/slice/objectImageSlice';
 import AnimatedCylinder from './3dScenes/Animated_cylinder';
 import TestAnim from './3dScenes/Test_anim';
+import { REMOVE_EDITOR_STATE } from '../redux/slice/editorSlice';
 
 
 
@@ -82,6 +83,7 @@ function Model({ name, ...props }) {
         };
     
         // Dispatch the project information to Redux
+        dispatch(REMOVE_EDITOR_STATE())
         dispatch(SET_OBJECT_IMAGE(objectInfo));
       }}
       onPointerMissed={(e) => e.type === 'click' && (dispatch(UNSET_OBJECT_IMAGE()))}

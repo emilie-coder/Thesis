@@ -922,15 +922,16 @@ const isRotationEqual = (pos1, pos2) => {
 };
 
 const updateObjectArc = (objectID, newObjectData) => {
-  if (projectScene && projectScene.objects) {
+
+  if (projectScene && projectScene.objects && objectID && newObjectData) {
     // Create a deep copy of the projectScene and objects
     const updatedProjectScene = JSON.parse(JSON.stringify(projectScene));
     const updatedObjects = [...updatedProjectScene.objects];
 
       // Check if the object is actually updated
-      const positionUpdated = !isPositionEqual(projectScene.objects[selectedObjectID].position, newObjectData.position);
-      const scaleUpdated = !isScaleEqual(projectScene.objects[selectedObjectID].scale, newObjectData.scale);
-      const rotationUpdated = !isRotationEqual(projectScene.objects[selectedObjectID].rotation, newObjectData.rotation);
+      const positionUpdated = !isPositionEqual(projectScene.objects[objectID].position, newObjectData.position);
+      const scaleUpdated = !isScaleEqual(projectScene.objects[objectID].scale, newObjectData.scale);
+      const rotationUpdated = !isRotationEqual(projectScene.objects[objectID].rotation, newObjectData.rotation);
       
       // Check if the object is actually updated
       const isObjectUpdated = (positionUpdated || scaleUpdated || rotationUpdated);
@@ -1070,11 +1071,11 @@ const updateObjectArc = (objectID, newObjectData) => {
   const RightEditor = () => {
     const renderEditor = useSelector(selectObjectChosen);
 
-    if(renderEditor) {
+    if(renderEditor && projectScene) {
 
       return (
         <>
-                <div className={templateCSS.geometry}>
+        <div className={templateCSS.geometry}>
         <h3 className={templateCSS.geometryTitle}>
           geometry editor
         </h3>
