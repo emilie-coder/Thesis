@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit'
 const initialState = {
     objectChosen: false,
     objectName: 'none chosen',
-    objectID: 0,
+    objectID: null,
     objectMaterial: 'string',
 }
 
@@ -32,7 +32,7 @@ const objectImageSlice = createSlice({
         return {
         objectChosen: false,
         objectName: 'none chosen',
-        objectID: 0,
+        objectID: null,
         objectMaterial: '',
         }
       }

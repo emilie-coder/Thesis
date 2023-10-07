@@ -1,6 +1,6 @@
 import { Suspense, useEffect, useState } from 'react';
 import { Canvas, useThree } from '@react-three/fiber';
-import { OrbitControls, TransformControls, ContactShadows, useGLTF, useCursor, PivotControls } from '@react-three/drei';
+import { OrbitControls, TransformControls, ContactShadows, useGLTF, useCursor, Environment } from '@react-three/drei';
 import { proxy, useSnapshot } from 'valtio';
 import * as THREE from 'three';
 import { Outline } from '@react-three/postprocessing'
@@ -184,10 +184,11 @@ export default function ThreeCanvas(props) {
   return (
     <Canvas
         camera={{ position: [-3, 2, 5], fov: 90 }}
-        linear
-        flat
+        // linear
+        // flat
         >
-      <gridHelper args={[400, 200, '#151515', '#020202']} position={[0, -4, 0]} />
+      <Environment files=  "/imgs/syferfontein_0d_clear_puresky_4k.hdr" background blur={0.0} />
+      <gridHelper args={[400, 200, '#f7f7f7', '#f7f7f7']} position={[0, -4, 0]} />
       <pointLight position={[100, 100, 100]} intensity={0.8} />
       <hemisphereLight color="#ffffff" groundColor="#b9b9b9" position={[-7, 25, 13]} intensity={0.85} />
       <Suspense fallback={null}>

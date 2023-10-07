@@ -21,6 +21,7 @@ import { updateProjectTitle, updateProject, createTemplate } from '../../firebas
 import { useLocation } from 'react-router-dom';
 import { selectObjectID, selectObjectChosen, selectObjectMaterial, SET_OBJECT_MATERIAL, SET_OBJECT_IMAGE, UNSET_OBJECT_IMAGE } from '../../redux/slice/objectImageSlice';
 import NewCanvas from '../../threejs/threeCanvas';
+import { REMOVE_EDITOR_STATE, SET_EDITOR_STATE, selectNonIndexState, selectNonIndexStateBool } from '../../redux/slice/editorSlice';
 
 const Editor = () => {
 
@@ -55,6 +56,13 @@ const Editor = () => {
 
   const [undoStack, setUndoStack] = useState([]);
   const [redoStack, setRedoStack] = useState([]);
+
+
+  const [skyBoxes, setSkyBoxes ] = useState(["/imgs/belfast_sunset_puresky_4k.hdr" ,
+                                              "/imgs/industrial_sunset_puresky_4k.hdr", 
+                                              "/imgs/kloofendal_48d_partly_cloudy_puresky_4k.hdr",
+                                               "/imgs/rathaus_4k.hdr",
+                                                "/imgs/syferfontein_0d_clear_puresky_4k.hdr" ])
   
 
   const updateProjectScene = (updatedScene) => {
@@ -409,9 +417,61 @@ const Editor = () => {
   
       // Dispatch the project information to Redux
       dispatch(SET_OBJECT_IMAGE(objectInfo));
+      dispatch(REMOVE_EDITOR_STATE())
 
 
   };
+
+
+    
+  const removeTarget = (stateName) => {
+    console.log('Clicked skybox');
+
+    const nonIndexState = {
+      state: stateName,
+    };
+
+    // Dispatch the project information to Redux
+    dispatch(SET_EDITOR_STATE(nonIndexState));
+    dispatch(UNSET_OBJECT_IMAGE());
+
+
+};
+
+const BroadStateTab = () => {
+  const nonIndexState = useSelector(selectNonIndexStateBool);
+  const selectedNonIndexState = useSelector(selectNonIndexState)
+
+  let tabClassName1 = templateCSS.unselectedTab;
+  let tabClassName2 = templateCSS.unselectedTab;
+
+  if( nonIndexState && selectedNonIndexState === 'SkyBox'){
+    tabClassName1 = templateCSS.selectedTab;
+  } else if (nonIndexState && selectedNonIndexState === 'Light') {
+    tabClassName2 = templateCSS.selectedTab;
+
+  }
+
+
+  return (
+    <>
+        <div className={`${tabClassName1}`} onClick={() => removeTarget('SkyBox')}>
+          Sky
+        </div>
+        <div className={`${tabClassName2}`} onClick={() => removeTarget('Light')}>
+          Light
+        </div>
+    </>
+  );
+};
+
+const instantiateBroadStateTabs = () => {
+
+  return (
+    <BroadStateTab />
+  )
+}
+
 
   const instantiateTabs = (sceneObjs) => {
   
@@ -1007,6 +1067,76 @@ const updateObjectArc = (objectID, newObjectData) => {
   }
 
 
+  const RightEditor = () => {
+    const renderEditor = useSelector(selectObjectChosen);
+
+    if(renderEditor) {
+
+      return (
+        <>
+                <div className={templateCSS.geometry}>
+        <h3 className={templateCSS.geometryTitle}>
+          geometry editor
+        </h3>
+        <div className={templateCSS.xyzEditorWrapper}>
+        <div className={templateCSS.xyzEditor}>
+          <div className={templateCSS.partEditor}>
+            <div className={templateCSS.partTitle}>
+              Position
+            </div>
+            <div className={templateCSS.partInput}>
+            
+              {geometryPositions(projectScene)}
+
+            </div>
+          </div>
+          <div className={templateCSS.partEditor}>
+            <div className={templateCSS.partTitle}>
+              Scale
+            </div>
+            <div className={templateCSS.partInput}>
+              {geometryScales(projectScene)}
+            </div>
+          </div>
+          <div className={templateCSS.partEditor}>
+            <div className={templateCSS.partTitle}>
+              Rotation
+            </div>
+            <div className={templateCSS.partInput}>
+              {geometryRotations(projectScene)}
+            </div>
+          </div>
+        </div>
+        </div>
+
+      </div>
+
+      <div className={templateCSS.texture}>
+        <h3 className={templateCSS.textureTitle}>
+          texture editor
+        </h3>
+        <div className={templateCSS.xyzEditor}>
+          <div className={templateCSS.partEditor}>
+            <div className={templateCSS.partTitle}>
+              Tiling
+            </div>
+            <div className={templateCSS.partInput}>
+              {geometryTiling(projectScene)}
+              
+            </div>
+          </div>
+          </div>
+
+
+        <div className={templateCSS.imgEditor}>
+        {selectedObjectChosen && <img src={selectedObjectMaterial} alt='objectImg' className={templateCSS.displayedObjectImage} />}
+        </div>
+      </div>
+        </>
+      )
+    }
+  }
+
   return (
     <div className={templateCSS.templatePage}>
       
@@ -1048,7 +1178,16 @@ const updateObjectArc = (objectID, newObjectData) => {
           </div>
         </div>
         <div className={templateCSS.leftEditorBottomt}>
-          <button> test </button>
+          <div>
+          Animation Options
+          </div>
+          <div>
+          <button> none </button>
+          <button> rotate </button>
+          <button> soft hover </button>
+          <button> hard jitter</button>
+
+          </div>
         </div>
       </div>
 
@@ -1064,73 +1203,12 @@ const updateObjectArc = (objectID, newObjectData) => {
               <div className={templateCSS.choicedInfo}>
                 <div className={templateCSS.tabs}>
                 {instantiateTabs(projectScene)}
+                {instantiateBroadStateTabs()}
                 </div>
 
-
-                <div className={templateCSS.geometry}>
-                  <h3 className={templateCSS.geometryTitle}>
-                    geometry editor
-                  </h3>
-                  <div className={templateCSS.xyzEditorWrapper}>
-                  <div className={templateCSS.xyzEditor}>
-                    <div className={templateCSS.partEditor}>
-                      <div className={templateCSS.partTitle}>
-                        Position
-                      </div>
-                      <div className={templateCSS.partInput}>
-                      
-                        {geometryPositions(projectScene)}
-
-                      </div>
-                    </div>
-                    <div className={templateCSS.partEditor}>
-                      <div className={templateCSS.partTitle}>
-                        Scale
-                      </div>
-                      <div className={templateCSS.partInput}>
-                        {geometryScales(projectScene)}
-                      </div>
-                    </div>
-                    <div className={templateCSS.partEditor}>
-                      <div className={templateCSS.partTitle}>
-                        Rotation
-                      </div>
-                      <div className={templateCSS.partInput}>
-                        {geometryRotations(projectScene)}
-                      </div>
-                    </div>
-                  </div>
-                  </div>
-
-                </div>
-
-                <div className={templateCSS.texture}>
-                  <h3 className={templateCSS.textureTitle}>
-                    texture editor
-                  </h3>
-                  <div className={templateCSS.xyzEditor}>
-                    <div className={templateCSS.partEditor}>
-                      <div className={templateCSS.partTitle}>
-                        Tiling
-                      </div>
-                      <div className={templateCSS.partInput}>
-                        {geometryTiling(projectScene)}
-                        
-                      </div>
-                    </div>
-                    </div>
+                <RightEditor />
 
 
-                  <div className={templateCSS.imgEditor}>
-                  {/* {console.log('Selected Object Material:', selectedObjectMaterial)} */}
-                  {selectedObjectChosen && <img src={selectedObjectMaterial} alt='objectImg' className={templateCSS.displayedObjectImage} />}
-
-                    {/* <div className={templateCSS.fileUpload}>
-                      <input className={templateCSS.fileUploadButton} type="file" onChange={((event) => {setImageUpload(event.target.files[0])})}/>
-                      <button className={templateCSS.changeImgButton} onClick={uploadUpdateImage}>change image</button>
-                    </div> */}
-                  </div>
-                </div>
               </div>
 
 
@@ -1164,6 +1242,7 @@ const updateObjectArc = (objectID, newObjectData) => {
           <div className={templateCSS.saveActions} >
             <button onClick={saveProject} > save </button>
             <button onClick={makeTemplate}> make template </button>
+            <button > share </button>
           </div>
 
 
