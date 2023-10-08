@@ -26,20 +26,22 @@ function Model({ name, ...props }) {
 
   const materialColor = selectedID === name ? '#ADD8E6' : (hovered ? 'grey' : 'white');
 
-  const loadTexture = (textureUrl) => {
-    if (textureCache[textureUrl]) {
-      return textureCache[textureUrl];
+  const loadTexture = (textureUrl, tiling) => {
+    const cacheKey = `${textureUrl}_${tiling[0]}_${tiling[1]}`;
+    
+    if (textureCache[cacheKey]) {
+      return textureCache[cacheKey];
     } else {
       const textureLoader = new THREE.TextureLoader();
       const texture = textureLoader.load(textureUrl);
-      textureCache[textureUrl] = texture;
+      texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+      texture.repeat.set(tiling[0], tiling[1]);
+      textureCache[cacheKey] = texture;
       return texture;
     }
   };
 
-  const texture = loadTexture(props.materialString);
-  texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-  texture.repeat.set(props.tiling[0], props.tiling[1]);
+  const texture = loadTexture(props.materialString, props.tiling);
 
   let newMaterial;
 
