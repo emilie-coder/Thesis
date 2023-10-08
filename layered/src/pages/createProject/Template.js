@@ -100,12 +100,7 @@ const Editor = () => {
   const copyObject = () => {
     if(selectObjectChosen && selectObjectID){
       if(projectScene){
-        console.log(projectScene.objects)
-        console.log(selectedObjectID);
-        console.log(projectScene.objects[selectedObjectID]);
         const temp = projectScene.objects[selectedObjectID];
-        console.log("this is temp");
-        console.log(temp);
         setCopiedObject(temp);
       }
     }
@@ -255,7 +250,7 @@ const Editor = () => {
     } else if (event.metaKey && event.key === 'c') {
       event.preventDefault(); // Prevent the default save behavior
       copyObject();
-      console.log(copiedObject);
+      // console.log(copiedObject);
     } 
     //----------- paste selected item -------------------
     else if (event.metaKey && event.key === 'v') {
@@ -425,7 +420,7 @@ const Editor = () => {
 
     
   const removeTarget = (stateName) => {
-    console.log('Clicked skybox');
+    // console.log('Clicked skybox');
 
     const nonIndexState = {
       state: stateName,
@@ -444,12 +439,14 @@ const BroadStateTab = () => {
 
   let tabClassName1 = templateCSS.unselectedTab;
   let tabClassName2 = templateCSS.unselectedTab;
+  let tabClassName3 = templateCSS.unselectedTab;
 
   if( nonIndexState && selectedNonIndexState === 'SkyBox'){
     tabClassName1 = templateCSS.selectedTab;
   } else if (nonIndexState && selectedNonIndexState === 'Light') {
     tabClassName2 = templateCSS.selectedTab;
-
+  }else if (nonIndexState && selectedNonIndexState === 'Audio') {
+    tabClassName3 = templateCSS.selectedTab;
   }
 
 
@@ -460,6 +457,9 @@ const BroadStateTab = () => {
         </div>
         <div className={`${tabClassName2}`} onClick={() => removeTarget('Light')}>
           Light
+        </div>
+        <div className={`${tabClassName3}`} onClick={() => removeTarget('Audio')}>
+          Audio
         </div>
     </>
   );
@@ -580,8 +580,8 @@ const instantiateBroadStateTabs = () => {
   };
 
 const geometryPositions = (projectScene) => {
-  console.log("HERE I AM")
-  console.log(projectScene);
+  // console.log("HERE I AM")
+  // console.log(projectScene);
     if (projectScene){
       if(projectScene.objects && projectScene.objects.length !== 0){
         if(selectObjectChosen){
@@ -895,7 +895,7 @@ const geometryTiling = (projectScene) => {
   const saveProject = async () => { 
     try {
       await updateProject(userID, projID, projectScene);
-      console.log('Project successfully updated.');
+      // console.log('Project successfully updated.');
       return true;
     } catch (error) {
       console.error('Error updating project:', error);
@@ -973,10 +973,6 @@ const updateObjectArc = (objectID, newObjectData) => {
   }
 };
 
-
-
-  
-
   const insertFromList = (image) => {
     // console.log('wtf');
     if(projectScene){
@@ -1041,6 +1037,34 @@ const updateObjectArc = (objectID, newObjectData) => {
   };
 
 
+  const setSkyBox = (index) => {
+    console.log(`you clicked: ${index} with a value of ${skyBoxes[index]}`);
+    console.log(projectScene.details.SkyBox);
+  
+    setProjectScene((prevScene) => ({
+      ...prevScene,
+      details: {
+        ...prevScene.details,
+        SkyBox: index,
+      }
+    }));
+  };
+  const instantiateSkyButtons = () => {
+    let loopData = [];
+  
+    if (skyBoxes !== null && skyBoxes.length !== 0) {
+      for (let i = 0; i < skyBoxes.length; i++) {
+        loopData.push(
+          <button key={i} onClick={() => setSkyBox(i)}>
+            {skyBoxes[i]}
+          </button>
+        );
+      }
+    }
+  
+    return <ul>{loopData}</ul>;
+  };
+  
 
 
   const deleteObject = () => {
@@ -1066,7 +1090,6 @@ const updateObjectArc = (objectID, newObjectData) => {
   const toggleSidesButton = () => {
     setToggleSides(!toggleSides);
   }
-
 
   const RightEditor = () => {
     const renderEditor = useSelector(selectObjectChosen);
@@ -1134,6 +1157,13 @@ const updateObjectArc = (objectID, newObjectData) => {
         </div>
       </div>
         </>
+      )
+    } else{
+      return(     
+        <div className={templateCSS.geometry}>
+          {instantiateSkyButtons()}
+        </div>
+
       )
     }
   }

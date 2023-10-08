@@ -48,7 +48,7 @@ function Model({ name, ...props }) {
       map: texture,
       color: materialColor,
       transparent: true,
-      side: THREE.DoubleSide
+      side: THREE.DoubleSide,
     });
   } else {
     newMaterial = new THREE.MeshBasicMaterial({
@@ -141,10 +141,18 @@ function Controls(props) {
 
 export default function ThreeCanvas(props) {
   const sceneObjs = props.scene;
+
   const toggleSides = props.toggleSides;
 
 
   const [objectsToRender, setObjectsToRender] = useState([]);
+
+
+  const [skyBoxes, setSkyBoxes ] = useState(["/imgs/belfast_sunset_puresky_4k.hdr" ,
+                                              "/imgs/industrial_sunset_puresky_4k.hdr", 
+                                              "/imgs/kloofendal_48d_partly_cloudy_puresky_4k.hdr",
+                                               "/imgs/rathaus_4k.hdr",
+                                                "/imgs/syferfontein_0d_clear_puresky_4k.hdr" ])
 
   const updateThreeObject = (objectID, newObjectData) => {
     props.updateObject(objectID, newObjectData);
@@ -187,11 +195,12 @@ export default function ThreeCanvas(props) {
     <Canvas
         camera={{ position: [-3, 2, 5], fov: 90 }}
         // linear
-        // flat
+        flat
         >
-      <Environment files=  "/imgs/syferfontein_0d_clear_puresky_4k.hdr" background blur={0.0} />
+        {sceneObjs && skyBoxes[sceneObjs.details.SkyBox] && (
+          <Environment files={skyBoxes[sceneObjs.details.SkyBox]} background blur={0.0} />
+        )}
       <gridHelper args={[400, 200, '#f7f7f7', '#f7f7f7']} position={[0, -4, 0]} />
-      <pointLight position={[100, 100, 100]} intensity={0.8} />
       <hemisphereLight color="#ffffff" groundColor="#b9b9b9" position={[-7, 25, 13]} intensity={0.85} />
       <Suspense fallback={null}>
         {instantiateObjects()}
