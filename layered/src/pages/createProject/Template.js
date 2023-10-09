@@ -67,8 +67,6 @@ const Editor = () => {
     b: "19",
     a: "1",
   });
-  // destructuring rgba from state
-  const { r, g, b, a } = sketchPickerColor;
 
 
 

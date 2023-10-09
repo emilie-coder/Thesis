@@ -18,7 +18,6 @@ const textureCache = {}; // Texture cache to store loaded textures
 
 function Model({ name, ...props }) {
 
-  console.log("MODEL PROPS:", props)
   const selectedID = useSelector(selectObjectID);
   const dispatch = useDispatch();
 
@@ -55,7 +54,6 @@ function Model({ name, ...props }) {
           videoTexture.magFilter = THREE.LinearFilter;
           return videoTexture;
         }
-
       }
 
     }
@@ -67,7 +65,7 @@ function Model({ name, ...props }) {
 
   let newMaterial;
 
-  if (props.toggleSides) {
+  if (!props.toggleSides) {
     newMaterial = new THREE.MeshBasicMaterial({
       map: texture,
       color: materialColor,
