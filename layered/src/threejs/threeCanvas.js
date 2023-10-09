@@ -17,6 +17,8 @@ import { REMOVE_EDITOR_STATE } from '../redux/slice/editorSlice';
 const textureCache = {}; // Texture cache to store loaded textures
 
 function Model({ name, ...props }) {
+
+  console.log("MODEL PROPS:", props)
   const selectedID = useSelector(selectObjectID);
   const dispatch = useDispatch();
 
@@ -26,22 +28,42 @@ function Model({ name, ...props }) {
 
   const materialColor = selectedID === name ? '#ADD8E6' : (hovered ? 'grey' : 'white');
 
-  const loadTexture = (textureUrl, tiling) => {
+  const loadTexture = (textureUrl, tiling, textureType) => {
     const cacheKey = `${textureUrl}_${tiling[0]}_${tiling[1]}`;
     
     if (textureCache[cacheKey]) {
       return textureCache[cacheKey];
     } else {
-      const textureLoader = new THREE.TextureLoader();
-      const texture = textureLoader.load(textureUrl);
-      texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-      texture.repeat.set(tiling[0], tiling[1]);
-      textureCache[cacheKey] = texture;
-      return texture;
+
+
+
+      if(textureType === "image"){
+        const textureLoader = new THREE.TextureLoader();
+        const texture = textureLoader.load(textureUrl);
+        texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+        texture.repeat.set(tiling[0], tiling[1]);
+        textureCache[cacheKey] = texture;
+        return texture;
+
+      } else if(textureType === "video"){
+
+        let video = document.getElementById(textureUrl);
+
+        if(video !== null){
+          let videoTexture = new THREE.VideoTexture(video);
+          videoTexture.minFilter = THREE.LinearFilter;
+          videoTexture.magFilter = THREE.LinearFilter;
+          return videoTexture;
+        }
+
+      }
+
     }
   };
 
-  const texture = loadTexture(props.materialString, props.tiling);
+
+
+  const texture = loadTexture(props.materialString, props.tiling, props.materialType);
 
   let newMaterial;
 
@@ -171,6 +193,7 @@ export default function ThreeCanvas(props) {
 
 
   const instantiateObjects = () => {
+
     const objectsToRender = [];
 
     if (sceneObjs && sceneObjs.objects) {
@@ -189,6 +212,7 @@ export default function ThreeCanvas(props) {
             updateThreeObject={updateThreeObject}
             tiling={[item.tiling.x, item.tiling.y]}
             toggleSides = {props.toggleSides}
+            materialType = {item.materialType}
           />
         );
       });
@@ -196,37 +220,6 @@ export default function ThreeCanvas(props) {
 
     return objectsToRender.length > 0 ? objectsToRender : null;
   };
-
-  
-
-
-
-  // let video = document.getElementById("videoReference2");
-
-  // if(video !== null){
-  //   let videoTexture = new THREE.VideoTexture(video);
-
-  //   videoTexture.minFilter = THREE.LinearFilter;
-  //   videoTexture.magFilter = THREE.LinearFilter;
-  
-  
-  
-  //   var movieMaterial = new THREE.MeshBasicMaterial({
-  //     map: videoTexture,
-  //     side: THREE.DoubleSide,
-  //     toneMapped: false,
-  //   })
-  // } else {
-
-  //   let movieMaterial = new THREE.MeshBasicMaterial({
-  //     color: "white",
-  //     transparent: true,
-  //     side: THREE.DoubleSide,
-  //   });
-  // }
-
-
-  // const videoGeometry = new THREE.PlaneGeometry();
 
 
   

@@ -512,15 +512,12 @@ const instantiateBroadStateTabs = () => {
     if (sceneObjs && sceneObjs.objects) {
       return sceneObjs.objects.map((item, index) => {
 
-        console.log("INstantate")
-        console.log(item)
-
         if(item.materialType === 'video'){
           return (
             <div>
               <video
               crossOrigin="anonymous"
-              // id="videoReference"
+              id={item.material}
               playsInline
               muted
               loop
