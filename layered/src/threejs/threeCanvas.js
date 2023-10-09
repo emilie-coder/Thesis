@@ -143,28 +143,32 @@ function Controls(props) {
 
 export default function ThreeCanvas(props) {
   const sceneObjs = props.scene;
-
   const toggleSides = props.toggleSides;
-
-
   const [objectsToRender, setObjectsToRender] = useState([]);
-
-
   const [skyBoxes, setSkyBoxes ] = useState(["/imgs/belfast_sunset_puresky_4k.hdr" ,
                                               "/imgs/industrial_sunset_puresky_4k.hdr", 
                                               "/imgs/kloofendal_48d_partly_cloudy_puresky_4k.hdr",
                                                "/imgs/rathaus_4k.hdr",
                                                 "/imgs/syferfontein_0d_clear_puresky_4k.hdr" ])
 
+
+
+
   const updateThreeObject = (objectID, newObjectData) => {
     props.updateObject(objectID, newObjectData);
   };
+
+
+
 
   useEffect(() => {
     // Update the objects to be rendered whenever sceneObjs changes
     const newObjectsToRender = instantiateObjects();
     setObjectsToRender(newObjectsToRender);
   }, [props.scene]);
+
+
+
 
   const instantiateObjects = () => {
     const objectsToRender = [];
@@ -195,34 +199,39 @@ export default function ThreeCanvas(props) {
 
   
 
-  let video = document.getElementById("videoReference");
-  let videoTexture = new THREE.VideoTexture(video);
-
-  videoTexture.minFilter = THREE.LinearFilter;
-  videoTexture.magFilter = THREE.LinearFilter;
 
 
+  let video = document.getElementById("videoReference2");
 
-  var movieMaterial = new THREE.MeshBasicMaterial({
-    map: videoTexture,
-    side: THREE.DoubleSide,
-    toneMapped: false,
-  })
+  if(video !== null){
+    let videoTexture = new THREE.VideoTexture(video);
+
+    videoTexture.minFilter = THREE.LinearFilter;
+    videoTexture.magFilter = THREE.LinearFilter;
+  
+  
+  
+    var movieMaterial = new THREE.MeshBasicMaterial({
+      map: videoTexture,
+      side: THREE.DoubleSide,
+      toneMapped: false,
+    })
+  } else {
+
+    let movieMaterial = new THREE.MeshBasicMaterial({
+      color: "white",
+      transparent: true,
+      side: THREE.DoubleSide,
+    });
+  }
+
 
   const videoGeometry = new THREE.PlaneGeometry();
 
+
+  
   return (
     <>
-            <video
-            id="videoReference"
-            playsInline
-            muted
-            loop
-            autoPlay
-            width="300"
-            src="/videos/test2.mp4"
-            // style={{display: 'none'}}
-            ></video>
 
       <Canvas
         camera={{ position: [-3, 2, 5], fov: 90 }}
@@ -239,7 +248,7 @@ export default function ThreeCanvas(props) {
         
         {/* <TestAnim  /> */}
 
-        <mesh geometry={videoGeometry} material ={movieMaterial} />
+        {<mesh geometry={videoGeometry}  material={movieMaterial} />}
       </Suspense>
       <OrbitControls makeDefault />
       <Man scale={0.01} position={[0,-1.7, 0]} />

@@ -1173,13 +1173,14 @@ const updateObjectArc = (objectID, newObjectData) => {
             <div className="VideoRenderer">
             test
             <video
-            id="video"
+            crossOrigin="anonymous"
+            // id="videoReference"
             playsInline
             muted
             loop
             autoPlay
             width="300"
-            src="/videos/test2.mp4"
+            src="https://firebasestorage.googleapis.com/v0/b/layered-5fb29.appspot.com/o/gie2QN4obGaUeCCvTotXNe06QP73%2Fproject_-NfD0FDtWnF1NpGIRqMt%2Fimages%2F01__2822_29.mp4?alt=media&token=26dc3850-cc78-4665-a596-70bdc5982c35&_gl=1*1l3zpur*_ga*ODk5MDA3ODE1LjE2OTY1NDA3Mjc.*_ga_CW55HF8NVT*MTY5Njg3MjE3MC44LjEuMTY5Njg3Mjk5My42MC4wLjA."
             ></video>
 
             </div>
@@ -1315,6 +1316,17 @@ const updateObjectArc = (objectID, newObjectData) => {
 
   return (
     <div className={templateCSS.templatePage}>
+          <video
+            crossOrigin="anonymous"
+            id="videoReference2"
+            playsInline
+            muted
+            loop
+            autoPlay
+            width="300"
+            src="https://firebasestorage.googleapis.com/v0/b/layered-5fb29.appspot.com/o/gie2QN4obGaUeCCvTotXNe06QP73%2Fproject_-NfD0FDtWnF1NpGIRqMt%2Fimages%2F01__2822_29.mp4?alt=media&token=26dc3850-cc78-4665-a596-70bdc5982c35&_gl=1*1l3zpur*_ga*ODk5MDA3ODE1LjE2OTY1NDA3Mjc.*_ga_CW55HF8NVT*MTY5Njg3MjE3MC44LjEuMTY5Njg3Mjk5My42MC4wLjA."
+            style={{position: 'absolute', opacity: '0'}}
+            />
       
       <div className={templateCSS.leftEditor}>
         <div className={templateCSS.leftEditorTop}>
