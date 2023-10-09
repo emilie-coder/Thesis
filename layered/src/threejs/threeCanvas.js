@@ -193,8 +193,38 @@ export default function ThreeCanvas(props) {
     return objectsToRender.length > 0 ? objectsToRender : null;
   };
 
+  
+
+  let video = document.getElementById("videoReference");
+  let videoTexture = new THREE.VideoTexture(video);
+
+  videoTexture.minFilter = THREE.LinearFilter;
+  videoTexture.magFilter = THREE.LinearFilter;
+
+
+
+  var movieMaterial = new THREE.MeshBasicMaterial({
+    map: videoTexture,
+    side: THREE.DoubleSide,
+    toneMapped: false,
+  })
+
+  const videoGeometry = new THREE.PlaneGeometry();
+
   return (
-    <Canvas
+    <>
+            <video
+            id="videoReference"
+            playsInline
+            muted
+            loop
+            autoPlay
+            width="300"
+            src="/videos/test2.mp4"
+            // style={{display: 'none'}}
+            ></video>
+
+      <Canvas
         camera={{ position: [-3, 2, 5], fov: 90 }}
         linear
         flat
@@ -208,10 +238,14 @@ export default function ThreeCanvas(props) {
         {instantiateObjects()}
         
         {/* <TestAnim  /> */}
+
+        <mesh geometry={videoGeometry} material ={movieMaterial} />
       </Suspense>
       <OrbitControls makeDefault />
       <Man scale={0.01} position={[0,-1.7, 0]} />
       <Controls editMode={props.editMode} updateThreeObject={updateThreeObject}/>
     </Canvas>
+    </>
+
   );
 }

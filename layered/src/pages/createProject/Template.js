@@ -1170,7 +1170,19 @@ const updateObjectArc = (objectID, newObjectData) => {
       } else if(projectScene.objects[selectedObjectID].materialType==="video"){
         return(
           <div className={templateCSS.imageTextureOption}>
-            <div className="VideoRenderer"></div>
+            <div className="VideoRenderer">
+            test
+            <video
+            id="video"
+            playsInline
+            muted
+            loop
+            autoPlay
+            width="300"
+            src="/videos/test2.mp4"
+            ></video>
+
+            </div>
           
           </div>
         )
