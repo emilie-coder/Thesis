@@ -1167,6 +1167,58 @@ const updateObjectArc = (objectID, newObjectData) => {
   }
 
 
+  const handleChromePickerChange = (newColor) => {
+    console.log(newColor);
+
+
+    if (projectScene && projectScene.objects && newColor) {
+      const updatedObjects = projectScene.objects.map((obj, index) => {
+        if (index === selectedObjectID) {
+          return {
+            ...obj,
+            solidColor: {
+              r: newColor.r,
+              g: newColor.g,
+              b: newColor.b,
+              a: newColor.a
+            }
+          };
+        }
+        return obj;
+      });
+  
+      // Update the undo and redo stacks
+      setUndoStack((prevUndoStack) => [...prevUndoStack, projectScene]);
+      setRedoStack([]);
+  
+      // Update the projectScene with the updated position
+      setProjectScene((prevScene) => ({
+        ...prevScene,
+        objects: updatedObjects,
+      }));
+    }
+
+
+  }
+
+  const MyChromePicker = () => {
+
+    console.log(projectScene.objects[selectedObjectID].solidColor);
+
+    if(selectedObjectChosen){
+      if(projectScene.objects[selectedObjectID].solidColor !== null){
+        return(
+          <ChromePicker
+          onChange={(color) => {
+            handleChromePickerChange(color.rgb);
+          }}
+          color={projectScene.objects[selectedObjectID].solidColor}
+          />
+        )
+      }
+  }
+  }
+
 
   const RenderTextureEditorDetails = () => {
     if(selectedObjectChosen){
@@ -1215,12 +1267,7 @@ const updateObjectArc = (objectID, newObjectData) => {
       } else if(projectScene.objects[selectedObjectID].materialType==="solid"){
         return(
           <div>
-            <ChromePicker
-              onChange={(color) => {
-                setSketchPickerColor(color.rgb);
-              }}
-              color={sketchPickerColor}
-            />
+            <MyChromePicker />
           </div>
         )
     }
