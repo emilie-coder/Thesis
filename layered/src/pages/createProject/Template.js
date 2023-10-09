@@ -346,7 +346,7 @@ const Editor = () => {
 
     useEffect(() => {
       if (!userID || !projID) {
-        console.warn('userID or projID is not available.');
+        // console.warn('userID or projID is not available.');
         return;
       }
     
@@ -438,13 +438,10 @@ const BroadStateTab = () => {
   const selectedNonIndexState = useSelector(selectNonIndexState)
 
   let tabClassName1 = templateCSS.unselectedTab;
-  let tabClassName2 = templateCSS.unselectedTab;
   let tabClassName3 = templateCSS.unselectedTab;
 
   if( nonIndexState && selectedNonIndexState === 'SkyBox'){
     tabClassName1 = templateCSS.selectedTab;
-  } else if (nonIndexState && selectedNonIndexState === 'Light') {
-    tabClassName2 = templateCSS.selectedTab;
   }else if (nonIndexState && selectedNonIndexState === 'Audio') {
     tabClassName3 = templateCSS.selectedTab;
   }
@@ -454,9 +451,6 @@ const BroadStateTab = () => {
     <>
         <div className={`${tabClassName1}`} onClick={() => removeTarget('SkyBox')}>
           Sky
-        </div>
-        <div className={`${tabClassName2}`} onClick={() => removeTarget('Light')}>
-          Light
         </div>
         <div className={`${tabClassName3}`} onClick={() => removeTarget('Audio')}>
           Audio
@@ -497,6 +491,42 @@ const instantiateBroadStateTabs = () => {
   
     return null;
   };
+
+
+
+
+
+
+  const instantiateTextureOptionTabs = () => {
+    let tabClassName1 = templateCSS.unselectedTab;
+    let tabClassName2 = templateCSS.unselectedTab;
+    let tabClassName3 = templateCSS.unselectedTab;
+
+    if( projectScene.objects[selectedObjectID].materialType === 'image'){
+      tabClassName1 = templateCSS.selectedTab;
+    } else if( projectScene.objects[selectedObjectID].materialType === 'video'){
+      tabClassName2 = templateCSS.selectedTab;
+    } else if( projectScene.objects[selectedObjectID].materialType === 'solid'){
+      tabClassName3 = templateCSS.selectedTab;
+    }
+  
+
+    return( 
+      <>
+           <div className={`${tabClassName1}`}  onClick={() => setTextureType('image')}>
+            image
+          </div>
+          <div className={`${tabClassName2}`}  onClick={() => setTextureType('video')}>
+            video
+          </div>
+          <div className={`${tabClassName3}`}  onClick={() => setTextureType('solid')}>
+            solid
+          </div>
+      </>
+
+    )
+  }
+
 
   const handleGeometryPosX = (e) => {
     if (projectScene && projectScene.objects) {
@@ -892,16 +922,22 @@ const geometryTiling = (projectScene) => {
 
 }
 
-  const saveProject = async () => { 
-    try {
-      await updateProject(userID, projID, projectScene);
-      // console.log('Project successfully updated.');
-      return true;
-    } catch (error) {
-      console.error('Error updating project:', error);
-      return false;
-    }
+const saveProject = async () => { 
+  try {
+    const lastTimeSaved = await updateProject(userID, projID, projectScene);
+
+    setProjectScene((prevScene) => ({
+      ...prevScene,
+      lastSaved: lastTimeSaved, // Assume lastTimeSaved is in the Firebase Server Timestamp format
+    }));
+
+    // console.log('Project successfully updated.');
+    return true;
+  } catch (error) {
+    console.error('Error updating project:', error);
+    return false;
   }
+}
 
   const makeTemplate = () => {
     createTemplate(projectScene);
@@ -1038,8 +1074,6 @@ const updateObjectArc = (objectID, newObjectData) => {
 
 
   const setSkyBox = (index) => {
-    console.log(`you clicked: ${index} with a value of ${skyBoxes[index]}`);
-    console.log(projectScene.details.SkyBox);
   
     setProjectScene((prevScene) => ({
       ...prevScene,
@@ -1091,6 +1125,70 @@ const updateObjectArc = (objectID, newObjectData) => {
     setToggleSides(!toggleSides);
   }
 
+
+
+  const RenderTextureEditorDetails = () => {
+    if(selectedObjectChosen){
+      if(projectScene.objects[selectedObjectID].materialType === null || projectScene.objects[selectedObjectID].materialType==="image"){
+        return(
+
+          <div className={templateCSS.imageTextureOption}>
+            <div className={templateCSS.xyzEditor}>
+              <div className={templateCSS.partEditor}>
+                <div className={templateCSS.partTitle}>
+                  Tiling
+                </div>
+                <div className={templateCSS.partInput}>
+                  {geometryTiling(projectScene)}
+                  
+                </div>
+              </div>
+            </div>
+
+
+              <div className={templateCSS.imgEditor}>
+              {selectedObjectChosen && <img src={selectedObjectMaterial} alt='objectImg' className={templateCSS.displayedObjectImage} />}
+              </div>
+            
+          </div>
+        )
+      } else if(projectScene.objects[selectedObjectID].materialType==="video"){
+        return(
+          <div>
+            video editor
+          </div>
+        )
+      } else if(projectScene.objects[selectedObjectID].materialType==="solid"){
+        return(
+          <div>
+            solid color editor
+          </div>
+        )
+    }
+  }}
+
+
+  const setTextureType = (textureType) => {
+    
+    // Ensure objects and selectedObjectID are defined
+    if (projectScene.objects && projectScene.objects[selectedObjectID] && textureType !== null) {
+      setProjectScene(prevScene => ({
+        ...prevScene,
+        objects: prevScene.objects.map((object, index) => {
+          if (index === selectedObjectID) {
+            return {
+              ...object,
+              materialType: textureType,
+            };
+          }
+          return object;
+        }),
+      }));
+    }
+  };
+
+
+
   const RightEditor = () => {
     const renderEditor = useSelector(selectObjectChosen);
 
@@ -1139,21 +1237,18 @@ const updateObjectArc = (objectID, newObjectData) => {
         <h3 className={templateCSS.textureTitle}>
           texture editor
         </h3>
-        <div className={templateCSS.xyzEditor}>
-          <div className={templateCSS.partEditor}>
-            <div className={templateCSS.partTitle}>
-              Tiling
-            </div>
-            <div className={templateCSS.partInput}>
-              {geometryTiling(projectScene)}
-              
-            </div>
-          </div>
+
+        <div className={templateCSS.textureOptions}>
+          <div className={templateCSS.textureOptionTabs}>
+
+            {instantiateTextureOptionTabs()}
           </div>
 
 
-        <div className={templateCSS.imgEditor}>
-        {selectedObjectChosen && <img src={selectedObjectMaterial} alt='objectImg' className={templateCSS.displayedObjectImage} />}
+
+          {RenderTextureEditorDetails()}
+
+
         </div>
       </div>
         </>
@@ -1161,12 +1256,29 @@ const updateObjectArc = (objectID, newObjectData) => {
     } else{
       return(     
         <div className={templateCSS.geometry}>
+          <>
           {instantiateSkyButtons()}
+          </>
+          <>
+            Audio
+          </>
         </div>
 
       )
     }
   }
+
+  const formatTimestamp = (timestamp) => {
+    const date = new Date(timestamp);
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: 'numeric',
+      minute: '2-digit'
+    });
+  };
+  
 
   return (
     <div className={templateCSS.templatePage}>
@@ -1271,9 +1383,22 @@ const updateObjectArc = (objectID, newObjectData) => {
           </div>
 
           <div className={templateCSS.saveActions} >
-            <button onClick={saveProject} > save </button>
-            <button onClick={makeTemplate}> make template </button>
-            <button > share </button>
+            <>
+              <button onClick={saveProject} > save </button>
+              <button onClick={makeTemplate}> make template </button>
+              <button > share </button>
+            </>
+            <>
+              project last saved:
+
+              {projectScene && projectScene.lastSaved ? (
+                <span>{formatTimestamp(projectScene.lastSaved)}</span>
+              ) : (
+                <span>No timestamp available</span>
+              )}
+            </>
+
+
           </div>
 
 

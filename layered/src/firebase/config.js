@@ -233,9 +233,9 @@ export async function fetchProject(userID, projectID) {
   }
 }
 
+
 export async function updateProject(userID, projectID, project) {
   try {
-
     const myDb = getDatabase();
     const projectRef = ref(myDb, `users/${userID}/AllUserProjects/${projectID}/projectScene`);
 
@@ -246,15 +246,20 @@ export async function updateProject(userID, projectID, project) {
     // Create a deep copy of project.objects and assign it to currentProjectData.objects
     currentProjectData.objects = { ...project.objects };
 
+    // Update the timestamp for the project
+    currentProjectData.lastSaved = Date.now(); // Use Date.now() to get the current timestamp
 
+    // Update the project data
+    await set(projectRef, currentProjectData);
 
-    const result =  await set(projectRef, currentProjectData);
-    return result;
+    // Return the updated timestamp
+    return currentProjectData.lastSaved;
   } catch (error) {
     console.error("Error updating project:", error);
     throw error;
   }
 }
+
 
 export async function createTemplate(project) {
   try {

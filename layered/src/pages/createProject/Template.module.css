@@ -169,7 +169,7 @@
 }
 
 .texture{
-  background-color: var(--accent-color-a);
+  /* background-color: var(--accent-color-a); */
   margin-left: 5px;
   margin-right: 5px;
   border-bottom-left-radius: 3px;
@@ -297,4 +297,9 @@
 .selectedImageButton {
   border: 2px solid blue; /* Example border style for selected image */
 
+}
+
+
+.textureOptionTabs{
+  display: flex;
 }
