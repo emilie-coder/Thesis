@@ -61,26 +61,55 @@ function Model({ name, ...props }) {
 
 
 
-  const texture = loadTexture(props.materialString, props.tiling, props.materialType);
+
 
   let newMaterial;
 
-  if (!props.toggleSides) {
-    newMaterial = new THREE.MeshBasicMaterial({
-      map: texture,
-      color: materialColor,
-      transparent: true,
-      side: THREE.DoubleSide,
-    });
-  } else {
-    newMaterial = new THREE.MeshBasicMaterial({
-      map: texture,
-      color: materialColor,
-      transparent: true,
-    });
-  }
+  if(props.materialType !== 'solid'){
+    const texture = loadTexture(props.materialString, props.tiling, props.materialType);
+    if (!props.toggleSides) {
+      newMaterial = new THREE.MeshBasicMaterial({
+        map: texture,
+        color: materialColor,
+        transparent: true,
+        side: THREE.DoubleSide,
+      });
+    } else {
+      newMaterial = new THREE.MeshBasicMaterial({
+        map: texture,
+        color: materialColor,
+        transparent: true,
+      });
+    }
 
-  newMaterial.alphaTest = 0.8;
+  } else {
+      // Scale RGB components to the range [0, 1]
+      const r = props.colorValues.r / 256;
+      const g = props.colorValues.g / 256;
+      const b = props.colorValues.b / 256;
+      const a = props.colorValues.a ;  // Alpha is already in the correct range [0, 1]
+
+      const materialColor = new THREE.Color(r, g, b);
+
+      console.log("Material Color (R, G, B, A):", r, g, b, a);
+
+
+      if (!props.toggleSides) {
+        newMaterial = new THREE.MeshBasicMaterial({
+          color: materialColor,
+          transparent: true,
+          side: THREE.DoubleSide,
+          opacity: a,
+        });
+      } else {
+        newMaterial = new THREE.MeshBasicMaterial({
+          color: materialColor,
+          transparent: true,
+          opacity: a,
+        });
+    }
+    
+  }
 
   let myGeometry = nodes.mesh_0.geometry;
   if (props.objectType === 'plane') {
@@ -211,6 +240,7 @@ export default function ThreeCanvas(props) {
             tiling={[item.tiling.x, item.tiling.y]}
             toggleSides = {props.toggleSides}
             materialType = {item.materialType}
+            colorValues = {item.solidColor}
           />
         );
       });
