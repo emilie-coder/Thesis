@@ -201,32 +201,32 @@ export default function ThreeCanvas(props) {
 
 
 
-  let video = document.getElementById("videoReference2");
+  // let video = document.getElementById("videoReference2");
 
-  if(video !== null){
-    let videoTexture = new THREE.VideoTexture(video);
+  // if(video !== null){
+  //   let videoTexture = new THREE.VideoTexture(video);
 
-    videoTexture.minFilter = THREE.LinearFilter;
-    videoTexture.magFilter = THREE.LinearFilter;
+  //   videoTexture.minFilter = THREE.LinearFilter;
+  //   videoTexture.magFilter = THREE.LinearFilter;
   
   
   
-    var movieMaterial = new THREE.MeshBasicMaterial({
-      map: videoTexture,
-      side: THREE.DoubleSide,
-      toneMapped: false,
-    })
-  } else {
+  //   var movieMaterial = new THREE.MeshBasicMaterial({
+  //     map: videoTexture,
+  //     side: THREE.DoubleSide,
+  //     toneMapped: false,
+  //   })
+  // } else {
 
-    let movieMaterial = new THREE.MeshBasicMaterial({
-      color: "white",
-      transparent: true,
-      side: THREE.DoubleSide,
-    });
-  }
+  //   let movieMaterial = new THREE.MeshBasicMaterial({
+  //     color: "white",
+  //     transparent: true,
+  //     side: THREE.DoubleSide,
+  //   });
+  // }
 
 
-  const videoGeometry = new THREE.PlaneGeometry();
+  // const videoGeometry = new THREE.PlaneGeometry();
 
 
   
@@ -248,7 +248,6 @@ export default function ThreeCanvas(props) {
         
         {/* <TestAnim  /> */}
 
-        {<mesh geometry={videoGeometry}  material={movieMaterial} />}
       </Suspense>
       <OrbitControls makeDefault />
       <Man scale={0.01} position={[0,-1.7, 0]} />
