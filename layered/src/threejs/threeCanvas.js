@@ -62,6 +62,18 @@ function Model({ name, ...props }) {
 
 
 
+  let thisBlendMode = THREE.NormalBlending;
+
+  if(props.blendMode === 1){
+    thisBlendMode = THREE.NormalBlending ;
+  } else if(props.blendMode === 2){
+    thisBlendMode = THREE.AdditiveBlending;
+  } else if(props.blendMode === 3){
+    thisBlendMode = THREE.SubtractiveBlending;
+  } else if(props.blendMode === 4){
+    thisBlendMode = THREE.MultiplyBlending 
+  }
+
 
   let newMaterial;
 
@@ -73,12 +85,14 @@ function Model({ name, ...props }) {
         color: materialColor,
         transparent: true,
         side: THREE.DoubleSide,
+        blending: thisBlendMode,
       });
     } else {
       newMaterial = new THREE.MeshBasicMaterial({
         map: texture,
         color: materialColor,
         transparent: true,
+        blending: thisBlendMode,
       });
     }
 
@@ -100,12 +114,14 @@ function Model({ name, ...props }) {
           transparent: true,
           side: THREE.DoubleSide,
           opacity: a,
+          blending: thisBlendMode,
         });
       } else {
         newMaterial = new THREE.MeshBasicMaterial({
           color: materialColor,
           transparent: true,
           opacity: a,
+          blending: thisBlendMode,
         });
     }
     
@@ -241,6 +257,7 @@ export default function ThreeCanvas(props) {
             toggleSides = {props.toggleSides}
             materialType = {item.materialType}
             colorValues = {item.solidColor}
+            blendMode = {item.blendMode}
           />
         );
       });
@@ -266,8 +283,6 @@ export default function ThreeCanvas(props) {
       <hemisphereLight color="#ffffff" groundColor="#b9b9b9" position={[-7, 25, 13]} intensity={0.85} />
       <Suspense fallback={null}>
         {instantiateObjects()}
-        
-        {/* <TestAnim  /> */}
 
       </Suspense>
       <OrbitControls makeDefault />

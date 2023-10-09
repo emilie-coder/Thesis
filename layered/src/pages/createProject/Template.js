@@ -1168,8 +1168,6 @@ const updateObjectArc = (objectID, newObjectData) => {
 
 
   const handleChromePickerChange = (newColor) => {
-    console.log(newColor);
-
 
     if (projectScene && projectScene.objects && newColor) {
       const updatedObjects = projectScene.objects.map((obj, index) => {
@@ -1274,6 +1272,51 @@ const updateObjectArc = (objectID, newObjectData) => {
   }}
 
 
+  const setBlendMode = (mode) => {
+    console.log(mode);
+
+
+    if (projectScene && projectScene.objects && mode) {
+      const updatedObjects = projectScene.objects.map((obj, index) => {
+        if (index === selectedObjectID) {
+          return {
+            ...obj,
+            blendMode: mode,
+          };
+        }
+        return obj;
+      });
+  
+      // Update the undo and redo stacks
+      setUndoStack((prevUndoStack) => [...prevUndoStack, projectScene]);
+      setRedoStack([]);
+  
+      // Update the projectScene with the updated position
+      setProjectScene((prevScene) => ({
+        ...prevScene,
+        objects: updatedObjects,
+      }));
+    }
+
+
+  }
+
+
+  const BlendOptions = () => {
+
+    return(
+      <>
+        <button onClick={() => setBlendMode(1)}> normal </button>
+        <button onClick={() => setBlendMode(2)}> additive </button>
+        <button onClick={() => setBlendMode(3)}> subtractive </button>
+        <button onClick={() => setBlendMode(4)}> multiply </button>
+
+      
+      </>
+    )
+  }
+
+
   const setTextureType = (textureType) => {
     
     // Ensure objects and selectedObjectID are defined
@@ -1357,7 +1400,18 @@ const updateObjectArc = (objectID, newObjectData) => {
 
         </div>
       </div>
-        </>
+      
+      <div className={templateCSS.blendModee}>
+        <h3 className={templateCSS.textureTitle}>
+          Blend Mode
+        </h3>
+
+        <div className={templateCSS.blendOptions}>
+          <BlendOptions />
+        </div>
+      </div>
+      
+      </>
       )
     } else{
       return(     
