@@ -23,6 +23,9 @@ import { selectObjectID, selectObjectChosen, selectObjectMaterial, SET_OBJECT_MA
 import NewCanvas from '../../threejs/threeCanvas';
 import { REMOVE_EDITOR_STATE, SET_EDITOR_STATE, selectNonIndexState, selectNonIndexStateBool } from '../../redux/slice/editorSlice';
 
+import { ChromePicker, SketchPicker } from "react-color";
+
+
 const Editor = () => {
 
   const dispatch = useDispatch();
@@ -56,6 +59,18 @@ const Editor = () => {
 
   const [undoStack, setUndoStack] = useState([]);
   const [redoStack, setRedoStack] = useState([]);
+
+
+  const [sketchPickerColor, setSketchPickerColor] = useState({
+    r: "241",
+    g: "112",
+    b: "19",
+    a: "1",
+  });
+  // destructuring rgba from state
+  const { r, g, b, a } = sketchPickerColor;
+
+
 
 
   const [skyBoxes, setSkyBoxes ] = useState(["/imgs/belfast_sunset_puresky_4k.hdr" ,
@@ -1154,14 +1169,20 @@ const updateObjectArc = (objectID, newObjectData) => {
         )
       } else if(projectScene.objects[selectedObjectID].materialType==="video"){
         return(
-          <div>
-            video editor
+          <div className={templateCSS.imageTextureOption}>
+            <div className="VideoRenderer"></div>
+          
           </div>
         )
       } else if(projectScene.objects[selectedObjectID].materialType==="solid"){
         return(
           <div>
-            solid color editor
+            <ChromePicker
+              onChange={(color) => {
+                setSketchPickerColor(color.rgb);
+              }}
+              color={sketchPickerColor}
+            />
           </div>
         )
     }
