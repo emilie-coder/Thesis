@@ -41,6 +41,9 @@ const Editor = () => {
   const [imageList, setImageList] = useState([]);
 
 
+  const [videoList, setVideoList] = useState([]);
+  const [videoUpload, setVideoUpload] = useState(null);
+
   const userID = useSelector(selectUserID);
 
   const [isEditingTitle, setIsEditingTitle] = useState(false); // State to track if the title is being edited
@@ -53,7 +56,11 @@ const Editor = () => {
   const pathSegments = location.pathname.split('/');
   const projectIDURL = pathSegments[pathSegments.length - 1]; // Get the last part of the URL
   const [editMode, setEditMode] = useState('translate');
+
+
   const [lastSelectedImage, setLastSelectedImage] = useState(null);
+  const [lastSelectedVideo, setLastSelectedVideo] = useState(null);
+
   const [toggleSides, setToggleSides] = useState(true);
   const [copiedObject, setCopiedObject] = useState({});
 
@@ -109,6 +116,9 @@ const Editor = () => {
     setLastSelectedImage(url);
   };
 
+  const handleVideoClick = (url) => {
+    setLastSelectedVideo(url);
+  }
 
   const copyObject = () => {
     if(selectObjectChosen && selectObjectID){
@@ -138,6 +148,13 @@ const Editor = () => {
       rotation: { x: 0, y: 0, z: 0 }, // Set the initial rotation
       scale: { x: 1, y: 1, z: 1 }, // Set the initial scale
       tiling: { x: 1, y: 1}, // Set the initial scale
+      materialType: "solid",
+      solidColor: {
+        r: 255,
+        g: 255,
+        b: 255,
+      },
+      blendMode: 1,
     };
   
     // Append the new cylinder object to projectScene.objects
@@ -208,6 +225,13 @@ const Editor = () => {
       rotation: { x: 0, y: 0, z: 0 }, // Set the initial rotation
       scale: { x: 1, y: 1, z: 1 }, // Set the initial scale
       tiling: { x: 1, y: 1}, // Set the initial scale
+      materialType: "solid",
+      solidColor: {
+        r: 255,
+        g: 255,
+        b: 255,
+      },
+      blendMode: 1,
     };
   
     // Append the new cylinder object to projectScene.objects
@@ -357,6 +381,24 @@ const Editor = () => {
     });
   };
 
+
+  const uploadVideo = () => {
+    if (videoUpload == null) return;
+
+    const videoRef = ref(
+      storage,
+      userID + '/project_' + projID + `/videos/${videoUpload.name + v4()}`
+    );
+
+    uploadBytes(videoRef, videoUpload).then((snapshot) => {
+      getDownloadURL(snapshot.ref).then((url) => {
+        setVideoList((prev) => [...prev, url]);
+      });
+    });
+  };
+
+
+
     useEffect(() => {
       if (!userID || !projID) {
         // console.warn('userID or projID is not available.');
@@ -381,12 +423,29 @@ const Editor = () => {
           console.error('Error listing images:', error);
         });
     
-        // if (projectScene && projectScene.objects) {
-        //   // Extract image URLs from projectScene objects and add them to the imageList
-        //   const urls = projectScene.objects.map((obj) => obj.material);
-        //   setImageList((prev) => [...prev, ...urls]);
-        // }
+
+
+
+
+        const videoListRef = ref(storage, userID + '/project_' + projID + '/videos');
     
+        listAll(videoListRef)
+          .then((response) => {
+            response.items.forEach((item) => {
+              getDownloadURL(item)
+                .then((url) => {
+                  setVideoList((prev) => [...prev, url]);
+                })
+                .catch((error) => {
+                  console.error('Error getting download URL:', error);
+                });
+            });
+          })
+          .catch((error) => {
+            console.error('Error listing images:', error);
+          });
+
+
     }, [userID, projID]);  
 
 
@@ -507,33 +566,36 @@ const instantiateBroadStateTabs = () => {
 
 
   const instantiateVideoBuffers = (sceneObjs) => {
+    const uniqueMaterials = new Set();
+  
     if (sceneObjs && sceneObjs.objects) {
       return sceneObjs.objects.map((item, index) => {
-
-        if(item.materialType === 'video'){
+        if (item.materialType === 'video' && !uniqueMaterials.has(item.material)) {
+          uniqueMaterials.add(item.material);
+  
           return (
-            <div>
+            <div key={index}>
               <video
-              crossOrigin="anonymous"
-              id={item.material}
-              playsInline
-              muted
-              loop
-              autoPlay
-              width="100"
-              src={item.material}
-              ></video>
+                crossOrigin="anonymous"
+                id={item.material}
+                playsInline
+                muted
+                loop
+                autoPlay
+                width="100"
+                src={item.material}
+              />
             </div>
           );
-
         }
-
+  
+        return null;
       });
     }
   
     return null;
-
-  }
+  };
+  
 
 
 
@@ -1438,6 +1500,75 @@ const updateObjectArc = (objectID, newObjectData) => {
       minute: '2-digit'
     });
   };
+
+
+  const ImageSelecor = () => {
+    console.log("FUCK")
+    console.log(selectedObjectID);
+
+    if(selectedObjectChosen){
+      console.log("HERE I AM BITCHc")
+      console.log(projectScene)
+
+      if(projectScene.objects[selectedObjectID].materialType === "image"){
+        console.log("FUCK2")
+
+        return (
+          <div className={templateCSS.imgList}>
+          <button onClick={() => insertFromList(lastSelectedImage)}> INSERT IMAGE </button>
+    
+            <div className={templateCSS.fileUpload2}>
+              <input className={templateCSS.fileUploadButton} type="file" onChange={((event) => {setImageUpload(event.target.files[0])})}/>
+              <button className={templateCSS.changeImgButton} onClick={uploadImage}>upload image</button>
+            </div>
+    
+            <div className={templateCSS.userImages}>
+              {imageList.map((url) => (
+                <button
+                  key={url}
+                  className={lastSelectedImage === url ? templateCSS.selectedImageButton : templateCSS.uploadedImageButton}
+                  onClick={() => handleImageClick(url)}
+                >
+                  <img src={url} alt="userUploadedImage" className={templateCSS.uploadedImg} />
+                </button>
+              ))}
+              
+            </div>
+    
+          </div>
+        )
+
+      } else if(projectScene.objects[selectedObjectID].materialType === "video"){
+
+        return (
+          <div className={templateCSS.imgList}>
+          <button onClick={() => insertFromList(lastSelectedVideo)}> INSERT VIDEO </button>
+    
+            <div className={templateCSS.fileUpload2}>
+              <input className={templateCSS.fileUploadButton} type="file" onChange={((event) => {setVideoUpload(event.target.files[0])})}/>
+              <button className={templateCSS.changeImgButton} onClick={uploadVideo}>upload video</button>
+            </div>
+    
+            <div className={templateCSS.userImages}>
+              {videoList.map((url) => (
+                <button
+                  key={url}
+                  className={lastSelectedVideo === url ? templateCSS.selectedImageButton : templateCSS.uploadedImageButton}
+                  onClick={() => handleVideoClick(url)}
+                >
+                  <img src={url} alt="userUploadedImage" className={templateCSS.uploadedImg} />
+                </button>
+              ))}
+              
+            </div>
+    
+          </div>
+        )
+
+      }
+    }
+
+  }
   
 
   return (
@@ -1521,28 +1652,7 @@ const updateObjectArc = (objectID, newObjectData) => {
 
             </div>
                       
-          <div className={templateCSS.imgList}>
-          <button onClick={() => insertFromList(lastSelectedImage)}> CHANGE IMAGE </button>
-
-            <div className={templateCSS.fileUpload2}>
-              <input className={templateCSS.fileUploadButton} type="file" onChange={((event) => {setImageUpload(event.target.files[0])})}/>
-              <button className={templateCSS.changeImgButton} onClick={uploadImage}>upload image</button>
-            </div>
-
-            <div className={templateCSS.userImages}>
-              {imageList.map((url) => (
-                <button
-                  key={url}
-                  className={lastSelectedImage === url ? templateCSS.selectedImageButton : templateCSS.uploadedImageButton}
-                  onClick={() => handleImageClick(url)}
-                >
-                  <img src={url} alt="userUploadedImage" className={templateCSS.uploadedImg} />
-                </button>
-              ))}
-              
-            </div>
-
-          </div>
+              <ImageSelecor projectScene={projectScene} />
 
           </div>
 

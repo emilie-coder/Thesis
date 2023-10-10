@@ -52,6 +52,7 @@ function Model({ name, ...props }) {
           let videoTexture = new THREE.VideoTexture(video);
           videoTexture.minFilter = THREE.LinearFilter;
           videoTexture.magFilter = THREE.LinearFilter;
+          // videoTexture.repeat.set(tiling[0], tiling[1]);
           return videoTexture;
         }
       }
@@ -126,6 +127,8 @@ function Model({ name, ...props }) {
     }
     
   }
+
+  newMaterial.alphaTest = .1;
 
   let myGeometry = nodes.mesh_0.geometry;
   if (props.objectType === 'plane') {

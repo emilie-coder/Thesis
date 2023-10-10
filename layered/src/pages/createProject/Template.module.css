@@ -242,6 +242,10 @@
   max-height: 85%;
   height: auto;
 }
+.imgEditor *{
+  width: 100px;
+
+}
 
 .fileUpload{
   display: flex;
