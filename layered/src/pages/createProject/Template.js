@@ -41,8 +41,15 @@ const Editor = () => {
   const [imageList, setImageList] = useState([]);
 
 
-  const [videoList, setVideoList] = useState([]);
   const [videoUpload, setVideoUpload] = useState(null);
+  const [videoList, setVideoList] = useState([]);
+
+
+  const [stockImageList, setStockImageList] = useState([]);
+  const [stockVideoList, setStockVideoList] = useState([]);
+
+
+  const [stockAssetMode, setStockAssetMode] = useState(false);
 
   const userID = useSelector(selectUserID);
 
@@ -67,13 +74,6 @@ const Editor = () => {
   const [undoStack, setUndoStack] = useState([]);
   const [redoStack, setRedoStack] = useState([]);
 
-
-  const [sketchPickerColor, setSketchPickerColor] = useState({
-    r: "241",
-    g: "112",
-    b: "19",
-    a: "1",
-  });
 
 
 
@@ -265,7 +265,7 @@ const Editor = () => {
       setEditMode('scale');
     } else if(event.key ==='e') {
       setEditMode('rotate');
-    } else if(event.keyCode === 46 || event.keyCode === 8){
+    } else if(event.keyCode === 'x'){
       deleteObject();
     }  else if (event.metaKey && event.key === 'p') {
       event.preventDefault(); // Prevent the default save behavior
@@ -446,6 +446,51 @@ const Editor = () => {
           });
 
 
+
+
+          // const [stockImageList, setStockImageList] = useState([]);
+          // const [stockVideoList, setStockVideoList] = useState([]);
+
+
+          const stockImageListRef = ref(storage, 'stock/images');
+    
+          listAll(stockImageListRef)
+            .then((response) => {
+              response.items.forEach((item) => {
+                getDownloadURL(item)
+                  .then((url) => {
+                    setStockImageList((prev) => [...prev, url]);
+                  })
+                  .catch((error) => {
+                    console.error('Error getting download URL:', error);
+                  });
+              });
+            })
+            .catch((error) => {
+              console.error('Error listing images:', error);
+            });
+        
+    
+    
+    
+    
+            const stockVideoListRef = ref(storage, 'stock/videos');
+        
+            listAll(stockVideoListRef)
+              .then((response) => {
+                response.items.forEach((item) => {
+                  getDownloadURL(item)
+                    .then((url) => {
+                      setStockVideoList((prev) => [...prev, url]);
+                    })
+                    .catch((error) => {
+                      console.error('Error getting download URL:', error);
+                    });
+                });
+              })
+              .catch((error) => {
+                console.error('Error listing images:', error);
+              });
     }, [userID, projID]);  
 
 
@@ -1398,6 +1443,10 @@ const updateObjectArc = (objectID, newObjectData) => {
     }
   };
 
+  const setStockMode = (value) => {
+    setStockAssetMode(value);
+  }
+
 
 
   const RightEditor = () => {
@@ -1503,69 +1552,123 @@ const updateObjectArc = (objectID, newObjectData) => {
 
 
   const ImageSelecor = () => {
-    console.log("FUCK")
-    console.log(selectedObjectID);
+
 
     if(selectedObjectChosen){
-      console.log("HERE I AM BITCHc")
-      console.log(projectScene)
 
-      if(projectScene.objects[selectedObjectID].materialType === "image"){
-        console.log("FUCK2")
 
-        return (
-          <div className={templateCSS.imgList}>
-          <button onClick={() => insertFromList(lastSelectedImage)}> INSERT IMAGE </button>
+      if(stockAssetMode){
+        if(projectScene.objects[selectedObjectID].materialType === "image"){
+
+
+          return (
+  
+            <div className={templateCSS.imgList}>
+              <button onClick={() => insertFromList(lastSelectedImage)}> INSERT IMAGE </button>
     
-            <div className={templateCSS.fileUpload2}>
-              <input className={templateCSS.fileUploadButton} type="file" onChange={((event) => {setImageUpload(event.target.files[0])})}/>
-              <button className={templateCSS.changeImgButton} onClick={uploadImage}>upload image</button>
+                <div className={templateCSS.userImages}>
+                  {stockImageList.map((url) => (
+                    <button
+                      key={url}
+                      className={lastSelectedImage === url ? templateCSS.selectedImageButton : templateCSS.uploadedImageButton}
+                      onClick={() => handleImageClick(url)}
+                    >
+                      <img src={url} alt="userUploadedImage" className={templateCSS.uploadedImg} />
+                    </button>
+                  ))}
+                
+               </div>
+      
             </div>
-    
-            <div className={templateCSS.userImages}>
-              {imageList.map((url) => (
-                <button
-                  key={url}
-                  className={lastSelectedImage === url ? templateCSS.selectedImageButton : templateCSS.uploadedImageButton}
-                  onClick={() => handleImageClick(url)}
-                >
-                  <img src={url} alt="userUploadedImage" className={templateCSS.uploadedImg} />
-                </button>
-              ))}
-              
+  
+  
+          )
+  
+        } else if(projectScene.objects[selectedObjectID].materialType === "video"){
+  
+          return (
+            <div className={templateCSS.imgList}>
+            <button onClick={() => insertFromList(lastSelectedVideo)}> INSERT VIDEO </button>      
+              <div className={templateCSS.userImages}>
+                {stockVideoList.map((url) => (
+                  <button
+                    key={url}
+                    className={lastSelectedVideo === url ? templateCSS.selectedImageButton : templateCSS.uploadedImageButton}
+                    onClick={() => handleVideoClick(url)}
+                  >
+                    <video src={url} alt="userUploadedImage" className={templateCSS.uploadedImg} />
+                  </button>
+                ))}
+                
+              </div>
+      
             </div>
-    
-          </div>
-        )
+          )
+  
+        }
 
-      } else if(projectScene.objects[selectedObjectID].materialType === "video"){
+      } else {
+        if(projectScene.objects[selectedObjectID].materialType === "image"){
 
-        return (
-          <div className={templateCSS.imgList}>
-          <button onClick={() => insertFromList(lastSelectedVideo)}> INSERT VIDEO </button>
-    
-            <div className={templateCSS.fileUpload2}>
-              <input className={templateCSS.fileUploadButton} type="file" onChange={((event) => {setVideoUpload(event.target.files[0])})}/>
-              <button className={templateCSS.changeImgButton} onClick={uploadVideo}>upload video</button>
+
+          return (
+  
+            <div className={templateCSS.imgList}>
+              <button onClick={() => insertFromList(lastSelectedImage)}> INSERT IMAGE </button>
+      
+                <div className={templateCSS.fileUpload2}>
+                  <input className={templateCSS.fileUploadButton} type="file" onChange={((event) => {setImageUpload(event.target.files[0])})}/>
+                  <button className={templateCSS.changeImgButton} onClick={uploadImage}>upload image</button>
+                </div>
+        
+                <div className={templateCSS.userImages}>
+                  {imageList.map((url) => (
+                    <button
+                      key={url}
+                      className={lastSelectedImage === url ? templateCSS.selectedImageButton : templateCSS.uploadedImageButton}
+                      onClick={() => handleImageClick(url)}
+                    >
+                      <img src={url} alt="userUploadedImage" className={templateCSS.uploadedImg} />
+                    </button>
+                  ))}
+                
+               </div>
+      
             </div>
-    
-            <div className={templateCSS.userImages}>
-              {videoList.map((url) => (
-                <button
-                  key={url}
-                  className={lastSelectedVideo === url ? templateCSS.selectedImageButton : templateCSS.uploadedImageButton}
-                  onClick={() => handleVideoClick(url)}
-                >
-                  <img src={url} alt="userUploadedImage" className={templateCSS.uploadedImg} />
-                </button>
-              ))}
-              
+  
+  
+          )
+  
+        } else if(projectScene.objects[selectedObjectID].materialType === "video"){
+  
+          return (
+            <div className={templateCSS.imgList}>
+            <button onClick={() => insertFromList(lastSelectedVideo)}> INSERT VIDEO </button>
+      
+              <div className={templateCSS.fileUpload2}>
+                <input className={templateCSS.fileUploadButton} type="file" onChange={((event) => {setVideoUpload(event.target.files[0])})}/>
+                <button className={templateCSS.changeImgButton} onClick={uploadVideo}>upload video</button>
+              </div>
+      
+              <div className={templateCSS.userImages}>
+                {videoList.map((url) => (
+                  <button
+                    key={url}
+                    className={lastSelectedVideo === url ? templateCSS.selectedImageButton : templateCSS.uploadedImageButton}
+                    onClick={() => handleVideoClick(url)}
+                  >
+                    <video src={url} alt="userUploadedImage" className={templateCSS.uploadedImg} />
+                  </button>
+                ))}
+                
+              </div>
+      
             </div>
-    
-          </div>
-        )
-
+          )
+  
+        }
       }
+
     }
 
   }
@@ -1651,6 +1754,11 @@ const updateObjectArc = (objectID, newObjectData) => {
 
 
             </div>
+
+            <div>
+                <div onClick={ () => setStockMode(false)}>  in project </div>
+                <div onClick={ () => setStockMode(true)}>  stock </div>
+              </div>
                       
               <ImageSelecor projectScene={projectScene} />
 
