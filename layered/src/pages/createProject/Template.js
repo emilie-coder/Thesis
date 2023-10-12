@@ -1409,6 +1409,43 @@ const updateObjectArc = (objectID, newObjectData) => {
   }
 
 
+  const animationMode = (mode) => {
+    console.log(mode);
+
+
+    if (projectScene && projectScene.objects && mode) {
+      const updatedObjects = projectScene.objects.map((obj, index) => {
+        if (index === selectedObjectID) {
+          return {
+            ...obj,
+            animation: 
+            {type: mode,
+              x: 10,
+              y: 0,
+              z: 0,
+            },
+        }
+      }
+        return obj;
+      });
+  
+      // Update the undo and redo stacks
+      setUndoStack((prevUndoStack) => [...prevUndoStack, projectScene]);
+      setRedoStack([]);
+  
+      // Update the projectScene with the updated position
+      setProjectScene((prevScene) => ({
+        ...prevScene,
+        objects: updatedObjects,
+      }));
+    }
+
+
+  }
+
+
+
+
   const BlendOptions = () => {
 
     return(
@@ -1422,6 +1459,22 @@ const updateObjectArc = (objectID, newObjectData) => {
       </>
     )
   }
+
+
+  const AnimationOptions = () => {
+
+    return(
+      <>
+        <button onClick={() => animationMode(1)}> None </button>
+        <button onClick={() => animationMode(2)}> Rotate </button>
+        <button onClick={() => animationMode(3)}> Soft Hover </button>
+
+      </>
+    )
+  }
+
+
+
 
 
   const setTextureType = (textureType) => {
@@ -1720,10 +1773,7 @@ const updateObjectArc = (objectID, newObjectData) => {
           Animation Options
           </div>
           <div>
-          <button> none </button>
-          <button> rotate </button>
-          <button> soft hover </button>
-          <button> hard jitter</button>
+              <AnimationOptions />
 
           </div>
         </div>

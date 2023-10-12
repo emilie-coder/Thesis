@@ -1,5 +1,5 @@
-import { Suspense, useEffect, useState } from 'react';
-import { Canvas, useThree } from '@react-three/fiber';
+import { Suspense, useEffect, useRef, useState } from 'react';
+import { Canvas, useThree, useFrame } from '@react-three/fiber';
 import { OrbitControls, TransformControls, ContactShadows, useGLTF, useCursor, Environment, useVideoTexture } from '@react-three/drei';
 import { proxy, useSnapshot } from 'valtio';
 import * as THREE from 'three';
@@ -18,12 +18,14 @@ const textureCache = {}; // Texture cache to store loaded textures
 
 function Model({ name, ...props }) {
 
+
+
   const selectedID = useSelector(selectObjectID);
   const dispatch = useDispatch();
-
   const { nodes } = useGLTF('/3dAssets/new_cylinder.glb');
   const [hovered, setHovered] = useState(false);
   useCursor(hovered);
+  const itemRef = useRef()
 
   const materialColor = selectedID === name ? '#ADD8E6' : (hovered ? 'grey' : 'white');
 
@@ -136,8 +138,29 @@ function Model({ name, ...props }) {
   }
 
 
+  // if(props.animation !== null ){
+    useFrame(({ clock }) => {
+
+      if(props.animation.type === 2){
+        const a = clock.getElapsedTime();
+
+  
+        // itemRef.current.rotation.x = a;
+        itemRef.current.rotation.y = props.rotation[0] + a / props.animation.x;
+        // itemRef.current.rotation.z = a;
+    
+        // myMesh.current.scale.x = a;
+        // myMesh.current.scale.y = a;
+        // myMesh.current.scale.z = a;
+
+      }
+    });
+
+
+
   return (
     <mesh
+      ref={itemRef}
       onClick={(e) => {
         e.stopPropagation();
 
@@ -210,6 +233,7 @@ function Controls(props) {
 }
 
 export default function ThreeCanvas(props) {
+
   const sceneObjs = props.scene;
   const toggleSides = props.toggleSides;
   const [objectsToRender, setObjectsToRender] = useState([]);
@@ -261,6 +285,7 @@ export default function ThreeCanvas(props) {
             materialType = {item.materialType}
             colorValues = {item.solidColor}
             blendMode = {item.blendMode}
+            animation = {item.animation}
           />
         );
       });
