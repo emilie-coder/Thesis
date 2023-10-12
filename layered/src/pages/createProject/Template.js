@@ -24,6 +24,8 @@ import NewCanvas from '../../threejs/threeCanvas';
 import { REMOVE_EDITOR_STATE, SET_EDITOR_STATE, selectNonIndexState, selectNonIndexStateBool } from '../../redux/slice/editorSlice';
 
 import { ChromePicker, SketchPicker } from "react-color";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCircle, faClone, faCoffee, faCopy, faDownLeftAndUpRightToCenter, faEye, faMaximize, faRedo, faRotate, faSquare, faTrash, faUndo, faUpDownLeftRight } from '@fortawesome/free-solid-svg-icons'
 
 
 const Editor = () => {
@@ -265,7 +267,7 @@ const Editor = () => {
       setEditMode('scale');
     } else if(event.key ==='e') {
       setEditMode('rotate');
-    } else if(event.keyCode === 'x'){
+    } else if(event.metaKey && event.key === 'x'){
       deleteObject();
     }  else if (event.metaKey && event.key === 'p') {
       event.preventDefault(); // Prevent the default save behavior
@@ -1231,8 +1233,15 @@ const updateObjectArc = (objectID, newObjectData) => {
       }
     }));
   };
+
+
   const instantiateSkyButtons = () => {
     let loopData = [];
+    loopData.push(
+      <button key={0} onClick={() => setSkyBox(0)}>
+        None
+      </button>
+    );
   
     if (skyBoxes !== null && skyBoxes.length !== 0) {
       for (let i = 0; i < skyBoxes.length; i++) {
@@ -1749,21 +1758,24 @@ const updateObjectArc = (objectID, newObjectData) => {
           <div className={templateCSS.actualEditor}>
             <div className={templateCSS.leftButtons}>
               <div className={templateCSS.leftEditorShapes}>
-                <button onClick={addCylinder}> Cylinder </button>
-                <button onClick={addPlane}> Plane </button>
+                <FontAwesomeIcon onClick={addCylinder} icon={faCircle} className={templateCSS.editorButton}/>
+                <FontAwesomeIcon onClick={addPlane} icon={faSquare} className={templateCSS.editorButton}/>
               </div>
               <div className={templateCSS.modeButtons}>
-              <button onClick={changeEditMode('translate')}> Translate </button>
-              <button onClick={changeEditMode('scale')}> Scale </button>
-              <button onClick={changeEditMode('rotate')}> Rotate </button>
-              <button onClick={duplicateObject}>duplicate</button>
-              <button onClick={deleteObject}>Delete</button>
-              <button onClick={undo} disabled={undoStack.length === 0}>Undo</button>
-              <button onClick={redo} disabled={redoStack.length === 0}>Redo</button>
-              <button onClick={toggleSidesButton}>toggleSides</button>
+                  <FontAwesomeIcon onClick={changeEditMode('translate')} icon={faUpDownLeftRight}  className={templateCSS.editorButton}/>
+                  <FontAwesomeIcon onClick={changeEditMode('scale')} icon={faMaximize}  className={templateCSS.editorButton}/>
+                  <FontAwesomeIcon onClick={changeEditMode('rotate')} icon={faRotate}  className={templateCSS.editorButton}/>
+                  <FontAwesomeIcon onClick={duplicateObject} icon={faClone}  className={templateCSS.editorButton}/>
+                  <FontAwesomeIcon onClick={deleteObject} icon={faTrash}  className={templateCSS.editorButton}/>
+               </div>
+               <div className={templateCSS.undoRedo}>
+                  <FontAwesomeIcon onClick={undo} disabled={undoStack.length === 0} icon={faUndo}  className={templateCSS.editorButton}/>
+                  <FontAwesomeIcon onClick={redo}  disabled={redoStack.length === 0} icon={faRedo}  className={templateCSS.editorButton}/>
+               </div>
             </div>
-
-            </div>
+              <div  className={templateCSS.toggleSides}>
+                <FontAwesomeIcon icon={faEye} onClick={toggleSidesButton}  className={templateCSS.editorButton}/>
+               </div>
 
             <NewCanvas scene={projectScene} className={templateCSS.canvasHolder} updateObject={updateObjectArc} editMode={editMode} toggleSides={toggleSides}/>
           </div>
@@ -1780,7 +1792,7 @@ const updateObjectArc = (objectID, newObjectData) => {
       </div>
 
 
-      <div>
+      <div className={templateCSS.videoBuffers}>
         video buffering...
         {instantiateVideoBuffers(projectScene)}
       </div>

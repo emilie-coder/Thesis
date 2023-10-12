@@ -131,6 +131,7 @@ function Model({ name, ...props }) {
   }
 
   newMaterial.alphaTest = .1;
+  newMaterial.depthTest = .9;
 
   let myGeometry = nodes.mesh_0.geometry;
   if (props.objectType === 'plane') {
@@ -141,19 +142,23 @@ function Model({ name, ...props }) {
   // if(props.animation !== null ){
     useFrame(({ clock }) => {
 
-      if(props.animation.type === 2){
-        const a = clock.getElapsedTime();
-
+      if(props.animation){
+        if(props.animation.type === 2){
+          const a = clock.getElapsedTime();
   
-        // itemRef.current.rotation.x = a;
-        itemRef.current.rotation.y = props.rotation[0] + a / props.animation.x;
-        // itemRef.current.rotation.z = a;
     
-        // myMesh.current.scale.x = a;
-        // myMesh.current.scale.y = a;
-        // myMesh.current.scale.z = a;
+          // itemRef.current.rotation.x = a;
+          itemRef.current.rotation.y = props.rotation[0] + a / props.animation.x;
+          // itemRef.current.rotation.z = a;
+      
+          // myMesh.current.scale.x = a;
+          // myMesh.current.scale.y = a;
+          // myMesh.current.scale.z = a;
+  
+        }
 
       }
+
     });
 
 
@@ -304,7 +309,7 @@ export default function ThreeCanvas(props) {
         linear
         flat
         >
-        {sceneObjs && skyBoxes[sceneObjs.details.SkyBox] && (
+        {sceneObjs && skyBoxes[sceneObjs.details.SkyBox] && sceneObjs.details.SkyBox !== 0 && (
           <Environment files={skyBoxes[sceneObjs.details.SkyBox]} background blur={0.0} />
         )}
       <gridHelper args={[400, 200, '#f7f7f7', '#f7f7f7']} position={[0, -4, 0]} />

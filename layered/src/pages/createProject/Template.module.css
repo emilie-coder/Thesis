@@ -21,11 +21,6 @@
   border-radius: 2px;
 }
 
-.leftButtons{
-  position: absolute;
-  z-index: 10000;
-}
-
 
 .leftEditorTop{
   display: flex;
@@ -44,9 +39,14 @@
 }
 
 .actualEditor{
-  width: 96%;
+  width: 100%;
   background-color: var(--white);
   height: 94%;
+  border-radius: 10px;
+}
+
+canvas {
+  border-radius: 3px;
 }
 
 .leftEditorBottomt{
@@ -306,4 +306,72 @@
 
 .textureOptionTabs{
   display: flex;
+}
+
+
+.videoBuffers{
+  position: absolute;
+  opacity: 0;
+  z-index: -1000000000000000;
+}
+
+
+
+.leftButtons {
+  position: absolute;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* evenly space the groups vertically */
+  height: 100%; /* occupy the full height of the parent */
+}
+
+.leftEditorShapes, .modeButtons, .undoRedo {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* align buttons in each group to the center */
+  padding: 10px;
+  flex: 1; /* evenly distribute available space among the groups */
+}
+
+.leftEditorShapes *, .modeButtons *, .undoRedo * {
+  padding-bottom: 10px;
+}
+
+.undoRedo {
+  align-items: center; /* align buttons in the undoRedo group to the center */
+}
+
+/* Additional styling for the buttons (adjust as needed) */
+.leftButtons button,
+.modeButtons button,
+.leftEditorShapes button,
+.undoRedo button {
+  margin: 5px;
+  /* Add more styles as needed for your buttons */
+}
+
+
+.toggleSides {
+  display: flex;
+  position: absolute;
+  z-index: 10001;
+  width: 71.5%;
+  justify-content: flex-end; /* Align items to the right */
+}
+
+
+.editorButton{
+  width: 30px;
+  height: 30px;
+  background-color: rgba(255, 255, 255, 0.489);
+}
+
+
+.editorButton:hover{
+  transform: scale(1.25);
+}
+
+.editorButton:active{
+  transform: scale(0.9);
 }
