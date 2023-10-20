@@ -335,7 +335,7 @@ canvas {
 }
 
 .leftEditorShapes *, .modeButtons *, .undoRedo * {
-  padding-bottom: 10px;
+  scale: 90%;
 }
 
 .undoRedo {
@@ -356,8 +356,8 @@ canvas {
   display: flex;
   position: absolute;
   z-index: 10001;
-  width: 71.5%;
-  justify-content: flex-end; /* Align items to the right */
+  /* width: 71.5%;
+  justify-content: flex-end; Align items to the right */
 }
 
 

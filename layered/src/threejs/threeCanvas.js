@@ -131,7 +131,7 @@ function Model({ name, ...props }) {
   }
 
   newMaterial.alphaTest = .1;
-  newMaterial.depthTest = .9;
+  newMaterial.depthTest = 0.9;
 
   let myGeometry = nodes.mesh_0.geometry;
   if (props.objectType === 'plane') {
