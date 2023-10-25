@@ -1,60 +1,126 @@
 @import '../../styling/colors.css';
 
+
 .templatePage {
   display: flex;
-  padding-top: 30px;
+  padding-top: 50px;
   width: 100%;
-  height: 96%;
+  height: 92%;
   flex-direction: row;
   background-color: var(--white);
   overflow: hidden;
-
 }
 
-.leftEditor {
+
+.leftEditor{
   display: flex;
-  flex-direction: column;
   width: 75%;
-  height: 95%;
-  margin-left: 20px;
-  margin-top: 20px;
-  border-radius: 2px;
+  flex-direction: column;
+  height: 99%;
+  margin-left: 10px;
+
 }
 
 
-.leftEditorTop{
+.rightEditor {
   display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 90%;
-  /* background-color: var(--main-color); */
-  border-radius: 3px;
-  margin-bottom: 5px;
-  align-items: center;
-  justify-content: center;
+  width: 25%;
 }
 
 .projectTitle{
+  display: flex;
+}
+
+.projectTitle *{
   margin: 0;
 }
 
-.actualEditor{
-  width: 100%;
-  background-color: var(--white);
-  height: 94%;
-  border-radius: 10px;
+.videoBuffers{
+  position: absolute;
+  opacity: 0;
+  z-index: -1000000000000000;
 }
+
+
+.theVideoRenderer {
+  height: 100%;
+}
+.actualEditor {
+  height: 100%;
+  position: relative;
+}
+
+.leftButtons {
+  position: absolute;
+  z-index: 1;
+  height: 100%;
+  width: 5%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: rgba(255, 255, 255, 0.746);
+}
+
+.leftButtons * {
+  display: flex;
+  flex-direction: column;
+}
+
+.rightButtons {
+  position: absolute;
+  z-index: 1;
+  height: 100%;
+  width: 5%;
+  justify-content: space-between;
+  align-items: center;
+  right: 0;
+  background-color: rgba(255, 255, 255, 0.746);
+}
+
+.rightRight {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: space-between;
+}
+
 
 canvas {
   border-radius: 3px;
 }
 
-.leftEditorBottomt{
-  width: 100%;
-  height: 10%;
-  border-radius: 3px;
-  background-color: var(--main-color);
+
+.editorButton {
+  width: 25px;
+  height: 25px;
+  padding-top: 10px;
+  padding-bottom: 20px;
+  transition: transform 0.01s ease;
 }
+
+.editorButton:hover {
+  transform: scale(1.15)
+}
+
+.editorButton:active {
+  transform: scale(.9)
+}
+
+
+
+.leftEditorShapes, .modeButtons, .undoRedo{
+  justify-content: center;
+  align-items: center;
+}
+
+.deleteDuplicate, .toggleSides {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: column;
+}
+
 
 
 .rightEditor {
@@ -62,11 +128,9 @@ canvas {
   flex-direction: column;
   align-items: center;
   width: 25%;
-  height: 95%;
-  margin: 5px;
-  margin-top: 20px;
-  margin-right:20px;
+  height: 99%;
 }
+
 
 .rightEditorTop{
   display: flex;
@@ -80,7 +144,7 @@ canvas {
 
 .saveActions{
   width: 100%;
-  height: 10%;
+  height: 5%;
   border-radius: 3px;
   background-color: var(--main-color);
 }
@@ -119,6 +183,9 @@ canvas {
   width: 100%;
   height: 100%;
   border-radius: 3px;
+  background-color: var(--main-color);
+  box-shadow: 0 1px 3px 0 rgba(0,0,0,0.1), 0 1px 2px -1px rgba(0,0,0,0.1);
+  
 }
 
 
@@ -128,7 +195,7 @@ canvas {
   margin-left: 5px;
   margin-right: 5px;
   scrollbar-width: none;
-  font-size: 8pt;
+  font-size: 7pt;
   
 }
 
@@ -158,6 +225,10 @@ canvas {
   border-bottom-right-radius: 0;
 }
 
+
+
+
+
 .geometry{
   display: flex;
   flex-direction: column;
@@ -168,13 +239,79 @@ canvas {
   height: 25%;
 }
 
+
+
 .texture{
-  /* background-color: var(--accent-color-a); */
+  background-color: var(--accent-color-a);
   margin-left: 5px;
   margin-right: 5px;
   border-bottom-left-radius: 3px;
   border-bottom-right-radius: 3px;
-  height: 48%;
+  height: 30%;
+}
+
+
+.textureTypeOptions {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: space-between;
+
+}
+
+
+.selectedTextureTab {
+  margin-top: 2px;
+  display: flex;
+  background-color: var(--main-color);
+  width: fit-content;
+  padding: 2px;
+  border-radius: 5px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  width: 33%;
+}
+
+.unselectedTextureTab {
+  margin-top: 2px;
+  display: flex;
+  background-color:var(--accent-color-b);
+  width: fit-content;
+  padding: 2px;
+  border-radius: 5px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  width: 33%;
+}
+
+
+.imageTextureOption {
+  background-color: var(--main-color);
+  display: flex;
+  flex-direction: column-reverse;
+  width: 95%;
+  height: 70%;
+  margin-left: 5px;
+  margin-right: 5px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  padding-top: 10px;
+}
+
+
+
+
+.VideoRenderer {
+  background-color: var(--main-color);
+  display: flex;
+  width: 95%;
+  height: 70%;
+  margin-left: 5px;
+  margin-right: 5px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+
 }
 
 
@@ -205,6 +342,7 @@ canvas {
   margin: 4px;
   margin-left: 10px;
   font-size: 10pt;
+  color:rgba(46, 46, 47, 0.929);
 }
 
 .partInput {
@@ -213,22 +351,21 @@ canvas {
   min-width: 60%;
   display: flex;
 }
+
 .partInput *{
   width: 20%;
   margin-bottom: 0;
   margin-top: 0;
   margin: 4px;
+  font-size: 0.6em;
 }
 
 
 .imgEditor{
   display: flex;
   flex-direction: column;
-  margin-top: 10px;;
-  margin-left: 5px;
-  margin-right: 5px;
-  height: 20%;
-  max-height: 60%;
+
+  height: 80%;
   align-items: center;
   justify-content: end;
 }
@@ -242,8 +379,9 @@ canvas {
   max-height: 85%;
   height: auto;
 }
+
 .imgEditor *{
-  width: 100px;
+  /* width: 30%; */
 
 }
 
@@ -304,8 +442,16 @@ canvas {
 }
 
 
+.textureOptions {
+  height:70%;
+
+}
 .textureOptionTabs{
   display: flex;
+  justify-content: space-between;
+  width: 95%;
+  margin-left: 5px;
+  margin-right: 5px;
 }
 
 
@@ -316,62 +462,3 @@ canvas {
 }
 
 
-
-.leftButtons {
-  position: absolute;
-  z-index: 10000;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between; /* evenly space the groups vertically */
-  height: 100%; /* occupy the full height of the parent */
-}
-
-.leftEditorShapes, .modeButtons, .undoRedo {
-  display: flex;
-  flex-direction: column;
-  align-items: center; /* align buttons in each group to the center */
-  padding: 10px;
-  flex: 1; /* evenly distribute available space among the groups */
-}
-
-.leftEditorShapes *, .modeButtons *, .undoRedo * {
-  scale: 90%;
-}
-
-.undoRedo {
-  align-items: center; /* align buttons in the undoRedo group to the center */
-}
-
-/* Additional styling for the buttons (adjust as needed) */
-.leftButtons button,
-.modeButtons button,
-.leftEditorShapes button,
-.undoRedo button {
-  margin: 5px;
-  /* Add more styles as needed for your buttons */
-}
-
-
-.toggleSides {
-  display: flex;
-  position: absolute;
-  z-index: 10001;
-  /* width: 71.5%;
-  justify-content: flex-end; Align items to the right */
-}
-
-
-.editorButton{
-  width: 30px;
-  height: 30px;
-  background-color: rgba(255, 255, 255, 0.489);
-}
-
-
-.editorButton:hover{
-  transform: scale(1.25);
-}
-
-.editorButton:active{
-  transform: scale(0.9);
-}

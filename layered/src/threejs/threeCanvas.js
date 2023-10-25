@@ -149,7 +149,7 @@ function Model({ name, ...props }) {
     
           // itemRef.current.rotation.x = a;
           itemRef.current.rotation.y = props.rotation[0] + a / props.animation.x;
-          // itemRef.current.rotation.z = a;
+          // itemRef.current.rotation.z = a;s
       
           // myMesh.current.scale.x = a;
           // myMesh.current.scale.y = a;

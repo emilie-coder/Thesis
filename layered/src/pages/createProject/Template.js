@@ -25,7 +25,7 @@ import { REMOVE_EDITOR_STATE, SET_EDITOR_STATE, selectNonIndexState, selectNonIn
 
 import { ChromePicker, SketchPicker } from "react-color";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCircle, faClone, faCoffee, faCopy, faDownLeftAndUpRightToCenter, faEye, faMaximize, faRedo, faRotate, faSquare, faTrash, faUndo, faUpDownLeftRight } from '@fortawesome/free-solid-svg-icons'
+import { faCircle, faCircleHalfStroke, faClone, faCoffee, faCopy, faDownLeftAndUpRightToCenter, faEye, faMaximize, faRedo, faRotate, faSquare, faTrash, faUndo, faUpDownLeftRight } from '@fortawesome/free-solid-svg-icons'
 
 
 const Editor = () => {
@@ -648,21 +648,21 @@ const instantiateBroadStateTabs = () => {
 
 
   const instantiateTextureOptionTabs = () => {
-    let tabClassName1 = templateCSS.unselectedTab;
-    let tabClassName2 = templateCSS.unselectedTab;
-    let tabClassName3 = templateCSS.unselectedTab;
+    let tabClassName1 = templateCSS.unselectedTextureTab;
+    let tabClassName2 = templateCSS.unselectedTextureTab;
+    let tabClassName3 = templateCSS.unselectedTextureTab;
 
     if( projectScene.objects[selectedObjectID].materialType === 'image'){
-      tabClassName1 = templateCSS.selectedTab;
+      tabClassName1 = templateCSS.selectedTextureTab;
     } else if( projectScene.objects[selectedObjectID].materialType === 'video'){
-      tabClassName2 = templateCSS.selectedTab;
+      tabClassName2 = templateCSS.selectedTextureTab;
     } else if( projectScene.objects[selectedObjectID].materialType === 'solid'){
-      tabClassName3 = templateCSS.selectedTab;
+      tabClassName3 = templateCSS.selectedTextureTab;
     }
   
 
     return( 
-      <>
+      <div className = {templateCSS.textureTypeOptions}>
            <div className={`${tabClassName1}`}  onClick={() => setTextureType('image')}>
             image
           </div>
@@ -672,7 +672,7 @@ const instantiateBroadStateTabs = () => {
           <div className={`${tabClassName3}`}  onClick={() => setTextureType('solid')}>
             solid
           </div>
-      </>
+      </div>
 
     )
   }
@@ -1361,8 +1361,8 @@ const updateObjectArc = (objectID, newObjectData) => {
         )
       } else if(projectScene.objects[selectedObjectID].materialType==="video"){
         return(
-          <div className={templateCSS.imageTextureOption}>
-            <div className="VideoRenderer">
+          <div className={templateCSS.VideoRenderer}>
+
               <video
                 crossOrigin="anonymous"
                 // id="videoReference"
@@ -1372,15 +1372,15 @@ const updateObjectArc = (objectID, newObjectData) => {
                 autoPlay
                 width="100"
                 src={projectScene.objects[selectedObjectID].material}
+                className={templateCSS.theVideoRenderer}
                 ></video>
 
             </div>
           
-          </div>
         )
       } else if(projectScene.objects[selectedObjectID].materialType==="solid"){
         return(
-          <div>
+          <div className= {templateCSS.colorPicker}>
             <MyChromePicker />
           </div>
         )
@@ -1739,116 +1739,116 @@ const updateObjectArc = (objectID, newObjectData) => {
   return (
     <div className={templateCSS.templatePage}>
 
-      
       <div className={templateCSS.leftEditor}>
-        <div className={templateCSS.leftEditorTop}>
-          <h2 className={templateCSS.projectTitle} onClick={handleTitleEdit}>
-            {isEditingTitle ? (
-              <input
-                type="text"
-                value={editedTitle}
-                onChange={handleTitleChange}
-                onBlur={handleTitleUpdate}
-                autoFocus
-              />
-            ) : (
-              editedTitle
-            )}
-          </h2>
-          <div className={templateCSS.actualEditor}>
+
+          <div className={templateCSS.projectTitle} >
+            <h2> Title: </h2>
+            <h2 onClick={handleTitleEdit} className={templateCSS.projectTitleMain}>
+              
+              {isEditingTitle ? (
+                <input
+                  type="text"
+                  value={editedTitle}
+                  onChange={handleTitleChange}
+                  onBlur={handleTitleUpdate}
+                  autoFocus
+                />
+              ) : (
+                editedTitle
+              )}
+            </h2>
+          </div>
+        <div className={templateCSS.actualEditor}>
             <div className={templateCSS.leftButtons}>
-              <div className={templateCSS.leftEditorShapes}>
-                <FontAwesomeIcon onClick={addCylinder} icon={faCircle} className={templateCSS.editorButton}/>
-                <FontAwesomeIcon onClick={addPlane} icon={faSquare} className={templateCSS.editorButton}/>
+                <div className={templateCSS.leftEditorShapes}>
+                  <FontAwesomeIcon onClick={addCylinder} icon={faCircle} className={templateCSS.editorButton}/>
+                  <FontAwesomeIcon onClick={addPlane} icon={faSquare} className={templateCSS.editorButton}/>
+                  <FontAwesomeIcon onClick={addPlane} icon={faCircleHalfStroke} className={templateCSS.editorButton}/>
+                </div>
+                <div className={templateCSS.modeButtons}>
+                    <FontAwesomeIcon onClick={changeEditMode('translate')} icon={faUpDownLeftRight}  className={templateCSS.editorButton}/>
+                    <FontAwesomeIcon onClick={changeEditMode('scale')} icon={faMaximize}  className={templateCSS.editorButton}/>
+                    <FontAwesomeIcon onClick={changeEditMode('rotate')} icon={faRotate}  className={templateCSS.editorButton}/>
+                </div>
+                <div className={templateCSS.undoRedo}>
+                    <FontAwesomeIcon onClick={undo} disabled={undoStack.length === 0} icon={faUndo}  className={templateCSS.editorButton}/>
+                    <FontAwesomeIcon onClick={redo}  disabled={redoStack.length === 0} icon={faRedo}  className={templateCSS.editorButton}/>
               </div>
-              <div className={templateCSS.modeButtons}>
-                  <FontAwesomeIcon onClick={changeEditMode('translate')} icon={faUpDownLeftRight}  className={templateCSS.editorButton}/>
-                  <FontAwesomeIcon onClick={changeEditMode('scale')} icon={faMaximize}  className={templateCSS.editorButton}/>
-                  <FontAwesomeIcon onClick={changeEditMode('rotate')} icon={faRotate}  className={templateCSS.editorButton}/>
+            </div>
+            <div className={templateCSS.rightButtons}>
+            <div className={templateCSS.rightRight}>
+                <div className={templateCSS.deleteDuplicate}>
                   <FontAwesomeIcon onClick={duplicateObject} icon={faClone}  className={templateCSS.editorButton}/>
                   <FontAwesomeIcon onClick={deleteObject} icon={faTrash}  className={templateCSS.editorButton}/>
-               </div>
-               <div className={templateCSS.undoRedo}>
-                  <FontAwesomeIcon onClick={undo} disabled={undoStack.length === 0} icon={faUndo}  className={templateCSS.editorButton}/>
-                  <FontAwesomeIcon onClick={redo}  disabled={redoStack.length === 0} icon={faRedo}  className={templateCSS.editorButton}/>
-               </div>
+                </div>
+                  <div  className={templateCSS.toggleSides}>
+                    <FontAwesomeIcon icon={faEye} onClick={toggleSidesButton}  className={templateCSS.editorButton}/>
+                  </div>
+              </div>
             </div>
-              <div  className={templateCSS.toggleSides}>
-                <FontAwesomeIcon icon={faEye} onClick={toggleSidesButton}  className={templateCSS.editorButton}/>
-               </div>
-
-            <NewCanvas scene={projectScene} className={templateCSS.canvasHolder} updateObject={updateObjectArc} editMode={editMode} toggleSides={toggleSides}/>
-          </div>
+              <NewCanvas scene={projectScene} className={templateCSS.canvasHolder} updateObject={updateObjectArc} editMode={editMode} toggleSides={toggleSides}/>
+            </div>
         </div>
-        <div className={templateCSS.leftEditorBottomt}>
-          <div>
-          Animation Options
-          </div>
-          <div>
-              <AnimationOptions />
-
-          </div>
-        </div>
-      </div>
 
 
-      <div className={templateCSS.videoBuffers}>
-        video buffering...
-        {instantiateVideoBuffers(projectScene)}
-      </div>
 
-    <div className={templateCSS.rightEditor}>
+      <div className={templateCSS.rightEditor}>
 
-          <div className={templateCSS.rightEditorTop}>
+          <div className={templateCSS.videoBuffers}>
+              video buffering...
+              {instantiateVideoBuffers(projectScene)}
+            </div>
 
-            <div className={templateCSS.rightImageEditor}>
-                            
-              <div className={templateCSS.choicedInfo}>
-                <div className={templateCSS.tabs}>
-                {instantiateTabs(projectScene)}
-                {instantiateBroadStateTabs()}
+            <div className={templateCSS.rightEditorTop}>
+
+              <div className={templateCSS.rightImageEditor}>
+                              
+                <div className={templateCSS.choicedInfo}>
+                  <div className={templateCSS.tabs}>
+                  {instantiateTabs(projectScene)}
+                  {instantiateBroadStateTabs()}
+                  </div>
+
+                  <RightEditor />
+
+
                 </div>
 
-                <RightEditor />
-
 
               </div>
+
+              <div>
+                  <div onClick={ () => setStockMode(false)}>  in project </div>
+                  <div onClick={ () => setStockMode(true)}>  stock </div>
+                </div>
+                        
+                <ImageSelecor projectScene={projectScene} />
+
+            </div>
+
+            <div className={templateCSS.saveActions} >
+              <>
+                <button onClick={saveProject} > save </button>
+                <button onClick={makeTemplate}> make template </button>
+                <button > share </button>
+              </>
+              <>
+                project last saved:
+
+                {projectScene && projectScene.lastSaved ? (
+                  <span>{formatTimestamp(projectScene.lastSaved)}</span>
+                ) : (
+                  <span>No timestamp available</span>
+                )}
+              </>
 
 
             </div>
 
-            <div>
-                <div onClick={ () => setStockMode(false)}>  in project </div>
-                <div onClick={ () => setStockMode(true)}>  stock </div>
-              </div>
-                      
-              <ImageSelecor projectScene={projectScene} />
-
-          </div>
-
-          <div className={templateCSS.saveActions} >
-            <>
-              <button onClick={saveProject} > save </button>
-              <button onClick={makeTemplate}> make template </button>
-              <button > share </button>
-            </>
-            <>
-              project last saved:
-
-              {projectScene && projectScene.lastSaved ? (
-                <span>{formatTimestamp(projectScene.lastSaved)}</span>
-              ) : (
-                <span>No timestamp available</span>
-              )}
-            </>
-
-
-          </div>
-
-
-    </div>
 
       </div>
+
+    </div>
     )
 }
 
