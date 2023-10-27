@@ -24,8 +24,8 @@ function Model({ name, ...props }) {
   const dispatch = useDispatch();
   const { nodes } = useGLTF('/3dAssets/new_cylinder.glb');
   const [hovered, setHovered] = useState(false);
-  useCursor(hovered);
-  const itemRef = useRef()
+    useCursor(hovered);
+    const itemRef = useRef();
 
   const materialColor = selectedID === name ? '#ADD8E6' : (hovered ? 'grey' : 'white');
 
@@ -108,7 +108,6 @@ function Model({ name, ...props }) {
 
       const materialColor = new THREE.Color(r, g, b);
 
-      console.log("Material Color (R, G, B, A):", r, g, b, a);
 
 
       if (!props.toggleSides) {
@@ -139,27 +138,27 @@ function Model({ name, ...props }) {
   }
 
 
-  // if(props.animation !== null ){
+
+
+   // if(props.animation !== null ){
     useFrame(({ clock }) => {
 
-      if(props.animation){
-        if(props.animation.type === 2){
+      if(props.rotationSpeed){
+
           const a = clock.getElapsedTime();
   
     
-          // itemRef.current.rotation.x = a;
-          itemRef.current.rotation.y = props.rotation[0] + a / props.animation.x;
-          // itemRef.current.rotation.z = a;s
-      
-          // myMesh.current.scale.x = a;
-          // myMesh.current.scale.y = a;
-          // myMesh.current.scale.z = a;
+          itemRef.current.rotation.x = props.rotation[0] + a*props.rotationSpeed[0];
+          itemRef.current.rotation.y = props.rotation[1] + a*props.rotationSpeed[1];
+          itemRef.current.rotation.z = props.rotation[2] + a*props.rotationSpeed[2];
+
   
-        }
+      //   }
 
       }
 
     });
+  
 
 
 
@@ -278,7 +277,18 @@ export default function ThreeCanvas(props) {
             name={`${index}`}
             key={index}
             position={[item.position.x, item.position.y, item.position.z]}
-            rotation={[item.rotation.x, item.rotation.y, item.rotation.z]}
+            rotation={[
+              THREE.MathUtils.degToRad(item.rotation.x),
+              THREE.MathUtils.degToRad(item.rotation.y),
+              THREE.MathUtils.degToRad(item.rotation.z)
+            ]}
+            rotationSpeed={[
+              THREE.MathUtils.degToRad(item.rotationSpeed.x),
+              THREE.MathUtils.degToRad(item.rotationSpeed.y),
+              THREE.MathUtils.degToRad(item.rotationSpeed.z)
+            ]}
+            // rotation={[item.rotation.x, item.rotation.y, item.rotation.z]}
+            // rotationSpeed={[item.rotationSpeed.x, item.rotationSpeed.y, item.rotationSpeed.z]}
             scale={[item.scale.x, item.scale.y, item.scale.z]}
             materialString={item.material}
             itemName={item.objectTypeName}

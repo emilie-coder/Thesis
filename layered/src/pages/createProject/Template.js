@@ -25,7 +25,11 @@ import { REMOVE_EDITOR_STATE, SET_EDITOR_STATE, selectNonIndexState, selectNonIn
 
 import { ChromePicker, SketchPicker } from "react-color";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCircle, faCircleHalfStroke, faClone, faCoffee, faCopy, faDownLeftAndUpRightToCenter, faEye, faMaximize, faRedo, faRotate, faSquare, faTrash, faUndo, faUpDownLeftRight } from '@fortawesome/free-solid-svg-icons'
+import { faChevronUp, faCircle, faCircleHalfStroke, faCircleXmark, faClone, faCoffee, faCopy, faDownLeftAndUpRightToCenter, faEye, faMaximize, faMinus, faMultiply, faO, faPlus, faRedo, faRotate, faSquare, faTrash, faUndo, faUpDownLeftRight } from '@fortawesome/free-solid-svg-icons'
+
+import { Slider, Sketch, Material, Colorful, Compact, Circle, Wheel, Block, Github, Chrome } from '@uiw/react-color';
+import { Alpha, Hue, ShadeSlider, Saturation, Interactive, hsvaToHslaString } from '@uiw/react-color';
+import { EditableInput, EditableInputRGBA, EditableInputHSLA } from '@uiw/react-color';
 
 
 const Editor = () => {
@@ -148,6 +152,7 @@ const Editor = () => {
       material: "https://firebasestorage.googleapis.com/v0/b/layered-5fb29.appspot.com/o/sqaure.png?alt=media&token=dd1d81ad-6eb2-4048-a518-576ce1a8766a", // Customize with your material
       position: { x: 0, y: 0, z: 0 }, // Set the initial position
       rotation: { x: 0, y: 0, z: 0 }, // Set the initial rotation
+      rotationSpeed: { x: 0, y: 0, z: 0 },
       scale: { x: 1, y: 1, z: 1 }, // Set the initial scale
       tiling: { x: 1, y: 1}, // Set the initial scale
       materialType: "solid",
@@ -225,6 +230,7 @@ const Editor = () => {
       material: "https://firebasestorage.googleapis.com/v0/b/layered-5fb29.appspot.com/o/sqaure.png?alt=media&token=dd1d81ad-6eb2-4048-a518-576ce1a8766a", // Customize with your material
       position: { x: 0, y: 0, z: 0 }, // Set the initial position
       rotation: { x: 0, y: 0, z: 0 }, // Set the initial rotation
+      rotationSpeed: { x: 0, y: 0, z: 0 },
       scale: { x: 1, y: 1, z: 1 }, // Set the initial scale
       tiling: { x: 1, y: 1}, // Set the initial scale
       materialType: "solid",
@@ -760,8 +766,7 @@ const instantiateBroadStateTabs = () => {
   };
 
 const geometryPositions = (projectScene) => {
-  // console.log("HERE I AM")
-  // console.log(projectScene);
+
     if (projectScene){
       if(projectScene.objects && projectScene.objects.length !== 0){
         if(selectObjectChosen){
@@ -782,6 +787,31 @@ const geometryPositions = (projectScene) => {
     );
 
   }
+
+
+  const geometryRotationSpeed = (projectScene) => {
+
+    if (projectScene){
+      if(projectScene.objects && projectScene.objects.length !== 0){
+        if(selectObjectChosen){
+          return(
+            <>
+            <input placeholder="x value" type="number" value={projectScene.objects[selectedObjectID].rotationSpeed.x} onChange={handleRotationSpeedX}/>
+            <input placeholder="y value" type="number" value={projectScene.objects[selectedObjectID].rotationSpeed.y} onChange={handleRotationSpeedY}/>
+            <input placeholder="z value" type="number" value={projectScene.objects[selectedObjectID].rotationSpeed.z} onChange={handleRotationSpeedZ}/>
+            </>
+          )
+        }
+
+      }
+    }
+
+    return(
+      null
+    );
+
+  }
+
 
 
 
@@ -888,6 +918,93 @@ const geometryScales = (projectScene) => {
   );
 
 }
+
+
+
+
+const handleRotationSpeedX = (e) => {
+  if (projectScene && projectScene.objects) {
+    const updatedObjects = projectScene.objects.map((obj, index) => {
+      if (index === selectedObjectID) {
+        return {
+          ...obj,
+          rotationSpeed: {
+            ...obj.rotationSpeed,
+            x: parseFloat(e.target.value)  // Parse the value to a float
+          }
+        };
+      }
+      return obj;
+    });
+
+    // Update the undo and redo stacks
+    setUndoStack((prevUndoStack) => [...prevUndoStack, projectScene]);
+    setRedoStack([]);
+
+    // Update the projectScene with the updated position
+    setProjectScene((prevScene) => ({
+      ...prevScene,
+      objects: updatedObjects,
+    }));
+  }
+};
+
+const handleRotationSpeedY = (e) => {
+  if (projectScene && projectScene.objects) {
+    const updatedObjects = projectScene.objects.map((obj, index) => {
+      if (index === selectedObjectID) {
+        return {
+          ...obj,
+          rotationSpeed: {
+            ...obj.rotationSpeed,
+            y: parseFloat(e.target.value)  // Parse the value to a float
+          }
+        };
+      }
+      return obj;
+    });
+
+    // Update the undo and redo stacks
+    setUndoStack((prevUndoStack) => [...prevUndoStack, projectScene]);
+    setRedoStack([]);
+
+    // Update the projectScene with the updated position
+    setProjectScene((prevScene) => ({
+      ...prevScene,
+      objects: updatedObjects,
+    }));
+  }
+};
+
+
+
+const handleRotationSpeedZ = (e) => {
+  if (projectScene && projectScene.objects) {
+    const updatedObjects = projectScene.objects.map((obj, index) => {
+      if (index === selectedObjectID) {
+        return {
+          ...obj,
+          rotationSpeed: {
+            ...obj.rotationSpeed,
+            z: parseFloat(e.target.value)  // Parse the value to a float
+          }
+        };
+      }
+      return obj;
+    });
+
+    // Update the undo and redo stacks
+    setUndoStack((prevUndoStack) => [...prevUndoStack, projectScene]);
+    setRedoStack([]);
+
+    // Update the projectScene with the updated position
+    setProjectScene((prevScene) => ({
+      ...prevScene,
+      objects: updatedObjects,
+    }));
+  }
+};
+
 
 
 const handleGeometryRotX = (e) => {
@@ -1322,12 +1439,15 @@ const updateObjectArc = (objectID, newObjectData) => {
     if(selectedObjectChosen){
       if(projectScene.objects[selectedObjectID].solidColor !== null){
         return(
+          <div className={templateCSS.chromePickerHolder}>
           <ChromePicker
-          onChange={(color) => {
-            handleChromePickerChange(color.rgb);
-          }}
-          color={projectScene.objects[selectedObjectID].solidColor}
+            onChange={(color) => {
+              handleChromePickerChange(color.rgb);
+            }}
+            color={projectScene.objects[selectedObjectID].solidColor}
+            width={`70%`}
           />
+        </div>
         )
       }
   }
@@ -1382,6 +1502,7 @@ const updateObjectArc = (objectID, newObjectData) => {
         return(
           <div className= {templateCSS.colorPicker}>
             <MyChromePicker />
+
           </div>
         )
     }
@@ -1389,7 +1510,6 @@ const updateObjectArc = (objectID, newObjectData) => {
 
 
   const setBlendMode = (mode) => {
-    console.log(mode);
 
 
     if (projectScene && projectScene.objects && mode) {
@@ -1457,33 +1577,62 @@ const updateObjectArc = (objectID, newObjectData) => {
 
   const BlendOptions = () => {
 
-    return(
-      <>
-        <button onClick={() => setBlendMode(1)}> normal </button>
-        <button onClick={() => setBlendMode(2)}> additive </button>
-        <button onClick={() => setBlendMode(3)}> subtractive </button>
-        <button onClick={() => setBlendMode(4)}> multiply </button>
 
-      
-      </>
+
+    let tabClassName1 = templateCSS.unselectedBlendMode;
+    let tabClassName2 = templateCSS.unselectedBlendMode;
+    let tabClassName3 = templateCSS.unselectedBlendMode;
+    let tabClassName4 = templateCSS.unselectedBlendMode;
+  
+    if( projectScene.objects[selectedObjectID].blendMode === 1){
+      tabClassName1 = templateCSS.selectedBlendMode;
+    } else if( projectScene.objects[selectedObjectID].blendMode === 2){
+      tabClassName2 = templateCSS.selectedBlendMode;
+    } else if( projectScene.objects[selectedObjectID].blendMode === 3){
+      tabClassName3 = templateCSS.selectedBlendMode;
+    } else if( projectScene.objects[selectedObjectID].blendMode === 4){
+      tabClassName4 = templateCSS.selectedBlendMode;
+    }
+
+    
+
+
+    return(
+      <div className={templateCSS.blendingModes}>
+        <FontAwesomeIcon icon={faO} onClick={() => setBlendMode(1)} className={`${tabClassName1}`} />
+        <FontAwesomeIcon icon={faPlus} onClick={() => setBlendMode(2)} className={`${tabClassName2}`} />
+        <FontAwesomeIcon icon={faMinus}  onClick={() => setBlendMode(3)} className={`${tabClassName3}`}/>
+        <FontAwesomeIcon icon={faMultiply}  onClick={() => setBlendMode(4)} className={`${tabClassName4}`}/>
+      </div>
     )
   }
 
 
-  const AnimationOptions = () => {
+  const StockPhotoOptions = () => {
 
-    return(
-      <>
-        <button onClick={() => animationMode(1)}> None </button>
-        <button onClick={() => animationMode(2)}> Rotate </button>
-        <button onClick={() => animationMode(3)}> Soft Hover </button>
+    let tabClassName1 = templateCSS.unselectedStockTab;
+    let tabClassName2 = templateCSS.unselectedStockTab;
 
-      </>
+    if( stockAssetMode === false ){
+      tabClassName1 = templateCSS.selectedStockTab;
+    } else {
+      tabClassName2 = templateCSS.selectedStockTab;
+    }
+
+
+
+    return (
+      <div className={templateCSS.stockOptionsHolder}>
+        <div className={templateCSS.stockOptions}>
+          <div onClick={ () => setStockMode(false)} className={`${tabClassName1}`}>  in project </div>
+          <div onClick={ () => setStockMode(true)} className={`${tabClassName2}`}>  stock </div>
+        </div>
+              
+        <ImageSelecor projectScene={projectScene} />
+
+      </div>
     )
   }
-
-
-
 
 
   const setTextureType = (textureType) => {
@@ -1544,10 +1693,18 @@ const updateObjectArc = (objectID, newObjectData) => {
           </div>
           <div className={templateCSS.partEditor}>
             <div className={templateCSS.partTitle}>
-              Rotation
+              <div>Rotations</div>
             </div>
             <div className={templateCSS.partInput}>
               {geometryRotations(projectScene)}
+            </div>
+          </div>
+          <div className={templateCSS.partEditor}>
+            <div className={templateCSS.partTitle}>
+              <div>rotation speed</div>
+            </div>
+            <div className={templateCSS.partInput}>
+              {geometryRotationSpeed(projectScene)}
             </div>
           </div>
         </div>
@@ -1574,9 +1731,9 @@ const updateObjectArc = (objectID, newObjectData) => {
         </div>
       </div>
       
-      <div className={templateCSS.blendModee}>
+      <div className={templateCSS.blendMode}>
         <h3 className={templateCSS.textureTitle}>
-          Blend Mode
+          Blend Mode: 
         </h3>
 
         <div className={templateCSS.blendOptions}>
@@ -1626,8 +1783,14 @@ const updateObjectArc = (objectID, newObjectData) => {
           return (
   
             <div className={templateCSS.imgList}>
-              <button onClick={() => insertFromList(lastSelectedImage)}> INSERT IMAGE </button>
-    
+
+                <div onClick={() => insertFromList(lastSelectedImage)} className={templateCSS.insertButton}>
+                  <FontAwesomeIcon icon={faChevronUp} />
+                  Insert Selected Image
+                  <FontAwesomeIcon icon={faChevronUp} />
+                </div>
+
+
                 <div className={templateCSS.userImages}>
                   {stockImageList.map((url) => (
                     <button
@@ -1650,7 +1813,12 @@ const updateObjectArc = (objectID, newObjectData) => {
   
           return (
             <div className={templateCSS.imgList}>
-            <button onClick={() => insertFromList(lastSelectedVideo)}> INSERT VIDEO </button>      
+                <div onClick={() => insertFromList(lastSelectedVideo)} className={templateCSS.insertButton}>
+                  
+                  <FontAwesomeIcon icon={faChevronUp} />
+                  Insert Selected Video
+                  <FontAwesomeIcon icon={faChevronUp} />
+                </div>
               <div className={templateCSS.userImages}>
                 {stockVideoList.map((url) => (
                   <button
@@ -1676,11 +1844,10 @@ const updateObjectArc = (objectID, newObjectData) => {
           return (
   
             <div className={templateCSS.imgList}>
-              <button onClick={() => insertFromList(lastSelectedImage)}> INSERT IMAGE </button>
-      
-                <div className={templateCSS.fileUpload2}>
-                  <input className={templateCSS.fileUploadButton} type="file" onChange={((event) => {setImageUpload(event.target.files[0])})}/>
-                  <button className={templateCSS.changeImgButton} onClick={uploadImage}>upload image</button>
+                <div onClick={() => insertFromList(lastSelectedImage)} className={templateCSS.insertButton}>
+                  <FontAwesomeIcon icon={faChevronUp} />
+                  Insert Selected Image
+                  <FontAwesomeIcon icon={faChevronUp} />
                 </div>
         
                 <div className={templateCSS.userImages}>
@@ -1695,6 +1862,11 @@ const updateObjectArc = (objectID, newObjectData) => {
                   ))}
                 
                </div>
+
+               <div className={templateCSS.fileUpload2}>
+                  <input className={templateCSS.fileUploadButton} type="file" onChange={((event) => {setImageUpload(event.target.files[0])})}/>
+                  <button className={templateCSS.changeImgButton} onClick={uploadImage}>upload image</button>
+                </div>
       
             </div>
   
@@ -1705,12 +1877,11 @@ const updateObjectArc = (objectID, newObjectData) => {
   
           return (
             <div className={templateCSS.imgList}>
-            <button onClick={() => insertFromList(lastSelectedVideo)}> INSERT VIDEO </button>
-      
-              <div className={templateCSS.fileUpload2}>
-                <input className={templateCSS.fileUploadButton} type="file" onChange={((event) => {setVideoUpload(event.target.files[0])})}/>
-                <button className={templateCSS.changeImgButton} onClick={uploadVideo}>upload video</button>
-              </div>
+                <div onClick={() => insertFromList(lastSelectedVideo)} className={templateCSS.insertButton}>
+                  <FontAwesomeIcon icon={faChevronUp} />
+                  Insert Selected Video
+                  <FontAwesomeIcon icon={faChevronUp} />
+                </div>
       
               <div className={templateCSS.userImages}>
                 {videoList.map((url) => (
@@ -1723,6 +1894,11 @@ const updateObjectArc = (objectID, newObjectData) => {
                   </button>
                 ))}
                 
+              </div>
+                    
+              <div className={templateCSS.fileUpload2}>
+                <input className={templateCSS.fileUploadButton} type="file" onChange={((event) => {setVideoUpload(event.target.files[0])})}/>
+                <button className={templateCSS.changeImgButton} onClick={uploadVideo}>upload video</button>
               </div>
       
             </div>
@@ -1791,13 +1967,13 @@ const updateObjectArc = (objectID, newObjectData) => {
         </div>
 
 
-
-      <div className={templateCSS.rightEditor}>
-
-          <div className={templateCSS.videoBuffers}>
+        <div className={templateCSS.videoBuffers}>
               video buffering...
               {instantiateVideoBuffers(projectScene)}
             </div>
+      <div className={templateCSS.rightEditor}>
+
+
 
             <div className={templateCSS.rightEditorTop}>
 
@@ -1817,14 +1993,9 @@ const updateObjectArc = (objectID, newObjectData) => {
 
               </div>
 
-              <div>
-                  <div onClick={ () => setStockMode(false)}>  in project </div>
-                  <div onClick={ () => setStockMode(true)}>  stock </div>
-                </div>
-                        
-                <ImageSelecor projectScene={projectScene} />
-
             </div>
+
+            <StockPhotoOptions />
 
             <div className={templateCSS.saveActions} >
               <>

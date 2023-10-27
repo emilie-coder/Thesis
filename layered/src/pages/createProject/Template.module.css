@@ -129,6 +129,7 @@ canvas {
   align-items: center;
   width: 25%;
   height: 99%;
+  justify-content: space-between;
 }
 
 
@@ -136,16 +137,21 @@ canvas {
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 90%;
+  height: 60%;
   /* background-color: var(--main-color); */
+  margin-left: 3px;;
+  margin-right: 3px;;
   border-radius: 3px;
-  margin-bottom: 5px;
+  width: 98%;
 }
 
 .saveActions{
   width: 100%;
-  height: 5%;
+  height: 6%;
+  margin-left: 3px;;
+  margin-right: 3px;;
   border-radius: 3px;
+  width: 98%;
   background-color: var(--main-color);
 }
 
@@ -153,23 +159,20 @@ canvas {
 .rightImageEditor{
   display: flex;
   flex-direction: column;
-  width: 96%;
-  height: 80%;
-  margin: 5px;
   align-self: center;
   justify-self: center;
-  border-radius: 3px;
+  height: 99%;
+
 }
 
 .imgList{
   display: flex;
   flex-direction: column;
-  background-color: var(--main-color);
+  background-color: var(--accent-color-a);
   width: 96%;
   align-self: center;
   justify-self: center;
-  height: 18%;
-  border-radius: 3px;
+  height: 100%;
 }
 
 
@@ -183,8 +186,7 @@ canvas {
   width: 100%;
   height: 100%;
   border-radius: 3px;
-  background-color: var(--main-color);
-  box-shadow: 0 1px 3px 0 rgba(0,0,0,0.1), 0 1px 2px -1px rgba(0,0,0,0.1);
+  /* background-color: var(--main-color); */
   
 }
 
@@ -196,7 +198,8 @@ canvas {
   margin-right: 5px;
   scrollbar-width: none;
   font-size: 7pt;
-  
+  min-height: 22px;
+  color: rgb(48, 48, 49);
 }
 
 .tabs::-webkit-scrollbar {
@@ -236,7 +239,8 @@ canvas {
   margin-left: 5px;
   margin-right: 5px;
   border-top-right-radius: 3px;
-  height: 25%;
+  /* height: 30%; */
+  min-height: 30%;
 }
 
 
@@ -245,9 +249,8 @@ canvas {
   background-color: var(--accent-color-a);
   margin-left: 5px;
   margin-right: 5px;
-  border-bottom-left-radius: 3px;
-  border-bottom-right-radius: 3px;
-  height: 30%;
+  /* height: 70%; */
+  min-height: 60%
 }
 
 
@@ -271,6 +274,9 @@ canvas {
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
   width: 33%;
+  font-size: smaller;
+  align-items: center;
+  justify-content: center;
 }
 
 .unselectedTextureTab {
@@ -283,6 +289,9 @@ canvas {
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
   width: 33%;
+  font-size: smaller;
+  align-items: center;
+  justify-content: center;
 }
 
 
@@ -294,9 +303,10 @@ canvas {
   height: 70%;
   margin-left: 5px;
   margin-right: 5px;
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
+
   padding-top: 10px;
+  border-bottom-left-radius: 3px;
+  border-bottom-right-radius: 3px;
 }
 
 
@@ -323,6 +333,7 @@ canvas {
 .textureTitle{
   font-size: 10pt;
   margin: 10px;
+  margin-top: 0px;
 }
 
 .xyzEditor{
@@ -338,10 +349,12 @@ canvas {
 
 }
 .partTitle{
-  margin: 10px;
-  margin: 4px;
+  display: flex;
+  flex-direction: column;
+  /* margin: 10px; */
+  /* margin: 4px; */
   margin-left: 10px;
-  font-size: 10pt;
+  font-size:8pt;
   color:rgba(46, 46, 47, 0.929);
 }
 
@@ -356,7 +369,7 @@ canvas {
   width: 20%;
   margin-bottom: 0;
   margin-top: 0;
-  margin: 4px;
+  margin: 2px;
   font-size: 0.6em;
 }
 
@@ -443,7 +456,7 @@ canvas {
 
 
 .textureOptions {
-  height:70%;
+  height: 98%;
 
 }
 .textureOptionTabs{
@@ -461,4 +474,170 @@ canvas {
   z-index: -1000000000000000;
 }
 
+.VideoRenderer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
 
+.colorPicker {
+  /* background-color: var(--main-color); */
+  background-color: blueviolet;
+  display: flex;
+  width: 95%;
+  height: 90%;
+  margin-left: 5px;
+  margin-right: 5px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  /* align-items: center; */
+  justify-content: center;
+}
+
+.colorPicker {
+  background-color: var(--main-color);
+  display: flex;
+  width: 95%;
+  height: 90%;
+  margin-left: 5px;
+  margin-right: 5px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  justify-content: center;
+}
+
+.chromePickerHolder {
+  width: 70%; /* Set the width here instead of in the ChromePicker component */
+  height: 90%; /* Make sure the height is 100% */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.blendMode {
+  display: flex;
+  flex-direction: row;
+  background-color: var(--accent-color-a);
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+
+
+.blendingModes {
+  display: flex;
+  flex-direction: row;
+}
+
+
+
+
+.unselectedBlendMode {
+  /* margin-top: 5px; */
+  display: flex;
+  background-color: var(--accent-color-a);
+  width: fit-content;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-radius: 5px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.selectedBlendMode {
+  /* margin-top: 5px; */
+  display: flex;
+  background-color:var(--accent-color-b);
+  width: fit-content;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-radius: 5px;
+}
+
+
+
+.stockOptionsHolder {
+  display: flex;
+  flex-direction: column-reverse;
+  /* background-color: var(--main-color); */
+  height: 32%;
+  margin-left: 3px;;
+  margin-right: 3px;;
+  border-radius: 3px;
+  width: 98%;
+}
+
+
+.stockOptions{
+  display: flex;
+  flex-direction: row;
+  width: 96%;
+  align-self: center;
+  justify-self: center;
+}
+
+.unselectedStockTab {
+  display: flex;
+  width: 50%;
+  border-bottom-left-radius: 3px;
+  border-bottom-right-radius: 3px;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--accent-color-b);
+}
+
+
+.selectedStockTab {
+  display: flex;
+  background-color: var(--accent-color-a);
+  width: 50%;
+  border-bottom-left-radius: 3px;
+  border-bottom-right-radius: 3px;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.insertButton{
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+
+
+/* CSS */
+.insertButton {
+  background-color: #f8f9fa;
+  border: 1px solid #f8f9fa;
+  border-radius: 4px;
+  color: #3c4043;
+  cursor: pointer;
+  font-family: arial,sans-serif;
+  font-size: 14px;
+  height: 36px;
+  line-height: 27px;
+  /* min-width: 54px; */
+  /* padding: 0 16px; */
+  text-align: center;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  white-space: pre;
+  width: 99%;
+}
+
+.insertButton:hover {
+  border-color: #dadce0;
+  box-shadow: rgba(0, 0, 0, .1) 0 1px 1px;
+  color: #202124;
+}
+
+.insertButton:focus {
+  border-color: #4285f4;
+  outline: none;
+}

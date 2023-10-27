@@ -16,6 +16,7 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "@types/three": "^0.156.0",
+    "@uiw/react-color": "^1.4.3",
     "firebase": "^10.1.0",
     "gltfjsx": "^6.2.12",
     "leva": "^0.9.35",
