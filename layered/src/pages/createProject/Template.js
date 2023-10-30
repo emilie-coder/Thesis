@@ -25,7 +25,7 @@ import { REMOVE_EDITOR_STATE, SET_EDITOR_STATE, selectNonIndexState, selectNonIn
 
 import { ChromePicker, SketchPicker } from "react-color";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faChevronUp, faCircle, faCircleHalfStroke, faCircleXmark, faClone, faCoffee, faCopy, faDownLeftAndUpRightToCenter, faEye, faMaximize, faMinus, faMultiply, faO, faPlus, faRedo, faRotate, faSquare, faTrash, faUndo, faUpDownLeftRight } from '@fortawesome/free-solid-svg-icons'
+import { faChevronUp, faCircle, faCircleHalfStroke, faCircleXmark, faClone, faCoffee, faCopy, faDownLeftAndUpRightToCenter, faEye, faMaximize, faMinus, faMultiply, faO, faPenToSquare, faPlus, faRedo, faRotate, faSave, faShare, faSquare, faTrash, faUndo, faUpDownLeftRight } from '@fortawesome/free-solid-svg-icons'
 
 import { Slider, Sketch, Material, Colorful, Compact, Circle, Wheel, Block, Github, Chrome } from '@uiw/react-color';
 import { Alpha, Hue, ShadeSlider, Saturation, Interactive, hsvaToHslaString } from '@uiw/react-color';
@@ -1434,7 +1434,6 @@ const updateObjectArc = (objectID, newObjectData) => {
 
   const MyChromePicker = () => {
 
-    console.log(projectScene.objects[selectedObjectID].solidColor);
 
     if(selectedObjectChosen){
       if(projectScene.objects[selectedObjectID].solidColor !== null){
@@ -1662,6 +1661,9 @@ const updateObjectArc = (objectID, newObjectData) => {
 
   const RightEditor = () => {
     const renderEditor = useSelector(selectObjectChosen);
+    const renderNonIndexState = useSelector(selectNonIndexState);
+    const renderNonIndexStateBool = useSelector(selectNonIndexStateBool)
+
 
     if(renderEditor && projectScene) {
 
@@ -1743,18 +1745,27 @@ const updateObjectArc = (objectID, newObjectData) => {
       
       </>
       )
-    } else{
-      return(     
-        <div className={templateCSS.geometry}>
-          <>
-          {instantiateSkyButtons()}
-          </>
-          <>
-            Audio
-          </>
-        </div>
+    } else if(renderNonIndexStateBool ) {
 
-      )
+      if(renderNonIndexState === "SkyBox"){
+        return(     
+          <div className={templateCSS.skyBoxContainer}>
+            {instantiateSkyButtons()}
+          </div>
+        )
+      } else if(renderNonIndexState === "Audio"){
+        return(     
+          <div className={templateCSS.skyBoxContainer}>
+            AUDIO
+          </div>
+        )
+      } else if(renderNonIndexState === "Main"){
+        return(     
+          <div className={templateCSS.skyBoxContainer}>
+            Main
+          </div>
+        )
+      }
     }
   }
 
@@ -1865,7 +1876,7 @@ const updateObjectArc = (objectID, newObjectData) => {
 
                <div className={templateCSS.fileUpload2}>
                   <input className={templateCSS.fileUploadButton} type="file" onChange={((event) => {setImageUpload(event.target.files[0])})}/>
-                  <button className={templateCSS.changeImgButton} onClick={uploadImage}>upload image</button>
+                  <button className={templateCSS.changeImgButton} onClick={uploadImage}>upload </button>
                 </div>
       
             </div>
@@ -1898,7 +1909,7 @@ const updateObjectArc = (objectID, newObjectData) => {
                     
               <div className={templateCSS.fileUpload2}>
                 <input className={templateCSS.fileUploadButton} type="file" onChange={((event) => {setVideoUpload(event.target.files[0])})}/>
-                <button className={templateCSS.changeImgButton} onClick={uploadVideo}>upload video</button>
+                <button className={templateCSS.changeImgButton} onClick={uploadVideo}>upload </button>
               </div>
       
             </div>
@@ -1998,20 +2009,30 @@ const updateObjectArc = (objectID, newObjectData) => {
             <StockPhotoOptions />
 
             <div className={templateCSS.saveActions} >
-              <>
-                <button onClick={saveProject} > save </button>
-                <button onClick={makeTemplate}> make template </button>
-                <button > share </button>
-              </>
-              <>
-                project last saved:
+              <div className={templateCSS.saveActionButtons}>
+                <div className={templateCSS.saveActionsOption}>
+                 save <FontAwesomeIcon onClick={saveProject} icon={faSave} className={templateCSS.saveIcon}/>
+                </div>
+                <div className={templateCSS.saveActionsOption}>
+                 share <FontAwesomeIcon icon={faShare} className={templateCSS.saveIcon}/>
+                </div>
+
+                <div className={templateCSS.saveActionsOption}>
+                  {/* <button onClick={makeTemplate}> create template </button> */}
+                  template
+                  <FontAwesomeIcon icon={faPenToSquare}/>
+                </div>
+                
+              </div>
+              <div className={templateCSS.lastSavedWhen}>
+                last saved:
 
                 {projectScene && projectScene.lastSaved ? (
                   <span>{formatTimestamp(projectScene.lastSaved)}</span>
                 ) : (
                   <span>No timestamp available</span>
                 )}
-              </>
+              </div>
 
 
             </div>
