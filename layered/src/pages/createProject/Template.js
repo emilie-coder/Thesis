@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   SET_ACTIVE_PROJECT,
@@ -41,6 +41,8 @@ const Editor = () => {
 
   const [imageUpload, setImageUpload] = useState(null);
   const [coverImageUpload, setCoverImageUpload] = useState(null);
+  const [audioUpload, setAudioUpload] = useState(null);
+
 
   const [imageList, setImageList] = useState([]);
 
@@ -79,13 +81,20 @@ const Editor = () => {
   const [redoStack, setRedoStack] = useState([]);
 
 
-  const [playAudio, setPlayAudio] = useState(false);
   const [playPause, setPlayPause] = useState(false);
 
+  const audioRef1 = useRef(null);
+  const audioRef2 = useRef(null);
 
-  const toggleAudio = () => {
-    setPlayAudio(!playAudio);
-  }
+  useEffect(() => {
+    if (playPause) {
+      audioRef2.current?.play(); // Use optional chaining here
+    } else {
+      audioRef2.current?.pause(); // Use optional chaining here
+    }
+  }, [playPause]);
+  
+
 
   const togglePlayPause = () => {
     setPlayPause(!playPause);
@@ -440,6 +449,28 @@ const Editor = () => {
       });
     });
   };
+
+  const uploadAudio = () => {
+    if (audioUpload == null) return;
+
+    const audioRef2 = ref(
+      storage,
+      userID + '/project_' + projID + `/audio/${audioUpload.name + v4()}`
+    );
+
+    uploadBytes(audioRef2, audioUpload).then((snapshot) => {
+      getDownloadURL(snapshot.ref).then((url) => {
+        setProjectScene((prevScene) => ({
+          ...prevScene,
+          details: {
+            ...prevScene.details,
+            Audio: url
+          }
+        }));
+      });
+    });
+  };
+
 
 
   const uploadCoverImage = () => {
@@ -1561,7 +1592,7 @@ const updateObjectArc = (objectID, newObjectData) => {
       } else if(projectScene.objects[selectedObjectID].materialType==="video"){
         return(
           <div className={templateCSS.VideoRenderer}>
-
+  
               <video
                 crossOrigin="anonymous"
                 // id="videoReference"
@@ -1838,8 +1869,23 @@ const updateObjectArc = (objectID, newObjectData) => {
         )
       } else if(renderNonIndexState === "Audio"){
         return(     
-          <div className={templateCSS.skyBoxContainer}>
+          <div className={templateCSS.mainEditorSubRightContainer}>
+
             AUDIO
+                {projectScene && 
+                <audio ref={audioRef1} controls>
+                    <source src={projectScene.details.Audio} type="audio/mpeg" />
+                    Your browser does not support the audio element.
+                </audio>
+  
+                            }
+              <div className={templateCSS.fileUpload3}>
+                <input className={templateCSS.fileUploadButton} type="file" onChange={((event) => {setAudioUpload(event.target.files[0])})}/>
+                <button className={templateCSS.changeImgButton} onClick={uploadAudio}> upload </button>
+
+              </div>
+
+
           </div>
         )
       } else if(renderNonIndexState === "Main"){
@@ -2076,13 +2122,6 @@ const updateObjectArc = (objectID, newObjectData) => {
                   {playPause &&
                     <FontAwesomeIcon icon={faPause} className={templateCSS.editorButton} onClick={(togglePlayPause)}/>
                   }
-
-                  {playAudio &&
-                    <FontAwesomeIcon icon={faVolumeHigh} className={templateCSS.editorButton}  onClick={(toggleAudio)}/>
-                  }
-                  {!playAudio &&
-                    <FontAwesomeIcon icon={faVolumeMute} className={templateCSS.editorButton}  onClick={(toggleAudio)}/>
-                  }
                 </div>
                   {toggleSides &&                 
                   <div  className={templateCSS.toggleSides}>
@@ -2103,6 +2142,10 @@ const updateObjectArc = (objectID, newObjectData) => {
 
 
         <div className={templateCSS.videoBuffers}>
+            <audio ref={audioRef2} controls>
+                <source src={projectScene.details.Audio} type="audio/mpeg" />
+                Your browser does not support the audio element.
+            </audio>
               video buffering...
               {instantiateVideoBuffers(projectScene)}
             </div>

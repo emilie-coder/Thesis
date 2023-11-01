@@ -246,6 +246,7 @@ export async function updateProject(userID, projectID, project) {
     // Create a deep copy of project.objects and assign it to currentProjectData.objects
     currentProjectData.objects = { ...project.objects };
     currentProjectData.details = { ...project.details };
+    currentProjectData.details.Audio  = typeof project.Audio === 'object' ? { ...project.details.Audio  } : project.details.Audio;
     currentProjectData.templateCover = typeof project.templateCover === 'object' ? { ...project.templateCover } : project.templateCover;
 
 
