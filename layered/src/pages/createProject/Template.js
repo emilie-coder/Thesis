@@ -40,6 +40,8 @@ const Editor = () => {
   const selectedObjectMaterial = useSelector(selectObjectMaterial);
 
   const [imageUpload, setImageUpload] = useState(null);
+  const [coverImageUpload, setCoverImageUpload] = useState(null);
+
   const [imageList, setImageList] = useState([]);
 
 
@@ -434,7 +436,27 @@ const Editor = () => {
 
     uploadBytes(imageRef, imageUpload).then((snapshot) => {
       getDownloadURL(snapshot.ref).then((url) => {
-        setImageList((prev) => [...prev, url]);
+        setCoverImageUpload(url);
+      });
+    });
+  };
+
+
+  const uploadCoverImage = () => {
+    if (coverImageUpload == null) return;
+
+    const coverImageRef = ref(
+      storage,
+      userID + '/project_' + projID + `/coverImage/${coverImageUpload.name + v4()}`
+    );
+
+    uploadBytes(coverImageRef, coverImageUpload).then((snapshot) => {
+      getDownloadURL(snapshot.ref).then((url) => {
+        setProjectScene((prevScene) => ({
+          ...prevScene,
+          templateCover: url,
+        }));
+
       });
     });
   };
@@ -613,11 +635,16 @@ const BroadStateTab = () => {
   const selectedNonIndexState = useSelector(selectNonIndexState)
 
   let tabClassName1 = templateCSS.unselectedTab;
+  let tabClassName2 = templateCSS.unselectedTab;
   let tabClassName3 = templateCSS.unselectedTab;
 
   if( nonIndexState && selectedNonIndexState === 'SkyBox'){
     tabClassName1 = templateCSS.selectedTab;
-  }else if (nonIndexState && selectedNonIndexState === 'Audio') {
+  }
+  else if (nonIndexState && selectedNonIndexState === 'Main') {
+    tabClassName2 = templateCSS.selectedTab;
+  }
+  else if (nonIndexState && selectedNonIndexState === 'Audio') {
     tabClassName3 = templateCSS.selectedTab;
   }
 
@@ -629,6 +656,9 @@ const BroadStateTab = () => {
         </div>
         <div className={`${tabClassName3}`} onClick={() => removeTarget('Audio')}>
           Audio
+        </div>
+        <div className={`${tabClassName2}`} onClick={() => removeTarget('Main')}>
+          Main
         </div>
     </>
   );
@@ -1814,8 +1844,43 @@ const updateObjectArc = (objectID, newObjectData) => {
         )
       } else if(renderNonIndexState === "Main"){
         return(     
-          <div className={templateCSS.skyBoxContainer}>
-            Main
+          <div className={templateCSS.mainEditorSubRightContainer}>
+            <div className={templateCSS.projectTitleMainEditor} >
+              <h3 className={templateCSS.titleMainEditor_large} > Title: </h3>
+              <h3 onClick={handleTitleEdit} className={templateCSS.titleMainEditor_small}>
+                
+                {isEditingTitle ? (
+                  <input
+                    type="text"
+                    value={editedTitle}
+                    onChange={handleTitleChange}
+                    onBlur={handleTitleUpdate}
+                    autoFocus
+                  />
+                ) : (
+                  editedTitle
+                )}
+              </h3>
+            </div>
+
+            <div className={templateCSS.mainEditorCoverImageContainer} >
+              <div className={templateCSS.coverImageMainDisplay}>  
+                Cover Image: 
+
+                {projectScene && projectScene.templateCover &&
+                <img src={projectScene.templateCover}  alt={"cover"} className={templateCSS.coverImageDisplay} />}
+
+              </div>
+
+                <div className={templateCSS.fileUpload3}>
+                  <input className={templateCSS.fileUploadButton} type="file" onChange={((event) => {setCoverImageUpload(event.target.files[0])})}/>
+                    <button className={templateCSS.changeImgButton} onClick={uploadCoverImage}>upload </button>
+
+                </div>
+
+
+            </div>
+
           </div>
         )
       }
@@ -1981,23 +2046,6 @@ const updateObjectArc = (objectID, newObjectData) => {
 
       <div className={templateCSS.leftEditor}>
 
-          <div className={templateCSS.projectTitle} >
-            <h2> Title: </h2>
-            <h2 onClick={handleTitleEdit} className={templateCSS.projectTitleMain}>
-              
-              {isEditingTitle ? (
-                <input
-                  type="text"
-                  value={editedTitle}
-                  onChange={handleTitleChange}
-                  onBlur={handleTitleUpdate}
-                  autoFocus
-                />
-              ) : (
-                editedTitle
-              )}
-            </h2>
-          </div>
         <div className={templateCSS.actualEditor}>
             <div className={templateCSS.leftButtons}>
                 <div className={templateCSS.leftEditorShapes}>
@@ -2081,20 +2129,19 @@ const updateObjectArc = (objectID, newObjectData) => {
                  share <FontAwesomeIcon icon={faShare} className={templateCSS.saveIcon}/>
                 </div>
 
-                <div className={templateCSS.saveActionsOption}>
-                  {/* <button onClick={makeTemplate}> create template </button> */}
+                <div className={templateCSS.saveActionsOption} onClick={makeTemplate}>
                   template
                   <FontAwesomeIcon icon={faPenToSquare}/>
                 </div>
                 
               </div>
               <div className={templateCSS.lastSavedWhen}>
-                last saved:
+                last saved - 
 
                 {projectScene && projectScene.lastSaved ? (
-                  <span>{formatTimestamp(projectScene.lastSaved)}</span>
+                  <span>{ formatTimestamp(projectScene.lastSaved)}</span>
                 ) : (
-                  <span>No timestamp available</span>
+                  <span> No timestamp available</span>
                 )}
               </div>
 

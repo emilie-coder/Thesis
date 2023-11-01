@@ -1,8 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
-    nonIndexStateChosen: false,
-    nonIndexState: '',
+    nonIndexStateChosen: true,
+    nonIndexState: 'Main',
 }
 
 

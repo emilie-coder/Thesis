@@ -246,6 +246,8 @@ export async function updateProject(userID, projectID, project) {
     // Create a deep copy of project.objects and assign it to currentProjectData.objects
     currentProjectData.objects = { ...project.objects };
     currentProjectData.details = { ...project.details };
+    currentProjectData.templateCover = typeof project.templateCover === 'object' ? { ...project.templateCover } : project.templateCover;
+
 
     // Update the timestamp for the project
     currentProjectData.lastSaved = Date.now(); // Use Date.now() to get the current timestamp

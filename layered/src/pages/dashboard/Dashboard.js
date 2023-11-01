@@ -92,7 +92,7 @@ const Dashboard = () => {
                   })
                 }
                 </div>
-                <img className={styles.projectImg} src="https://firebasestorage.googleapis.com/v0/b/layered-5fb29.appspot.com/o/temp.jpg?alt=media&token=f07645b2-3f6a-4ff7-ae7a-cf6fbf313647" alt="temp"/>
+                <img className={styles.projectImg} src={userProjects[projectId].projectScene.templateCover} alt="temp"/>
               </div>
             ))}
           </div>
