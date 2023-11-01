@@ -319,7 +319,7 @@ export default function ThreeCanvas(props) {
         linear
         flat
         >
-        {sceneObjs && skyBoxes[sceneObjs.details.SkyBox] && sceneObjs.details.SkyBox !== 0 && (
+        {sceneObjs && skyBoxes[sceneObjs.details.SkyBox] && sceneObjs.details.SkyBox !== 100 && (
           <Environment files={skyBoxes[sceneObjs.details.SkyBox]} background blur={0.0} />
         )}
       <gridHelper args={[400, 200, '#f7f7f7', '#f7f7f7']} position={[0, -4, 0]} />

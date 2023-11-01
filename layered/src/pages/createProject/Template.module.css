@@ -178,6 +178,7 @@ canvas {
   justify-self: center;
   height: 99%;
   max-width: 100%;
+  min-width: 100%;
 
 }
 
@@ -858,4 +859,9 @@ canvas {
   border-bottom-right-radius: 3px;
   border-bottom-left-radius: 3px;
   height: 100%;
+}
+
+.skyBoxList {
+  margin: 0;
+  padding: 0;
 }

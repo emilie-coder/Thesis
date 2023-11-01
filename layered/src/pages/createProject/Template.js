@@ -23,13 +23,9 @@ import { selectObjectID, selectObjectChosen, selectObjectMaterial, SET_OBJECT_MA
 import NewCanvas from '../../threejs/threeCanvas';
 import { REMOVE_EDITOR_STATE, SET_EDITOR_STATE, selectNonIndexState, selectNonIndexStateBool } from '../../redux/slice/editorSlice';
 
-import { ChromePicker, SketchPicker } from "react-color";
+import { ChromePicker } from "react-color";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faChevronUp, faCircle, faCircleHalfStroke, faCircleXmark, faClone, faCoffee, faCopy, faDownLeftAndUpRightToCenter, faEye, faMaximize, faMinus, faMultiply, faO, faPenToSquare, faPlus, faRedo, faRotate, faSave, faShare, faSquare, faTrash, faUndo, faUpDownLeftRight } from '@fortawesome/free-solid-svg-icons'
-
-import { Slider, Sketch, Material, Colorful, Compact, Circle, Wheel, Block, Github, Chrome } from '@uiw/react-color';
-import { Alpha, Hue, ShadeSlider, Saturation, Interactive, hsvaToHslaString } from '@uiw/react-color';
-import { EditableInput, EditableInputRGBA, EditableInputHSLA } from '@uiw/react-color';
+import { faChevronUp, faCircle, faCircleHalfStroke, faClone, faEye, faEyeSlash, faMaximize, faMinus, faMultiply, faO, faPause, faPenToSquare, faPlay, faPlus, faRedo, faRotate, faSave, faShare, faSquare, faTrash, faUndo, faUpDownLeftRight, faVolumeHigh, faVolumeMute } from '@fortawesome/free-solid-svg-icons'
 
 
 const Editor = () => {
@@ -81,7 +77,17 @@ const Editor = () => {
   const [redoStack, setRedoStack] = useState([]);
 
 
+  const [playAudio, setPlayAudio] = useState(false);
+  const [playPause, setPlayPause] = useState(false);
 
+
+  const toggleAudio = () => {
+    setPlayAudio(!playAudio);
+  }
+
+  const togglePlayPause = () => {
+    setPlayPause(!playPause);
+  }
 
 
   const [skyBoxes, setSkyBoxes ] = useState(["/imgs/belfast_sunset_puresky_4k.hdr" ,
@@ -1341,6 +1347,10 @@ const updateObjectArc = (objectID, newObjectData) => {
 
 
   const setSkyBox = (index) => {
+    console.log(projectScene);
+    console.log("setting sky box here: ", index)
+  
+
   
     setProjectScene((prevScene) => ({
       ...prevScene,
@@ -1355,7 +1365,7 @@ const updateObjectArc = (objectID, newObjectData) => {
   const instantiateSkyButtons = () => {
     let loopData = [];
     loopData.push(
-      <button key={0} onClick={() => setSkyBox(0)}>
+      <button key={100} onClick={() => { setSkyBox(100); console.log('noneeee'); }}>
         None
       </button>
     );
@@ -1363,14 +1373,14 @@ const updateObjectArc = (objectID, newObjectData) => {
     if (skyBoxes !== null && skyBoxes.length !== 0) {
       for (let i = 0; i < skyBoxes.length; i++) {
         loopData.push(
-          <button key={i} onClick={() => setSkyBox(i)}>
+          <button key={i} onClick={() => { setSkyBox(i); console.log(i); }}>
             {skyBoxes[i]}
           </button>
         );
       }
     }
   
-    return <ul>{loopData}</ul>;
+    return <ul className={templateCSS.skyBoxList}>{loopData}</ul>;
   };
   
 
@@ -1609,6 +1619,7 @@ const updateObjectArc = (objectID, newObjectData) => {
 
   const StockPhotoOptions = () => {
 
+    const display = useSelector(selectObjectChosen);
     let tabClassName1 = templateCSS.unselectedStockTab;
     let tabClassName2 = templateCSS.unselectedStockTab;
 
@@ -1620,17 +1631,19 @@ const updateObjectArc = (objectID, newObjectData) => {
 
 
 
-    return (
-      <div className={templateCSS.stockOptionsHolder}>
-        <div className={templateCSS.stockOptions}>
-          <div onClick={ () => setStockMode(false)} className={`${tabClassName1}`}>  in project </div>
-          <div onClick={ () => setStockMode(true)} className={`${tabClassName2}`}>  stock </div>
-        </div>
-              
-        <ImageSelecor projectScene={projectScene} />
+    if(display === true){
+      return (
+        <div className={templateCSS.stockOptionsHolder}>
+          <div className={templateCSS.stockOptions}>
+            <div onClick={ () => setStockMode(false)} className={`${tabClassName1}`}>  in project </div>
+            <div onClick={ () => setStockMode(true)} className={`${tabClassName2}`}>  stock </div>
+          </div>
+                
+          <ImageSelecor projectScene={projectScene} />
 
-      </div>
-    )
+        </div>
+      )
+      }
   }
 
 
@@ -1968,9 +1981,32 @@ const updateObjectArc = (objectID, newObjectData) => {
                   <FontAwesomeIcon onClick={duplicateObject} icon={faClone}  className={templateCSS.editorButton}/>
                   <FontAwesomeIcon onClick={deleteObject} icon={faTrash}  className={templateCSS.editorButton}/>
                 </div>
+                <div className={templateCSS.deleteDuplicate}>
+                  {!playPause &&
+                    <FontAwesomeIcon icon={faPlay} className={templateCSS.editorButton} onClick={(togglePlayPause)}/>
+                  }
+                  {playPause &&
+                    <FontAwesomeIcon icon={faPause} className={templateCSS.editorButton} onClick={(togglePlayPause)}/>
+                  }
+
+                  {playAudio &&
+                    <FontAwesomeIcon icon={faVolumeHigh} className={templateCSS.editorButton}  onClick={(toggleAudio)}/>
+                  }
+                  {!playAudio &&
+                    <FontAwesomeIcon icon={faVolumeMute} className={templateCSS.editorButton}  onClick={(toggleAudio)}/>
+                  }
+                </div>
+                  {toggleSides &&                 
                   <div  className={templateCSS.toggleSides}>
                     <FontAwesomeIcon icon={faEye} onClick={toggleSidesButton}  className={templateCSS.editorButton}/>
                   </div>
+                  }
+                  {!toggleSides &&                 
+                    <div  className={templateCSS.toggleSides}>
+                      <FontAwesomeIcon icon={faEyeSlash} onClick={toggleSidesButton}  className={templateCSS.editorButton}/>
+                    </div>
+                  }
+
               </div>
             </div>
               <NewCanvas scene={projectScene} className={templateCSS.canvasHolder} updateObject={updateObjectArc} editMode={editMode} toggleSides={toggleSides}/>
