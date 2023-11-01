@@ -143,7 +143,8 @@ function Model({ name, ...props }) {
    // if(props.animation !== null ){
     useFrame(({ clock }) => {
 
-      if(props.rotationSpeed){
+      if(props.playPause){
+        if(props.rotationSpeed){
 
           const a = clock.getElapsedTime();
   
@@ -154,6 +155,8 @@ function Model({ name, ...props }) {
 
   
       //   }
+
+      }
 
       }
 
@@ -239,6 +242,7 @@ function Controls(props) {
 export default function ThreeCanvas(props) {
   const sceneObjs = props.scene;
   const toggleSides = props.toggleSides;
+  const playPause = props.playPause;
   const [objectsToRender, setObjectsToRender] = useState([]);
   const [skyBoxes, setSkyBoxes ] = useState([
     "/hdriskies/alps_field_4k.hdr",
@@ -344,6 +348,7 @@ export default function ThreeCanvas(props) {
             colorValues = {item.solidColor}
             blendMode = {item.blendMode}
             animation = {item.animation}
+            playPause = {playPause}
           />
         );
       });

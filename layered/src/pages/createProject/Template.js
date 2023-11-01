@@ -2049,7 +2049,7 @@ const updateObjectArc = (objectID, newObjectData) => {
 
               </div>
             </div>
-              <NewCanvas scene={projectScene} className={templateCSS.canvasHolder} updateObject={updateObjectArc} editMode={editMode} toggleSides={toggleSides}/>
+              <NewCanvas scene={projectScene} className={templateCSS.canvasHolder} updateObject={updateObjectArc} editMode={editMode} toggleSides={toggleSides} playPause={playPause}/>
             </div>
         </div>
 
