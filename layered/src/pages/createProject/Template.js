@@ -1404,7 +1404,7 @@ const updateObjectArc = (objectID, newObjectData) => {
   const instantiateSkyButtons = () => {
     let loopData = [];
     loopData.push(
-      <button key={100} onClick={() => { setSkyBox(100)}} className={templateCSS.skyBoxButtonImg}>
+      <button key={100} onClick={() => { setSkyBox(100)}} className={templateCSS.skyBoxButtonImgSpec}>
         None
       </button>
     );
@@ -1412,7 +1412,7 @@ const updateObjectArc = (objectID, newObjectData) => {
     if (skyBoxes !== null && skyBoxes.length !== 0) {
       for (let i = 0; i < skyBoxes.length; i++) {
         loopData.push(
-          <button key={i} onClick={() => { setSkyBox(i); console.log(i); }}  className={templateCSS.skyBoxButtonImg}>
+          <button key={i} onClick={() => { setSkyBox(i)}}  className={templateCSS.skyBoxButtonImg}>
             <img src={skyBoxes[i]} alt="skybox"  className={templateCSS.skyBoxButtonImgSub}/>
           </button>
         );
@@ -1721,7 +1721,7 @@ const updateObjectArc = (objectID, newObjectData) => {
     if(renderEditor && projectScene) {
 
       return (
-        <>
+        <div className={templateCSS.rightImageEditor}>
         <div className={templateCSS.geometry}>
         <h3 className={templateCSS.geometryTitle}>
           geometry editor
@@ -1796,7 +1796,7 @@ const updateObjectArc = (objectID, newObjectData) => {
         </div>
       </div>
       
-      </>
+      </div>
       )
     } else if(renderNonIndexStateBool ) {
 
@@ -1848,7 +1848,7 @@ const updateObjectArc = (objectID, newObjectData) => {
   
             <div className={templateCSS.imgList}>
 
-                <div onClick={() => insertFromList(lastSelectedImage)} className={templateCSS.insertButton}>
+                <div onClick={() => insertFromList(lastSelectedImage)} className={templateCSS.insertButtonSpec}>
                   <FontAwesomeIcon icon={faChevronUp} />
                   Insert Selected Image
                   <FontAwesomeIcon icon={faChevronUp} />
@@ -2059,30 +2059,18 @@ const updateObjectArc = (objectID, newObjectData) => {
               {instantiateVideoBuffers(projectScene)}
             </div>
       <div className={templateCSS.rightEditor}>
+        <div className={templateCSS.upperRightDisplay}>
 
-
-
-            <div className={templateCSS.rightEditorTop}>
-
-              <div className={templateCSS.rightImageEditor}>
-                              
-                <div className={templateCSS.choicedInfo}>
-                  <div className={templateCSS.tabs}>
+                <div className={templateCSS.tabs}>
                   {instantiateTabs(projectScene)}
                   {instantiateBroadStateTabs()}
-                  </div>
-
-                  <RightEditor />
-
-
                 </div>
 
+                      <RightEditor />
 
-              </div>
-
-            </div>
 
             <StockPhotoOptions />
+            </div>
 
             <div className={templateCSS.saveActions} >
               <div className={templateCSS.saveActionButtons}>
@@ -2112,11 +2100,11 @@ const updateObjectArc = (objectID, newObjectData) => {
 
 
             </div>
-
+            </div>
 
       </div>
 
-    </div>
+
     )
 }
 
