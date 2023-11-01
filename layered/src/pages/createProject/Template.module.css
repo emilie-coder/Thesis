@@ -848,10 +848,8 @@ canvas {
 }
 
 
-
 .skyBoxContainer {
   display: flex;
-  flex-direction: column;
   background-color: var(--accent-color-a);
   margin-left: 5px;
   margin-right: 5px;
@@ -864,4 +862,22 @@ canvas {
 .skyBoxList {
   margin: 0;
   padding: 0;
+  overflow-y: auto;
+}
+
+.skyBoxButtonImg {
+  width: 30%;
+  display: flex;
+  justify-content: center; /* Center the content horizontally */
+  align-items: center; /* Center the content vertically */
+  overflow: hidden; /* Hide any overflow content */
+}
+
+.skyBoxButtonImgSub {
+  max-width: 100%; /* Scale down while preserving aspect ratio */
+  max-height: 100%; /* Scale down while preserving aspect ratio */
+  width: auto;
+  height: auto;
+  display: block; /* Remove any unwanted white space */
+  margin: auto; /* Center the image within its container */
 }

@@ -237,15 +237,58 @@ function Controls(props) {
 }
 
 export default function ThreeCanvas(props) {
-
   const sceneObjs = props.scene;
   const toggleSides = props.toggleSides;
   const [objectsToRender, setObjectsToRender] = useState([]);
-  const [skyBoxes, setSkyBoxes ] = useState(["/imgs/belfast_sunset_puresky_4k.hdr" ,
-                                              "/imgs/industrial_sunset_puresky_4k.hdr", 
-                                              "/imgs/kloofendal_48d_partly_cloudy_puresky_4k.hdr",
-                                               "/imgs/rathaus_4k.hdr",
-                                                "/imgs/syferfontein_0d_clear_puresky_4k.hdr" ])
+  const [skyBoxes, setSkyBoxes ] = useState([
+    "/hdriskies/alps_field_4k.hdr",
+    "/hdriskies/autumn_forest_04_4k.hdr",
+    "/hdriskies/belfast_sunset_4k.hdr",
+    "/hdriskies/belfast_sunset_puresky_4k.hdr",
+    "/hdriskies/cape_hill_4k.exr",
+    "/hdriskies/clarens_midday_4k.hdr",
+    "/hdriskies/dancing_hall_4k.hdr",
+    "/hdriskies/dikhololo_night_4k.hdr",
+    "/hdriskies/drackenstein_quarry_puresky_4k.hdr",
+    "/hdriskies/evening_meadow_4k.hdr",
+    "/hdriskies/evening_road_01_puresky_4k.hdr",
+    "/hdriskies/forest_grove_4k.hdr",
+    "/hdriskies/fouriesburg_mountain_cloudy_4k.hdr",
+    "/hdriskies/fouriesburg_mountain_lookout_2_4k.hdr",
+    "/hdriskies/fouriesburg_mountain_midday_4k.hdr",
+    "/hdriskies/gamrig_4k.hdr",
+    "/hdriskies/hilly_terrain_01_4k.hdr",
+    "/hdriskies/hilly_terrain_01_puresky_4k.hdr",
+    "/hdriskies/industrial_sunset_02_puresky_4k.hdr",
+    "/hdriskies/industrial_sunset_puresky_4k.hdr",
+    "/hdriskies/kiara_1_dawn_4k.hdr",
+    "/hdriskies/kloofendal_43d_clear_puresky_4k.hdr",
+    "/hdriskies/kloofendal_48d_partly_cloudy_puresky_4k.hdr",
+    "/hdriskies/kloofendal_overcast_puresky_4k.hdr",
+    "/hdriskies/kloppenheim_04_4k.hdr",
+    "/hdriskies/kloppenheim_06_puresky_4k.hdr",
+    "/hdriskies/lilienstein_4k.hdr",
+    "/hdriskies/meadow_4k.hdr",
+    "/hdriskies/montorfano_4k.hdr",
+    "/hdriskies/moonless_golf_4k.hdr",
+    "/hdriskies/mud_road_puresky_4k.hdr",
+    "/hdriskies/preller_drive_4k.hdr",
+    "/hdriskies/promenade_de_vidy_4k.hdr",
+    "/hdriskies/rainforest_trail_4k.hdr",
+    "/hdriskies/sandsloot_4k.hdr",
+    "/hdriskies/satara_night_4k.hdr",
+    "/hdriskies/scythian_tombs_2_4k.hdr",
+    "/hdriskies/shudu_lake_4k.hdr",
+    "/hdriskies/snowy_park_01_4k.hdr",
+    "/hdriskies/spaichingen_hill_4k.hdr",
+    "/hdriskies/spruit_sunrise_4k.hdr",
+    "/hdriskies/studio_small_08_4k.hdr",
+    "/hdriskies/syferfontein_0d_clear_puresky_4k.hdr",
+    "/hdriskies/table_mountain_2_puresky_4k.hdr",
+    "/hdriskies/unfinished_office_4k.hdr",
+    "/hdriskies/wasteland_clouds_puresky_4k.hdr"
+    
+])
 
 
 

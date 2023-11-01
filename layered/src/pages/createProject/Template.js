@@ -90,11 +90,55 @@ const Editor = () => {
   }
 
 
-  const [skyBoxes, setSkyBoxes ] = useState(["/imgs/belfast_sunset_puresky_4k.hdr" ,
-                                              "/imgs/industrial_sunset_puresky_4k.hdr", 
-                                              "/imgs/kloofendal_48d_partly_cloudy_puresky_4k.hdr",
-                                               "/imgs/rathaus_4k.hdr",
-                                                "/imgs/syferfontein_0d_clear_puresky_4k.hdr" ])
+  const [skyBoxes, setSkyBoxes ] = useState([
+    "/webpngs/alps_field.webp",
+    "/webpngs/autumn_forest_04.webp",
+    "/webpngs/belfast_sunset.webp",
+    "/webpngs/belfast_sunset_puresky.webp",
+    "/webpngs/cape_hill.webp",
+    "/webpngs/clarens_midday.webp",
+    "/webpngs/dancing_hall.webp",
+    "/webpngs/dikhololo_night.webp",
+    "/webpngs/drackenstein_quarry_puresky.webp",
+    "/webpngs/evening_meadow.webp",
+    "/webpngs/evening_road_01_puresky.png.webp",
+    "/webpngs/forest_grove.webp",
+    "/webpngs/fouriesburg_mountain_cloudy.webp",
+    "/webpngs/fouriesburg_mountain_lookout_2.webp",
+    "/webpngs/fouriesburg_mountain_midday.webp",
+    "/webpngs/gamrig.webp",
+    "/webpngs/hilly_terrain_01.webp",
+    "/webpngs/hilly_terrain_01_puresky.webp",
+    "/webpngs/industrial_sunset_02_puresky.webp",
+    "/webpngs/industrial_sunset_puresky.webp",
+    "/webpngs/kiara_1_dawn.webp",
+    "/webpngs/kloofendal_43d_clear_puresky.webp",
+    "/webpngs/kloofendal_48d_partly_cloudy_puresky.webp",
+    "/webpngs/kloofendal_overcast_puresky.webp",
+    "/webpngs/kloppenheim_04.webp",
+    "/webpngs/kloppenheim_06_puresky.webp",
+    "/webpngs/lilienstein.webp",
+    "/webpngs/meadow.webp",
+    "/webpngs/montorfano.webp",
+    "/webpngs/moonless_golf.webp",
+    "/webpngs/mud_road_puresky.webp",
+    "/webpngs/preller_drive.webp",
+    "/webpngs/promenade_de_vidy.webp",
+    "/webpngs/rainforest_trail.webp",
+    "/webpngs/sandsloot.webp",
+    "/webpngs/satara_night.webp",
+    "/webpngs/scythian_tombs_2.webp",
+    "/webpngs/shudu_lake.webp",
+    "/webpngs/snowy_park_01.webp",
+    "/webpngs/spaichingen_hill.webp",
+    "/webpngs/spruit_sunrise.webp",
+    "/webpngs/studio_small_08.webp",
+    "/webpngs/syferfontein_0d_clear_puresky.webp",
+    "/webpngs/table_mountain_2_puresky.webp",
+    "/webpngs/unfinished_office.webp",
+    "/webpngs/wasteland_clouds_puresky.webp"
+
+  ])
   
 
   const updateProjectScene = (updatedScene) => {
@@ -1347,10 +1391,6 @@ const updateObjectArc = (objectID, newObjectData) => {
 
 
   const setSkyBox = (index) => {
-    console.log(projectScene);
-    console.log("setting sky box here: ", index)
-  
-
   
     setProjectScene((prevScene) => ({
       ...prevScene,
@@ -1361,11 +1401,10 @@ const updateObjectArc = (objectID, newObjectData) => {
     }));
   };
 
-
   const instantiateSkyButtons = () => {
     let loopData = [];
     loopData.push(
-      <button key={100} onClick={() => { setSkyBox(100); console.log('noneeee'); }}>
+      <button key={100} onClick={() => { setSkyBox(100)}} className={templateCSS.skyBoxButtonImg}>
         None
       </button>
     );
@@ -1373,8 +1412,8 @@ const updateObjectArc = (objectID, newObjectData) => {
     if (skyBoxes !== null && skyBoxes.length !== 0) {
       for (let i = 0; i < skyBoxes.length; i++) {
         loopData.push(
-          <button key={i} onClick={() => { setSkyBox(i); console.log(i); }}>
-            {skyBoxes[i]}
+          <button key={i} onClick={() => { setSkyBox(i); console.log(i); }}  className={templateCSS.skyBoxButtonImg}>
+            <img src={skyBoxes[i]} alt="skybox"  className={templateCSS.skyBoxButtonImgSub}/>
           </button>
         );
       }
@@ -1382,6 +1421,7 @@ const updateObjectArc = (objectID, newObjectData) => {
   
     return <ul className={templateCSS.skyBoxList}>{loopData}</ul>;
   };
+  
   
 
 
