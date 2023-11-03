@@ -25,13 +25,28 @@ export const db = getDatabase(app);
 export const storage = getStorage(app);
 
 // Create user
-export function createUser(userID) {
+export async function createUser(userID) {
   try {
     const usersRef = ref(db, "users");
     const userRef = child(usersRef, userID);
+    const projectRef = ref(db, "projectReferences");
+
+    // Update the number of users
+    const userNumberRef = ref(db, "totalUsers");
+    const userNumberSnapshot = await get(userNumberRef);
+    const userNumber = userNumberSnapshot.val();
+    const realNumber = userNumber + 1;
 
     // Set a value for the user node (using userID as the key)
-    set(userRef, { AllUserProjects: true });
+    set(userRef, { AllUserProjects: true, userNumber: realNumber, totalProjects: 0 });
+    set(userNumberRef, realNumber);
+
+    // Format the user number with leading zeros
+    const formattedUserNumber = String(realNumber).padStart(3, "0");
+
+    // Now push it as a child of the projectScene
+    const projectRefChild = child(projectRef, formattedUserNumber);
+    await set(projectRefChild, '001');
   } catch (error) {
     console.error("Error adding user:", error);
   }
@@ -46,6 +61,9 @@ export async function createUserProject(userID, username, title, templateID, tem
     const usersRef = ref(db, "users");
     const userRef = child(usersRef, userID);
     const allUserProjectsRef = child(userRef, "AllUserProjects");
+
+
+    // now we have to add the reference 
 
     // Set the title to "untitled" if it's blank or null
     const projectTitle = title || "untitled";

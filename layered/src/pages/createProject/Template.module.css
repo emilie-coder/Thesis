@@ -51,7 +51,7 @@
   height: 100%;
 }
 .actualEditor {
-  height: 95%;
+  height: 96.5%;
   position: relative;
 }
 
@@ -990,4 +990,9 @@ canvas {
   margin-top: 10px;
   align-items: center;
   justify-content: center;
+}
+
+
+.mainEditorSubRightContainer{
+  display: flex;
 }

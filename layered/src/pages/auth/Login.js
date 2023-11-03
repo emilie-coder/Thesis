@@ -6,6 +6,7 @@ import { getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvide
 import app from '../../firebase/config';
 import Loader from "../../components/loader/Loader";
 import { useNavigate } from 'react-router-dom';
+import loginCSS from './Login.module.css';
 
 
 const Login = () => {
@@ -65,14 +66,25 @@ const Login = () => {
     }
 
     return (
-        <div className='login'>
+        <div className={loginCSS.main}>
             {isLoading && <Loader/>}
-            User Login
-            <form onSubmit={loginUser}>
-                <input type='text' placeholder='Email' required value={email} onChange={(e) => SetEmail(e.target.value)}/>
-                <input type='text' placeholder='Password' required value={password} onChange={(e) => SetPassword(e.target.value)}/>
-                <button type='submit'> Login </button>
-            </form>
+
+            <div>
+                User Login
+            </div>
+
+
+
+            <div>
+                <form onSubmit={loginUser}>
+                    <input type='text' placeholder='Email' required value={email} onChange={(e) => SetEmail(e.target.value)}/>
+                    <input type='text' placeholder='Password' required value={password} onChange={(e) => SetPassword(e.target.value)}/>
+                    <button type='submit'> Login </button>
+                </form>
+
+            </div>
+            
+
             <div>
                 Forgot password?
                 <Link to="/reset"> Reset Password </Link>

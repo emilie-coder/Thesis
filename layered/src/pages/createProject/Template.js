@@ -86,13 +86,13 @@ const Editor = () => {
   const audioRef1 = useRef(null);
   const audioRef2 = useRef(null);
 
-  useEffect(() => {
-    if (playPause) {
-      audioRef2.current?.play(); // Use optional chaining here
-    } else {
-      audioRef2.current?.pause(); // Use optional chaining here
-    }
-  }, [playPause]);
+  // useEffect(() => {
+  //   if (playPause) {
+  //     audioRef2.current?.play(); // Use optional chaining here
+  //   } else {
+  //     audioRef2.current?.pause(); // Use optional chaining here
+  //   }
+  // }, [playPause]);
   
 
 
@@ -2013,7 +2013,7 @@ const updateObjectArc = (objectID, newObjectData) => {
         }
 
       } else {
-        if(projectScene.objects[selectedObjectID].materialType === "image"){
+        if(projectScene !== null && projectScene.objects[selectedObjectID].materialType === "image"){
 
 
           return (
@@ -2142,10 +2142,13 @@ const updateObjectArc = (objectID, newObjectData) => {
 
 
         <div className={templateCSS.videoBuffers}>
-            <audio ref={audioRef2} controls>
-                <source src={projectScene.details.Audio} type="audio/mpeg" />
-                Your browser does not support the audio element.
-            </audio>
+              {projectScene && 
+                <audio ref={audioRef2} controls>
+                    <source src={projectScene.details.Audio} type="audio/mpeg" />
+                    Your browser does not support the audio element.
+                </audio>
+  
+                }
               video buffering...
               {instantiateVideoBuffers(projectScene)}
             </div>

@@ -30,37 +30,36 @@ const CreateProject = () => {
 
 
     const createDBProject = async (e) => {
-        e.preventDefault();
-      
-        try {
-          let tempID;
-          
-          if (title === null || title === "") {
-            tempID = await db.createUserProject(userID, userName, "untitled", chosenTemplateInteger, chosenTemplate);
-          } else {
-            tempID = await db.createUserProject(userID, userName, title, chosenTemplateInteger, chosenTemplate);
-          }
-      
-          // Handle the redux state here
-          dispatch(
-            SET_ACTIVE_PROJECT({
-              projectID: tempID, 
-              projectTitle: title,
-              projectTemplate: chosenTemplate,
-              projectTemplateInteger: chosenTemplateInteger,
-              projectTimeCreated: null,
-              projectTimeLastSaved: null,
-              projectAuthor: userName,
-            })
-          );
-      
-            navigate(`/createNewProjectTemplate/${tempID}`);
-          
-        } catch (error) {
-          console.error("Error creating project:", error);
+      e.preventDefault();
+    
+      try {
+        let tempID;
+        
+        if (title === null || title === "") {
+          tempID = await db.createUserProject(userID, userName, "untitled", chosenTemplateInteger, chosenTemplate);
+        } else {
+          tempID = await db.createUserProject(userID, userName, title, chosenTemplateInteger, chosenTemplate);
         }
-    };
-
+    
+        // Handle the redux state here
+        dispatch(
+          SET_ACTIVE_PROJECT({
+            projectID: tempID, 
+            projectTitle: title,
+            projectTemplate: chosenTemplate,
+            projectTemplateInteger: chosenTemplateInteger,
+            projectTimeCreated: null,
+            projectTimeLastSaved: null,
+            projectAuthor: userName,
+          })
+        );
+    
+          navigate(`/createNewProjectTemplate/${tempID}`);
+        
+      } catch (error) {
+        console.error("Error creating project:", error);
+      }
+  };
 
 
     const chooseTemplate = (e, name, tempInt) => {

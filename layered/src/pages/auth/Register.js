@@ -6,7 +6,7 @@ import {getAuth, createUserWithEmailAndPassword} from "firebase/auth";
 import Loader from "../../components/loader/Loader"
 import { useNavigate } from 'react-router-dom';
 import * as db from '../../firebase/config';
-
+import registerCSS from './Register.module.css';
 
 const Register = () => {
 
@@ -46,7 +46,7 @@ const Register = () => {
         }
 
     return (
-        <div>
+        <div className = {registerCSS.main}>
             {isLoading && <Loader/>}
             Register
             <form onSubmit={registerUser}>
