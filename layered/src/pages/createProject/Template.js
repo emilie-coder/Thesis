@@ -25,7 +25,7 @@ import { REMOVE_EDITOR_STATE, SET_EDITOR_STATE, selectNonIndexState, selectNonIn
 
 import { ChromePicker } from "react-color";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faChevronUp, faCircle, faCircleHalfStroke, faClone, faEye, faEyeSlash, faMaximize, faMinus, faMultiply, faO, faPause, faPenToSquare, faPlay, faPlus, faRedo, faRotate, faSave, faShare, faSquare, faTrash, faUndo, faUpDownLeftRight, faVolumeHigh, faVolumeMute } from '@fortawesome/free-solid-svg-icons'
+import { faChevronUp, faCircle, faCircleHalfStroke, faClone, faEye, faEyeSlash, faMaximize, faMinus, faMultiply, faO, faPause, faPenToSquare, faPlay, faPlus, faRedo, faRotate, faSave, faShare, faSquare, faTrash, faUndo, faUpDownLeftRight, faVolumeHigh, faVolumeMute, faX } from '@fortawesome/free-solid-svg-icons'
 
 
 const Editor = () => {
@@ -86,6 +86,12 @@ const Editor = () => {
   const audioRef1 = useRef(null);
   const audioRef2 = useRef(null);
 
+
+  const[shareCode, setShareCode] = useState([]);
+
+
+  const [toggleShareCode, setToggleShareCode] = useState(false);
+
   // useEffect(() => {
   //   if (playPause) {
   //     audioRef2.current?.play(); // Use optional chaining here
@@ -99,6 +105,8 @@ const Editor = () => {
   const togglePlayPause = () => {
     setPlayPause(!playPause);
   }
+
+
 
 
   const [skyBoxes, setSkyBoxes ] = useState([
@@ -424,6 +432,7 @@ const Editor = () => {
         // Update the editedTitle state
         setEditedTitle(projectData.title);
         setProjectScene(projectData.projectScene);
+        setShareCode(projectData.projectNumber);
         // ... update other relevant states here
       } catch (error) {
         // console.error('Error fetching project:', error);
@@ -1945,6 +1954,12 @@ const updateObjectArc = (objectID, newObjectData) => {
   };
 
 
+  const toggleShareCodeFunc = () => {
+
+    setToggleShareCode(!toggleShareCode);
+
+  }
+
   const ImageSelecor = () => {
 
 
@@ -2087,8 +2102,41 @@ const updateObjectArc = (objectID, newObjectData) => {
   }
   
 
+
+  
+
   return (
     <div className={templateCSS.templatePage}>
+
+
+
+      {shareCode && toggleShareCode &&
+              <div className={templateCSS.modalDisplay }>
+
+                <div className={templateCSS.shareModalDisplay}>
+
+
+                        <div className={templateCSS.shareModalXContainer}>
+                          <FontAwesomeIcon icon={faX} onClick={toggleShareCodeFunc} className={templateCSS.editorButton}/>
+                        </div>
+                        <div className={templateCSS.shareModalTitle}> 
+                        - SHARE CODE -
+                        </div>
+                        <div className={templateCSS.shareCodeAbsolute}>
+                          {shareCode.split('').map((char, index) => (
+                            <div key={index} className={templateCSS.shareCodeCharacter}>
+                              {char}
+                            </div>
+                          ))}
+                        </div>
+                    </div>
+      
+            </div>
+          }
+
+
+
+
 
       <div className={templateCSS.leftEditor}>
 
@@ -2171,7 +2219,7 @@ const updateObjectArc = (objectID, newObjectData) => {
                 <div className={templateCSS.saveActionsOption}>
                  save <FontAwesomeIcon onClick={saveProject} icon={faSave} className={templateCSS.saveIcon}/>
                 </div>
-                <div className={templateCSS.saveActionsOption}>
+                <div className={templateCSS.saveActionsOption} onClick={toggleShareCodeFunc}>
                  share <FontAwesomeIcon icon={faShare} className={templateCSS.saveIcon}/>
                 </div>
 

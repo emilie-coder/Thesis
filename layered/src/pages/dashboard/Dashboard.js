@@ -92,7 +92,10 @@ const Dashboard = () => {
                   })
                 }
                 </div>
-                <img className={styles.projectImg} src={userProjects[projectId].projectScene.templateCover} alt="temp"/>
+                {userProjects[projectId].projectScene.templateCover &&
+                        <img className={styles.projectImg} src={userProjects[projectId].projectScene.templateCover} alt="temp"/>
+                }
+
               </div>
             ))}
           </div>

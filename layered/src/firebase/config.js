@@ -63,7 +63,27 @@ export async function createUserProject(userID, username, title, templateID, tem
     const allUserProjectsRef = child(userRef, "AllUserProjects");
 
 
+    // get the user number
+    const userNumberRef = child(userRef, "userNumber");
+    let userNumber = await get(userNumberRef);
+    userNumber = userNumber.val();
+
+    const formattedUserNumber = String(userNumber).padStart(3, "0");
+
+    // find the new project number
+    const totalProjectRef = child(userRef, "totalProjects");
+    const totalProjectSnap = await get(totalProjectRef);
+    const totalProjectsNumber = totalProjectSnap.val();
+    const currentProjectNumber = totalProjectsNumber + 1;
+
+
+
+    const formattedProjectNumber = String(currentProjectNumber).padStart(3, "0");
+
     // now we have to add the reference 
+    const projectRef = ref(db, `projectReferences/${formattedUserNumber}/${formattedProjectNumber}`);
+
+
 
     // Set the title to "untitled" if it's blank or null
     const projectTitle = title || "untitled";
@@ -76,6 +96,7 @@ export async function createUserProject(userID, username, title, templateID, tem
       createdAt: serverTimestamp(), // Adding the server timestamp
       projectTemplate: templateType,
       projectScene: null,
+      projectNumber: `${formattedUserNumber}${formattedProjectNumber}`
     });
 
     const newProjectID = newProjectRef.key; // Get the generated ID
@@ -89,6 +110,14 @@ export async function createUserProject(userID, username, title, templateID, tem
     // now push it as a child of the projectScene 
     const projectBranchRef = child(newProjectRef, 'projectScene');
     await set(projectBranchRef, templateData)
+
+    // update total user projects
+    await set(totalProjectRef, (totalProjectsNumber + 1))
+
+
+    // now provide the references into projectRef
+    await set(projectRef, {userID: userID, projectID: newProjectID});
+
     return newProjectID;
   } catch (error) {
     console.error("Error adding project:", error);
