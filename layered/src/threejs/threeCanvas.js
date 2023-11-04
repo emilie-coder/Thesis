@@ -273,7 +273,6 @@ export default function ThreeCanvas(props) {
     "/hdriskies/kloppenheim_06_puresky_4k.hdr",
     "/hdriskies/lilienstein_4k.hdr",
     "/hdriskies/meadow_4k.hdr",
-    "/hdriskies/montorfano_4k.hdr",
     "/hdriskies/moonless_golf_4k.hdr",
     "/hdriskies/mud_road_puresky_4k.hdr",
     "/hdriskies/preller_drive_4k.hdr",

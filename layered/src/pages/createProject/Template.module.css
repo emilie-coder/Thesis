@@ -460,11 +460,13 @@ canvas {
 
 .fileUpload2{
   display: flex;
+  flex-direction: row;
   width: 96%;
   height: 20%;
   margin: 5px;
   margin-top: 10px;
   align-items: center;
+  justify-content: space-between;
 
 }
 
@@ -483,6 +485,7 @@ canvas {
     user-select: none;
     -webkit-user-select: none;
     touch-action: manipulation;
+    font-size: 6pt;
 }
 
 
@@ -1063,4 +1066,19 @@ canvas {
 
 .shareModalXContainer{
   margin: 15px;
+}
+
+
+.fileUploadButton {
+  opacity: 0;
+  position: absolute;
+  z-index: -1;
+}
+
+.fileUploadButton + .lastSavedWhen::before {
+  content: 'Select a file...';
+}
+
+.fileUploadButton:checked + .lastSavedWhen::before {
+  content: attr(data-file-name);
 }

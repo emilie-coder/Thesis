@@ -42,7 +42,7 @@ const Editor = () => {
   const [imageUpload, setImageUpload] = useState(null);
   const [coverImageUpload, setCoverImageUpload] = useState(null);
   const [audioUpload, setAudioUpload] = useState(null);
-
+  const [selectedFileName, setSelectedFileName] = useState('');
 
   const [imageList, setImageList] = useState([]);
 
@@ -92,13 +92,15 @@ const Editor = () => {
 
   const [toggleShareCode, setToggleShareCode] = useState(false);
 
-  // useEffect(() => {
-  //   if (playPause) {
-  //     audioRef2.current?.play(); // Use optional chaining here
-  //   } else {
-  //     audioRef2.current?.pause(); // Use optional chaining here
-  //   }
-  // }, [playPause]);
+  useEffect(() => {
+    if (playPause) {
+      audioRef1.current?.play(); // Use optional chaining here
+      audioRef2.current?.play(); // Use optional chaining here
+    } else {
+      audioRef1.current?.pause(); // Use optional chaining here
+      audioRef2.current?.pause(); // Use optional chaining here
+    }
+  }, [playPause]);
   
 
 
@@ -138,7 +140,6 @@ const Editor = () => {
     "/webpngs/kloppenheim_06_puresky.webp",
     "/webpngs/lilienstein.webp",
     "/webpngs/meadow.webp",
-    "/webpngs/montorfano.webp",
     "/webpngs/moonless_golf.webp",
     "/webpngs/mud_road_puresky.webp",
     "/webpngs/preller_drive.webp",
@@ -208,10 +209,14 @@ const Editor = () => {
   const addCylinder = () => {
     // console.log('here----');
     // Ensure that projectScene and projectScene.objects exist
-    if (!projectScene || !projectScene.objects) {
+    if (!projectScene) {
       console.error("projectScene or projectScene.objects is not defined.");
       return;
     }
+    if (!projectScene.objects) {
+      projectScene.objects = []; // Initialize projectScene.objects as an empty array.
+    }
+    
   
     // Create a new cylinder object with an ID one greater than the maximum
     const newCylinder = {
@@ -285,11 +290,14 @@ const Editor = () => {
 
   const addPlane = () => {
     // Ensure that projectScene and projectScene.objects exist
-    if (!projectScene || !projectScene.objects) {
+    if (!projectScene) {
       console.error("projectScene or projectScene.objects is not defined.");
       return;
     }
-
+    if (!projectScene.objects) {
+      projectScene.objects = []; // Initialize projectScene.objects as an empty array.
+    }
+    
   
     // Create a new cylinder object with an ID one greater than the maximum
     const newPlane = {
@@ -445,19 +453,31 @@ const Editor = () => {
 
 
   const uploadImage = () => {
-    if (imageUpload == null) return;
-
+    if (imageUpload === null) return;
+  
     const imageRef = ref(
       storage,
       userID + '/project_' + projID + `/images/${imageUpload.name + v4()}`
     );
-
-    uploadBytes(imageRef, imageUpload).then((snapshot) => {
-      getDownloadURL(snapshot.ref).then((url) => {
-        setCoverImageUpload(url);
+  
+    uploadBytes(imageRef, imageUpload)
+      .then((snapshot) => {
+        getDownloadURL(snapshot.ref)
+          .then((url) => {
+            setCoverImageUpload(url);
+  
+            // Update the image list state with the new URL
+            setImageList((prevImageList) => [...prevImageList, url]);
+          })
+          .catch((error) => {
+            console.error('Error getting download URL:', error);
+          });
+      })
+      .catch((error) => {
+        console.error('Error uploading image:', error);
       });
-    });
   };
+  
 
   const uploadAudio = () => {
     if (audioUpload == null) return;
@@ -1742,6 +1762,7 @@ const updateObjectArc = (objectID, newObjectData) => {
 
 
     if(display === true){
+      if( projectScene.objects[selectedObjectID].materialType !== "solid")
       return (
         <div className={templateCSS.stockOptionsHolder}>
           <div className={templateCSS.stockOptions}>
@@ -1888,11 +1909,23 @@ const updateObjectArc = (objectID, newObjectData) => {
                 </audio>
   
                             }
-              <div className={templateCSS.fileUpload3}>
-                <input className={templateCSS.fileUploadButton} type="file" onChange={((event) => {setAudioUpload(event.target.files[0])})}/>
-                <button className={templateCSS.changeImgButton} onClick={uploadAudio}> upload </button>
 
-              </div>
+              <div className={templateCSS.fileUpload2}>
+                  <label className={templateCSS.changeImgButton}>
+                    Choose a File
+                    <input
+                      type="file"
+                      onChange={((event) => {setAudioUpload(event.target.files[0])})}
+                      style={{ display: 'none' }}
+                    />
+                  </label>
+                  <span className={templateCSS.lastSavedWhen}>
+                    {audioUpload?.name || 'No file chosen'}
+                  </span>
+                  <button className={templateCSS.changeImgButton} onClick={uploadAudio}>
+                    Upload
+                  </button>
+                </div>
 
 
           </div>
@@ -1953,6 +1986,17 @@ const updateObjectArc = (objectID, newObjectData) => {
     });
   };
 
+  const handleFileChange = (event) => {
+    const selectedFile = event.target.files[0];
+    setImageUpload(selectedFile);
+
+    if (selectedFile) {
+      setSelectedFileName(selectedFile.name);
+    } else {
+      setSelectedFileName('');
+    }
+  };
+  
 
   const toggleShareCodeFunc = () => {
 
@@ -1963,7 +2007,7 @@ const updateObjectArc = (objectID, newObjectData) => {
   const ImageSelecor = () => {
 
 
-    if(selectedObjectChosen){
+    if(selectedObjectChosen && projectScene.objects){
 
 
       if(stockAssetMode){
@@ -1974,7 +2018,7 @@ const updateObjectArc = (objectID, newObjectData) => {
   
             <div className={templateCSS.imgList}>
 
-                <div onClick={() => insertFromList(lastSelectedImage)} className={templateCSS.insertButtonSpec}>
+                <div onClick={() => insertFromList(lastSelectedImage)} className={templateCSS.insertButton}>
                   <FontAwesomeIcon icon={faChevronUp} />
                   Insert Selected Image
                   <FontAwesomeIcon icon={faChevronUp} />
@@ -2054,9 +2098,19 @@ const updateObjectArc = (objectID, newObjectData) => {
                </div>
 
                <div className={templateCSS.fileUpload2}>
-                  <input className={templateCSS.fileUploadButton} type="file" onChange={((event) => {setImageUpload(event.target.files[0])})}/>
-                  <button className={templateCSS.changeImgButton} onClick={uploadImage}>upload </button>
-                </div>
+                <label className={templateCSS.changeImgButton}>
+                  Choose a File
+                  <input
+                    type="file"
+                    onChange={handleFileChange}
+                    style={{ display: 'none' }}
+                  />
+                </label>
+                <span className={templateCSS.lastSavedWhen}>{selectedFileName}</span>
+                <button className={templateCSS.changeImgButton} onClick={uploadImage}>
+                  Upload
+                </button>
+              </div>
       
             </div>
   
@@ -2085,11 +2139,26 @@ const updateObjectArc = (objectID, newObjectData) => {
                 ))}
                 
               </div>
-                    
+
+
               <div className={templateCSS.fileUpload2}>
-                <input className={templateCSS.fileUploadButton} type="file" onChange={((event) => {setVideoUpload(event.target.files[0])})}/>
-                <button className={templateCSS.changeImgButton} onClick={uploadVideo}>upload </button>
-              </div>
+                  <label className={templateCSS.changeImgButton}>
+                    Choose a File
+                    <input
+                      type="file"
+                      onChange={((event) => {setVideoUpload(event.target.files[0])})}
+                      style={{ display: 'none' }}
+                    />
+                  </label>
+                  <span className={templateCSS.lastSavedWhen}>
+                    {videoUpload?.name || 'No file chosen'}
+                  </span>
+                  <button className={templateCSS.changeImgButton} onClick={uploadVideo}>
+                    Upload
+                  </button>
+                </div>
+
+
       
             </div>
           )
@@ -2145,7 +2214,7 @@ const updateObjectArc = (objectID, newObjectData) => {
                 <div className={templateCSS.leftEditorShapes}>
                   <FontAwesomeIcon onClick={addCylinder} icon={faCircle} className={templateCSS.editorButton}/>
                   <FontAwesomeIcon onClick={addPlane} icon={faSquare} className={templateCSS.editorButton}/>
-                  <FontAwesomeIcon onClick={addPlane} icon={faCircleHalfStroke} className={templateCSS.editorButton}/>
+                  {/* <FontAwesomeIcon onClick={addPlane} icon={faCircleHalfStroke} className={templateCSS.editorButton}/> */}
                 </div>
                 <div className={templateCSS.modeButtons}>
                     <FontAwesomeIcon onClick={changeEditMode('translate')} icon={faUpDownLeftRight}  className={templateCSS.editorButton}/>
