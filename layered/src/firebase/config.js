@@ -23,7 +23,6 @@ export const myAuth = getAuth(app);
 export const db = getDatabase(app);
 export const storage = getStorage(app);
 
-// Create user
 export async function createUser(userID) {
   try {
     const usersRef = ref(db, "users");
@@ -33,7 +32,7 @@ export async function createUser(userID) {
     // Update the number of users
     const userNumberRef = ref(db, "totalUsers");
     const userNumberSnapshot = await get(userNumberRef);
-    const userNumber = userNumberSnapshot.val();
+    const userNumber = parseInt(userNumberSnapshot.val(), 10); // Parse it as an integer
     const realNumber = userNumber + 1;
 
     // Set a value for the user node (using userID as the key)
@@ -45,7 +44,7 @@ export async function createUser(userID) {
 
     // Now push it as a child of the projectScene
     const projectRefChild = child(projectRef, formattedUserNumber);
-    await set(projectRefChild, '001');
+    await set(projectRefChild, '001'); // This will set '001' under the formattedUserNumber
   } catch (error) {
     console.error("Error adding user:", error);
   }

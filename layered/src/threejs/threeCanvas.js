@@ -39,12 +39,24 @@ function Model({ name, ...props }) {
 
 
       if(textureType === "image"){
-        const textureLoader = new THREE.TextureLoader();
-        const texture = textureLoader.load(textureUrl);
-        texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-        texture.repeat.set(tiling[0], tiling[1]);
-        textureCache[cacheKey] = texture;
-        return texture;
+
+        if(props.objectType === 'plane'){
+          const textureLoader = new THREE.TextureLoader();
+          const texture = textureLoader.load(textureUrl);
+          texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+          texture.repeat.set(tiling[0], tiling[1]);
+          textureCache[cacheKey] = texture;
+          return texture;
+        } else {
+          const textureLoader = new THREE.TextureLoader();
+          const texture = textureLoader.load(textureUrl);
+          texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+          texture.repeat.set(tiling[0], -tiling[1]);
+          textureCache[cacheKey] = texture;
+          return texture;
+
+        }
+
 
       } else if(textureType === "video"){
 
@@ -137,30 +149,6 @@ function Model({ name, ...props }) {
     myGeometry = new THREE.PlaneGeometry();
   }
 
-
-
-
-   // if(props.animation !== null ){
-    useFrame(({ clock }) => {
-
-      if(props.playPause){
-        if(props.rotationSpeed){
-
-          const a = clock.getElapsedTime();
-  
-    
-          itemRef.current.rotation.x = props.rotation[0] + a*props.rotationSpeed[0];
-          itemRef.current.rotation.y = props.rotation[1] + a*props.rotationSpeed[1];
-          itemRef.current.rotation.z = props.rotation[2] + a*props.rotationSpeed[2];
-
-  
-      //   }
-
-      }
-
-      }
-
-    });
   
 
 
@@ -323,17 +311,17 @@ export default function ThreeCanvas(props) {
             name={`${index}`}
             key={index}
             position={[item.position.x, item.position.y, item.position.z]}
-            rotation={[
-              THREE.MathUtils.degToRad(item.rotation.x),
-              THREE.MathUtils.degToRad(item.rotation.y),
-              THREE.MathUtils.degToRad(item.rotation.z)
-            ]}
-            rotationSpeed={[
-              THREE.MathUtils.degToRad(item.rotationSpeed.x),
-              THREE.MathUtils.degToRad(item.rotationSpeed.y),
-              THREE.MathUtils.degToRad(item.rotationSpeed.z)
-            ]}
-            // rotation={[item.rotation.x, item.rotation.y, item.rotation.z]}
+            // rotation={[
+            //   THREE.MathUtils.degToRad(item.rotation.x),
+            //   THREE.MathUtils.degToRad(item.rotation.y),
+            //   THREE.MathUtils.degToRad(item.rotation.z)
+            // ]}
+            // rotationSpeed={[
+            //   THREE.MathUtils.degToRad(item.rotationSpeed.x),
+            //   THREE.MathUtils.degToRad(item.rotationSpeed.y),
+            //   THREE.MathUtils.degToRad(item.rotationSpeed.z)
+            // ]}
+            rotation={[item.rotation.x, item.rotation.y, item.rotation.z]}
             // rotationSpeed={[item.rotationSpeed.x, item.rotationSpeed.y, item.rotationSpeed.z]}
             scale={[item.scale.x, item.scale.y, item.scale.z]}
             materialString={item.material}
@@ -346,7 +334,7 @@ export default function ThreeCanvas(props) {
             materialType = {item.materialType}
             colorValues = {item.solidColor}
             blendMode = {item.blendMode}
-            animation = {item.animation}
+            // animation = {item.animation}
             playPause = {playPause}
           />
         );
@@ -369,7 +357,7 @@ export default function ThreeCanvas(props) {
         {sceneObjs && skyBoxes[sceneObjs.details.SkyBox] && sceneObjs.details.SkyBox !== 100 && (
           <Environment files={skyBoxes[sceneObjs.details.SkyBox]} background blur={0.0} />
         )}
-      <gridHelper args={[400, 200, '#f7f7f7', '#f7f7f7']} position={[0, -4, 0]} />
+      {/* <gridHelper args={[400, 200, '#f7f7f7', '#f7f7f7']} position={[0, -4, 0]} /> */}
       <hemisphereLight color="#ffffff" groundColor="#b9b9b9" position={[-7, 25, 13]} intensity={0.85} />
       <Suspense fallback={null}>
         {instantiateObjects()}
@@ -377,6 +365,11 @@ export default function ThreeCanvas(props) {
       </Suspense>
       <OrbitControls makeDefault />
       <Man scale={0.01} position={[0,-1.7, 0]} />
+      {/* <mesh rotation={[-1.5708,0,0]} position={[0,-4.05, 0]}>
+            <planeGeometry attach="geometry" args={[10000, 10000]} />
+            <meshPhongMaterial attach="material" color="green" />
+         </mesh> */}
+
       <Controls editMode={props.editMode} updateThreeObject={updateThreeObject}/>
     </Canvas>
     </>

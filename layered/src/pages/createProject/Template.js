@@ -714,9 +714,9 @@ const BroadStateTab = () => {
         <div className={`${tabClassName1}`} onClick={() => removeTarget('SkyBox')}>
           Sky
         </div>
-        <div className={`${tabClassName3}`} onClick={() => removeTarget('Audio')}>
+        {/* <div className={`${tabClassName3}`} onClick={() => removeTarget('Audio')}>
           Audio
-        </div>
+        </div> */}
         <div className={`${tabClassName2}`} onClick={() => removeTarget('Main')}>
           Main
         </div>
@@ -798,23 +798,27 @@ const instantiateBroadStateTabs = () => {
     let tabClassName2 = templateCSS.unselectedTextureTab;
     let tabClassName3 = templateCSS.unselectedTextureTab;
 
-    if( projectScene.objects[selectedObjectID].materialType === 'image'){
-      tabClassName1 = templateCSS.selectedTextureTab;
-    } else if( projectScene.objects[selectedObjectID].materialType === 'video'){
-      tabClassName2 = templateCSS.selectedTextureTab;
-    } else if( projectScene.objects[selectedObjectID].materialType === 'solid'){
-      tabClassName3 = templateCSS.selectedTextureTab;
+    if(projectScene){
+      if( projectScene.objects[selectedObjectID].materialType === 'image'){
+        tabClassName1 = templateCSS.selectedTextureTab;
+      } else if( projectScene.objects[selectedObjectID].materialType === 'video'){
+        tabClassName2 = templateCSS.selectedTextureTab;
+      } else if( projectScene.objects[selectedObjectID].materialType === 'solid'){
+        tabClassName3 = templateCSS.selectedTextureTab;
+      }
+    
+
     }
-  
+
 
     return( 
       <div className = {templateCSS.textureTypeOptions}>
            <div className={`${tabClassName1}`}  onClick={() => setTextureType('image')}>
             image
           </div>
-          <div className={`${tabClassName2}`}  onClick={() => setTextureType('video')}>
+          {/* <div className={`${tabClassName2}`}  onClick={() => setTextureType('video')}>
             video
-          </div>
+          </div> */}
           <div className={`${tabClassName3}`}  onClick={() => setTextureType('solid')}>
             solid
           </div>
@@ -1761,20 +1765,19 @@ const updateObjectArc = (objectID, newObjectData) => {
 
 
 
-    if(display === true){
-      if( projectScene.objects[selectedObjectID].materialType !== "solid")
-      return (
-        <div className={templateCSS.stockOptionsHolder}>
-          <div className={templateCSS.stockOptions}>
-            <div onClick={ () => setStockMode(false)} className={`${tabClassName1}`}>  in project </div>
-            <div onClick={ () => setStockMode(true)} className={`${tabClassName2}`}>  stock </div>
+    if (display === true && projectScene && projectScene.objects) {
+      if (projectScene.objects[selectedObjectID] && projectScene.objects[selectedObjectID].materialType !== "solid") {
+        return (
+          <div className={templateCSS.stockOptionsHolder}>
+            <div className={templateCSS.stockOptions}>
+              <div onClick={() => setStockMode(false)} className={`${tabClassName1}`}>  in project </div>
+              <div onClick={() => setStockMode(true)} className={`${tabClassName2}`}>  stock </div>
+            </div>
+            <ImageSelecor projectScene={projectScene} />
           </div>
-                
-          <ImageSelecor projectScene={projectScene} />
-
-        </div>
-      )
+        );
       }
+    }
   }
 
 
@@ -1846,12 +1849,12 @@ const updateObjectArc = (objectID, newObjectData) => {
             </div>
           </div>
           <div className={templateCSS.partEditor}>
-            <div className={templateCSS.partTitle}>
+            {/* <div className={templateCSS.partTitle}>
               <div>rotation speed</div>
             </div>
             <div className={templateCSS.partInput}>
               {geometryRotationSpeed(projectScene)}
-            </div>
+            </div> */}
           </div>
         </div>
         </div>
