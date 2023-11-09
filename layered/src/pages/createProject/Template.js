@@ -2215,7 +2215,7 @@ const updateObjectArc = (objectID, newObjectData) => {
         <div className={templateCSS.actualEditor}>
             <div className={templateCSS.leftButtons}>
                 <div className={templateCSS.leftEditorShapes}>
-                  <FontAwesomeIcon onClick={addCylinder} icon={faCircle} className={templateCSS.editorButton}/>
+                  {/* <FontAwesomeIcon onClick={addCylinder} icon={faCircle} className={templateCSS.editorButton}/> */}
                   <FontAwesomeIcon onClick={addPlane} icon={faSquare} className={templateCSS.editorButton}/>
                   {/* <FontAwesomeIcon onClick={addPlane} icon={faCircleHalfStroke} className={templateCSS.editorButton}/> */}
                 </div>
