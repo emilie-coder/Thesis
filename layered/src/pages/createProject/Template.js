@@ -714,9 +714,9 @@ const BroadStateTab = () => {
         <div className={`${tabClassName1}`} onClick={() => removeTarget('SkyBox')}>
           Sky
         </div>
-        {/* <div className={`${tabClassName3}`} onClick={() => removeTarget('Audio')}>
+        <div className={`${tabClassName3}`} onClick={() => removeTarget('Audio')}>
           Audio
-        </div> */}
+        </div>
         <div className={`${tabClassName2}`} onClick={() => removeTarget('Main')}>
           Main
         </div>
@@ -816,9 +816,9 @@ const instantiateBroadStateTabs = () => {
            <div className={`${tabClassName1}`}  onClick={() => setTextureType('image')}>
             image
           </div>
-          {/* <div className={`${tabClassName2}`}  onClick={() => setTextureType('video')}>
+          <div className={`${tabClassName2}`}  onClick={() => setTextureType('video')}>
             video
-          </div> */}
+          </div>
           <div className={`${tabClassName3}`}  onClick={() => setTextureType('solid')}>
             solid
           </div>
@@ -1849,12 +1849,12 @@ const updateObjectArc = (objectID, newObjectData) => {
             </div>
           </div>
           <div className={templateCSS.partEditor}>
-            {/* <div className={templateCSS.partTitle}>
+            <div className={templateCSS.partTitle}>
               <div>rotation speed</div>
             </div>
             <div className={templateCSS.partInput}>
               {geometryRotationSpeed(projectScene)}
-            </div> */}
+            </div>
           </div>
         </div>
         </div>
@@ -2215,7 +2215,7 @@ const updateObjectArc = (objectID, newObjectData) => {
         <div className={templateCSS.actualEditor}>
             <div className={templateCSS.leftButtons}>
                 <div className={templateCSS.leftEditorShapes}>
-                  {/* <FontAwesomeIcon onClick={addCylinder} icon={faCircle} className={templateCSS.editorButton}/> */}
+                  <FontAwesomeIcon onClick={addCylinder} icon={faCircle} className={templateCSS.editorButton}/>
                   <FontAwesomeIcon onClick={addPlane} icon={faSquare} className={templateCSS.editorButton}/>
                   {/* <FontAwesomeIcon onClick={addPlane} icon={faCircleHalfStroke} className={templateCSS.editorButton}/> */}
                 </div>
