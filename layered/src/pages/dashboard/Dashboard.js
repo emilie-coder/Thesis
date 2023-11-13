@@ -18,6 +18,15 @@ const Dashboard = () => {
 
   const [userProjects, setUserProjects] = useState(null);
 
+
+  const [inputValue, setInputValue] = useState('');
+
+  const handleInputChange = (e) => {
+    setInputValue(e.target.value);
+  };
+
+
+
   const createNewProject = (e) => {
     e.preventDefault();
     navigate("/createNewProject");
@@ -104,6 +113,18 @@ const Dashboard = () => {
           Create New Project
         </button>
       </div>
+
+          <div>
+            <label>
+              Type a number:
+              <input
+                type="number"
+                value={inputValue}
+                onChange={handleInputChange}
+              />
+            </label>
+            <p>Input value: {inputValue}</p>
+          </div>
 {/* 
       <div className={styles.collectionsSection}>
         <h2>My Collections:</h2>

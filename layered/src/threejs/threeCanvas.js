@@ -1,14 +1,10 @@
 import { Suspense, useEffect, useRef, useState } from 'react';
 import { Canvas, useThree, useFrame } from '@react-three/fiber';
 import { OrbitControls, TransformControls, ContactShadows, useGLTF, useCursor, Environment, useVideoTexture } from '@react-three/drei';
-import { proxy, useSnapshot } from 'valtio';
 import * as THREE from 'three';
-import { Outline } from '@react-three/postprocessing'
 import Man from './3dScenes/Man';
 import { useDispatch, useSelector } from 'react-redux';
 import { SET_OBJECT_IMAGE, selectObjectID, UNSET_OBJECT_IMAGE, selectObjectChosen } from '../redux/slice/objectImageSlice';
-import AnimatedCylinder from './3dScenes/Animated_cylinder';
-import TestAnim from './3dScenes/Test_anim';
 import { REMOVE_EDITOR_STATE } from '../redux/slice/editorSlice';
 
 
@@ -22,7 +18,16 @@ function Model({ name, ...props }) {
 
   const selectedID = useSelector(selectObjectID);
   const dispatch = useDispatch();
-  const { nodes } = useGLTF('/3dAssets/new_cylinder.glb');
+
+const { nodes: pivotNodes, materials: pivotMaterials } = useGLTF('/3dAssets/baked_pivots/baked_pivot.glb');
+const { nodes: planeNodes, materials: planeMaterials } = useGLTF('/3dAssets/baked_pivots/plane.glb');
+
+const { nodes: discNode, materials: discMaterials } = useGLTF('/3dAssets/baked_pivots/disc.glb');
+const { nodes: half_cylinderNodes, materials: halfCylinderMats } = useGLTF('/3dAssets/baked_pivots/half_cylinder.glb');
+
+  console.log('Nodes:', pivotNodes);
+  console.log('Plane Nodes:', planeNodes);
+
   const [hovered, setHovered] = useState(false);
     useCursor(hovered);
     const itemRef = useRef();
@@ -132,12 +137,28 @@ function Model({ name, ...props }) {
   newMaterial.alphaTest = .1;
   newMaterial.depthTest = 0.9;
 
-  let myGeometry = nodes.mesh_0.geometry;
-  if (props.objectType === 'plane') {
-    myGeometry = new THREE.PlaneGeometry();
+  let myGeometry;
+
+  switch (props.objectType) {
+    case 'plane':
+      myGeometry = planeNodes.mesh_0.geometry;
+      break;
+    case 'cylinder':
+      myGeometry = pivotNodes.mesh_0.geometry; // Adjust this line based on your actual GLTF structure for cylinders
+      break;
+    case 'disc':
+      myGeometry = discNode.mesh_0.geometry;
+      break;
+    case 'arc':
+      myGeometry = half_cylinderNodes.mesh_0.geometry; // Adjust this line based on your actual GLTF structure for half cylinders
+      break;
+    // Add more cases for other object types if needed
+    default:
+      // Default to pivotNodes for unknown object types (you can adjust this based on your requirements)
+      myGeometry = pivotNodes.mesh_0.geometry;
+      break;
   }
-
-
+  
 
 
    // if(props.animation !== null ){
@@ -363,21 +384,21 @@ export default function ThreeCanvas(props) {
     <>
 
       <Canvas
-        camera={{ position: [-3, 2, 5], fov: 90 }}
+        camera={{ position: [-3, 5, 12], fov: 90 }}
         linear
         
         >
         {sceneObjs && skyBoxes[sceneObjs.details.SkyBox] && sceneObjs.details.SkyBox !== 100 && (
           <Environment files={skyBoxes[sceneObjs.details.SkyBox]} background blur={0.0} />
         )}
-      <gridHelper args={[400, 200, '#f7f7f7', '#f7f7f7']} position={[0, -4, 0]} />
+      <gridHelper args={[400, 200, '#f7f7f7', '#f7f7f7']} position={[0, 0, 0]} />
       <hemisphereLight color="#ffffff" groundColor="#b9b9b9" position={[-7, 25, 13]} intensity={0.85} />
       <Suspense fallback={null}>
         {instantiateObjects()}
 
       </Suspense>
       <OrbitControls makeDefault />
-      <Man scale={0.01} position={[0,-1.7, 0]} />
+      <Man scale={0.01} position={[0,2.35, 0]} />
       <Controls editMode={props.editMode} updateThreeObject={updateThreeObject}/>
     </Canvas>
     </>

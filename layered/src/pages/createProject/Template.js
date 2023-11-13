@@ -25,7 +25,7 @@ import { REMOVE_EDITOR_STATE, SET_EDITOR_STATE, selectNonIndexState, selectNonIn
 
 import { ChromePicker } from "react-color";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faChevronUp, faCircle, faCircleHalfStroke, faClone, faEye, faEyeSlash, faMaximize, faMinus, faMultiply, faO, faPause, faPenToSquare, faPlay, faPlus, faRedo, faRotate, faSave, faShare, faSquare, faTrash, faUndo, faUpDownLeftRight, faVolumeHigh, faVolumeMute, faX } from '@fortawesome/free-solid-svg-icons'
+import { faBreadSlice, faChevronUp, faCircle, faCircleHalfStroke, faClone, faEye, faEyeSlash, faMaximize, faMinus, faMultiply, faO, faPause, faPenToSquare, faPlay, faPlus, faRedo, faRotate, faSave, faShare, faSquare, faTrash, faUndo, faUpDownLeftRight, faVolumeHigh, faVolumeMute, faX } from '@fortawesome/free-solid-svg-icons'
 
 
 const Editor = () => {
@@ -206,6 +206,59 @@ const Editor = () => {
 
   }
 
+  const addDisc = () => {
+    // console.log('here----');
+    // Ensure that projectScene and projectScene.objects exist
+    if (!projectScene) {
+      console.error("projectScene or projectScene.objects is not defined.");
+      return;
+    }
+    if (!projectScene.objects) {
+      projectScene.objects = []; // Initialize projectScene.objects as an empty array.
+    }
+    
+  
+    // Create a new cylinder object with an ID one greater than the maximum
+    const newCylinder = {
+      // objectID: maxId + 1, // Assign the next available ID
+      objectTypeName: "disc", // You can customize this
+      objectType: "3", // You can customize this
+      material: "https://firebasestorage.googleapis.com/v0/b/layered-5fb29.appspot.com/o/sqaure.png?alt=media&token=dd1d81ad-6eb2-4048-a518-576ce1a8766a", // Customize with your material
+      position: { x: 0, y: 0, z: 0 }, // Set the initial position
+      rotation: { x: 0, y: 0, z: 0 }, // Set the initial rotation
+      rotationSpeed: { x: 0, y: 0, z: 0 },
+      scale: { x: 1, y: 1, z: 1 }, // Set the initial scale
+      tiling: { x: 1, y: 1}, // Set the initial scale
+      materialType: "solid",
+      solidColor: {
+        r: 255,
+        g: 255,
+        b: 255,
+      },
+      blendMode: 1,
+    };
+  
+    // Append the new cylinder object to projectScene.objects
+    let maxId = projectScene.objects.push(newCylinder) - 1;
+    // console.log(maxId);
+
+  
+    // Now you have added a new cylinder object to your projectScene
+    // console.log("New plane added:", newPlane);
+
+      const objectInfo = {
+        objectName: projectScene.objects[maxId].objectTypeName,
+        objectID: maxId,
+        objectMaterial: projectScene.objects[maxId].material,
+      };
+  
+      // Dispatch the project information to Redux
+      dispatch(SET_OBJECT_IMAGE(objectInfo));
+
+      setUndoStack((prevUndoStack) => [...prevUndoStack, projectScene]);
+      setRedoStack([]);
+  };
+
   const addCylinder = () => {
     // console.log('here----');
     // Ensure that projectScene and projectScene.objects exist
@@ -286,6 +339,58 @@ const Editor = () => {
     }
   };
 
+  const addHalfCylinder = () => {
+    // Ensure that projectScene and projectScene.objects exist
+    if (!projectScene) {
+      console.error("projectScene or projectScene.objects is not defined.");
+      return;
+    }
+    if (!projectScene.objects) {
+      projectScene.objects = []; // Initialize projectScene.objects as an empty array.
+    }
+    
+  
+    // Create a new cylinder object with an ID one greater than the maximum
+    const newPlane = {
+      // objectID: maxId + 1, // Assign the next available ID
+      objectTypeName: "arc", // You can customize this
+      objectType: "2", // You can customize this
+      material: "https://firebasestorage.googleapis.com/v0/b/layered-5fb29.appspot.com/o/sqaure.png?alt=media&token=dd1d81ad-6eb2-4048-a518-576ce1a8766a", // Customize with your material
+      position: { x: 0, y: 0, z: 0 }, // Set the initial position
+      rotation: { x: 0, y: 0, z: 0 }, // Set the initial rotation
+      rotationSpeed: { x: 0, y: 0, z: 0 },
+      scale: { x: 1, y: 1, z: 1 }, // Set the initial scale
+      tiling: { x: 1, y: 1}, // Set the initial scale
+      materialType: "solid",
+      solidColor: {
+        r: 255,
+        g: 255,
+        b: 255,
+      },
+      blendMode: 1,
+    };
+  
+    // Append the new cylinder object to projectScene.objects
+    let maxId = projectScene.objects.push(newPlane) - 1;
+    // console.log(maxId);
+
+  
+    // Now you have added a new cylinder object to your projectScene
+    // console.log("New plane added:", newPlane);
+
+      const objectInfo = {
+        objectName: projectScene.objects[maxId].objectTypeName,
+        objectID: maxId,
+        objectMaterial: projectScene.objects[maxId].material,
+      };
+  
+      // Dispatch the project information to Redux
+      dispatch(SET_OBJECT_IMAGE(objectInfo));
+
+      setUndoStack((prevUndoStack) => [...prevUndoStack, projectScene]);
+      setRedoStack([]);
+
+  };
 
 
   const addPlane = () => {
@@ -2217,7 +2322,8 @@ const updateObjectArc = (objectID, newObjectData) => {
                 <div className={templateCSS.leftEditorShapes}>
                   <FontAwesomeIcon onClick={addCylinder} icon={faCircle} className={templateCSS.editorButton}/>
                   <FontAwesomeIcon onClick={addPlane} icon={faSquare} className={templateCSS.editorButton}/>
-                  {/* <FontAwesomeIcon onClick={addPlane} icon={faCircleHalfStroke} className={templateCSS.editorButton}/> */}
+                  <FontAwesomeIcon onClick={addHalfCylinder} icon={faCircleHalfStroke} className={templateCSS.editorButton}/>
+                  <FontAwesomeIcon onClick={addDisc} icon={faBreadSlice} className={templateCSS.editorButton}/>
                 </div>
                 <div className={templateCSS.modeButtons}>
                     <FontAwesomeIcon onClick={changeEditMode('translate')} icon={faUpDownLeftRight}  className={templateCSS.editorButton}/>
