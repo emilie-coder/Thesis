@@ -25,7 +25,7 @@ import { REMOVE_EDITOR_STATE, SET_EDITOR_STATE, selectNonIndexState, selectNonIn
 
 import { ChromePicker } from "react-color";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBreadSlice, faChevronUp, faCircle, faCircleHalfStroke, faClone, faEye, faEyeSlash, faMaximize, faMinus, faMultiply, faO, faPause, faPenToSquare, faPlay, faPlus, faRedo, faRotate, faSave, faShare, faSquare, faTrash, faUndo, faUpDownLeftRight, faVolumeHigh, faVolumeMute, faX } from '@fortawesome/free-solid-svg-icons'
+import { faBreadSlice, faChevronUp, faCircle, faCircleHalfStroke, faCirclePlus, faClone, faEye, faEyeSlash, faMaximize, faMinus, faMultiply, faO, faPause, faPenToSquare, faPlay, faPlus, faRedo, faRotate, faSave, faShare, faSquare, faTrash, faUndo, faUpDownLeftRight, faVolumeHigh, faVolumeMute, faX } from '@fortawesome/free-solid-svg-icons'
 
 
 const Editor = () => {
@@ -1480,16 +1480,16 @@ const updateObjectArc = (objectID, newObjectData) => {
     const updatedProjectScene = JSON.parse(JSON.stringify(projectScene));
     const updatedObjects = [...updatedProjectScene.objects];
 
-      // Check if the object is actually updated
-      const positionUpdated = !isPositionEqual(projectScene.objects[objectID].position, newObjectData.position);
-      const scaleUpdated = !isScaleEqual(projectScene.objects[objectID].scale, newObjectData.scale);
-      const rotationUpdated = !isRotationEqual(projectScene.objects[objectID].rotation, newObjectData.rotation);
+      // // Check if the object is actually updated
+      // const positionUpdated = !isPositionEqual(projectScene.objects[objectID].position, newObjectData.position);
+      // const scaleUpdated = !isScaleEqual(projectScene.objects[objectID].scale, newObjectData.scale);
+      // const rotationUpdated = !isRotationEqual(projectScene.objects[objectID].rotation, newObjectData.rotation);
       
-      // Check if the object is actually updated
-      const isObjectUpdated = (positionUpdated || scaleUpdated || rotationUpdated);
+      // // Check if the object is actually updated
+      // const isObjectUpdated = (positionUpdated || scaleUpdated || rotationUpdated);
 
 
-    if (objectID !== null && isObjectUpdated) {
+    if (objectID !== null ) {
       // Create a copy of the object to update
       const updatedObject = { ...updatedObjects[objectID] };
 
@@ -2320,10 +2320,10 @@ const updateObjectArc = (objectID, newObjectData) => {
         <div className={templateCSS.actualEditor}>
             <div className={templateCSS.leftButtons}>
                 <div className={templateCSS.leftEditorShapes}>
-                  <FontAwesomeIcon onClick={addCylinder} icon={faCircle} className={templateCSS.editorButton}/>
+                  <FontAwesomeIcon onClick={addCylinder} icon={faCirclePlus} className={templateCSS.editorButton}/>
                   <FontAwesomeIcon onClick={addPlane} icon={faSquare} className={templateCSS.editorButton}/>
                   <FontAwesomeIcon onClick={addHalfCylinder} icon={faCircleHalfStroke} className={templateCSS.editorButton}/>
-                  <FontAwesomeIcon onClick={addDisc} icon={faBreadSlice} className={templateCSS.editorButton}/>
+                  <FontAwesomeIcon onClick={addDisc} icon={faCircle} className={templateCSS.editorButton}/>
                 </div>
                 <div className={templateCSS.modeButtons}>
                     <FontAwesomeIcon onClick={changeEditMode('translate')} icon={faUpDownLeftRight}  className={templateCSS.editorButton}/>

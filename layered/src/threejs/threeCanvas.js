@@ -10,23 +10,26 @@ import { REMOVE_EDITOR_STATE } from '../redux/slice/editorSlice';
 
 
 
-const textureCache = {}; // Texture cache to store loaded textures
+const cylinderTextureCache = {};
+const discTextureCache = {};
+const planeTextureCache = {};
+const arcTextureCache = {};
 
 function Model({ name, ...props }) {
 
+  
 
 
   const selectedID = useSelector(selectObjectID);
   const dispatch = useDispatch();
 
-const { nodes: pivotNodes, materials: pivotMaterials } = useGLTF('/3dAssets/baked_pivots/baked_pivot.glb');
-const { nodes: planeNodes, materials: planeMaterials } = useGLTF('/3dAssets/baked_pivots/plane.glb');
+  const { nodes: pivotNodes, materials: pivotMaterials } = useGLTF('/3dAssets/baked_pivots/baked_pivot.glb');
+  const { nodes: planeNodes, materials: planeMaterials } = useGLTF('/3dAssets/baked_pivots/plane.glb');
 
-const { nodes: discNode, materials: discMaterials } = useGLTF('/3dAssets/baked_pivots/disc.glb');
-const { nodes: half_cylinderNodes, materials: halfCylinderMats } = useGLTF('/3dAssets/baked_pivots/half_cylinder.glb');
+  const { nodes: discNode, materials: discMaterials } = useGLTF('/3dAssets/baked_pivots/disc.glb');
+  const { nodes: half_cylinderNodes, materials: halfCylinderMats } = useGLTF('/3dAssets/baked_pivots/half_cylinder.glb');
 
-  console.log('Nodes:', pivotNodes);
-  console.log('Plane Nodes:', planeNodes);
+
 
   const [hovered, setHovered] = useState(false);
     useCursor(hovered);
@@ -35,34 +38,126 @@ const { nodes: half_cylinderNodes, materials: halfCylinderMats } = useGLTF('/3dA
   const materialColor = selectedID === name ? '#ADD8E6' : (hovered ? 'grey' : 'white');
 
   const loadTexture = (textureUrl, tiling, textureType) => {
-    const cacheKey = `${textureUrl}_${tiling[0]}_${tiling[1]}`;
-    
+    let textureCache;
+
+    // Determine the correct texture cache based on the object type
+    switch (props.objectType) {
+      case 'cylinder':
+        textureCache = cylinderTextureCache;
+        break;
+      case 'disc':
+        textureCache = discTextureCache;
+        break;
+      case 'plane':
+        textureCache = planeTextureCache;
+        break;
+      case 'arc':
+        textureCache = arcTextureCache;
+        break;
+      default:
+        textureCache = {}; // Default to a new cache for unknown types
+    }
+  
+    const cacheKey = `${props.objectType}_${textureUrl}_${tiling[0]}_${tiling[1]}`;
+  
+    console.log("Cache Key:", cacheKey);
+  
     if (textureCache[cacheKey]) {
       return textureCache[cacheKey];
     } else {
+      if(props.objectType==="cylinder"){
+        if(textureType === "image"){
+          const textureLoader = new THREE.TextureLoader();
+          const texture = textureLoader.load(textureUrl);
+          texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+          texture.repeat.set(tiling[0], -tiling[1]);
+          textureCache[cacheKey] = texture;
+          return texture;
+  
+        } else if(textureType === "video"){
+  
+          let video = document.getElementById(textureUrl);
+  
+          if(video !== null){
+            let videoTexture = new THREE.VideoTexture(video);
+            videoTexture.minFilter = THREE.LinearFilter;
+            videoTexture.magFilter = THREE.LinearFilter;
+            videoTexture.repeat.set(tiling[0], tiling[1]);
+            textureCache[cacheKey] = videoTexture;
+            return videoTexture;
+          }
+        }
 
+      } else if(props.objectType==="disc"){
+        if(textureType === "image"){
+          const textureLoader = new THREE.TextureLoader();
+          const texture = textureLoader.load(textureUrl);
+          texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+          texture.repeat.set(tiling[0], -tiling[1]);
+          textureCache[cacheKey] = texture;
+          return texture;
+  
+        } else if(textureType === "video"){
+  
+          let video = document.getElementById(textureUrl);
+  
+          if(video !== null){
+            let videoTexture = new THREE.VideoTexture(video);
+            videoTexture.minFilter = THREE.LinearFilter;
+            videoTexture.magFilter = THREE.LinearFilter;
+            videoTexture.repeat.set(tiling[0], tiling[1]);
+            textureCache[cacheKey] = videoTexture;
+            return videoTexture;
+          }
+        }
 
-
-      if(textureType === "image"){
-        const textureLoader = new THREE.TextureLoader();
-        const texture = textureLoader.load(textureUrl);
-        texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-        texture.repeat.set(tiling[0], tiling[1]);
-        textureCache[cacheKey] = texture;
-        return texture;
-
-      } else if(textureType === "video"){
-
-        let video = document.getElementById(textureUrl);
-
-        if(video !== null){
-          let videoTexture = new THREE.VideoTexture(video);
-          videoTexture.minFilter = THREE.LinearFilter;
-          videoTexture.magFilter = THREE.LinearFilter;
-          // videoTexture.repeat.set(tiling[0], tiling[1]);
-          return videoTexture;
+      } else if(props.objectType ==="plane" ){
+        if(textureType === "image"){
+          const textureLoader = new THREE.TextureLoader();
+          const texture = textureLoader.load(textureUrl);
+          texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+          texture.repeat.set(tiling[0], tiling[1]);
+          textureCache[cacheKey] = texture;
+          return texture;
+  
+        } else if(textureType === "video"){
+  
+          let video = document.getElementById(textureUrl);
+  
+          if(video !== null){
+            let videoTexture = new THREE.VideoTexture(video);
+            videoTexture.minFilter = THREE.LinearFilter;
+            videoTexture.magFilter = THREE.LinearFilter;
+            videoTexture.repeat.set(tiling[0], tiling[1]);
+            textureCache[cacheKey] = videoTexture;
+            return videoTexture;
+          }
+        }
+      } else if(props.objectType ==="arc" ) {
+        if(textureType === "image"){
+          const textureLoader = new THREE.TextureLoader();
+          const texture = textureLoader.load(textureUrl);
+          texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+          texture.repeat.set(tiling[0], -tiling[1]);
+          textureCache[cacheKey] = texture;
+          return texture;
+  
+        } else if(textureType === "video"){
+  
+          let video = document.getElementById(textureUrl);
+  
+          if(video !== null){
+            let videoTexture = new THREE.VideoTexture(video);
+            videoTexture.minFilter = THREE.LinearFilter;
+            videoTexture.magFilter = THREE.LinearFilter;
+            videoTexture.repeat.set(tiling[0], tiling[1]);
+            textureCache[cacheKey] = videoTexture;
+            return videoTexture;
+          }
         }
       }
+      
+
 
     }
   };
@@ -144,17 +239,15 @@ const { nodes: half_cylinderNodes, materials: halfCylinderMats } = useGLTF('/3dA
       myGeometry = planeNodes.mesh_0.geometry;
       break;
     case 'cylinder':
-      myGeometry = pivotNodes.mesh_0.geometry; // Adjust this line based on your actual GLTF structure for cylinders
+      myGeometry = pivotNodes.mesh_0.geometry; 
       break;
     case 'disc':
       myGeometry = discNode.mesh_0.geometry;
       break;
     case 'arc':
-      myGeometry = half_cylinderNodes.mesh_0.geometry; // Adjust this line based on your actual GLTF structure for half cylinders
+      myGeometry = half_cylinderNodes.mesh_0.geometry; 
       break;
-    // Add more cases for other object types if needed
     default:
-      // Default to pivotNodes for unknown object types (you can adjust this based on your requirements)
       myGeometry = pivotNodes.mesh_0.geometry;
       break;
   }
