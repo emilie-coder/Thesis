@@ -3,7 +3,7 @@ import footerCSS from './Footer.module.css'
 
 const Footer = () => {
   return (
-    <div className = { footerCSS.footer }>footer</div>
+    <div className = { footerCSS.footer }> Porting your art into VR</div>
   )
 }
 

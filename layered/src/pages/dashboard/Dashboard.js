@@ -139,7 +139,7 @@ const Dashboard = () => {
 
               
               </div>
-              <button onClick={viewUserProject(projectId)}>test</button>
+              <button onClick={viewUserProject(projectId)}>view stereo</button>
               </div>
             ))}
           </div>

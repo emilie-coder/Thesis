@@ -1,6 +1,6 @@
 import { Suspense, useEffect, useRef, useState } from 'react';
 import { Canvas, useThree, useFrame } from '@react-three/fiber';
-import { OrbitControls, TransformControls, ContactShadows, useGLTF, useCursor, Environment, useVideoTexture } from '@react-three/drei';
+import { OrbitControls, TransformControls, ContactShadows, useGLTF, useCursor, Environment, useVideoTexture, CameraControls } from '@react-three/drei';
 import * as THREE from 'three';
 import Man from './3dScenes/Man';
 import { useDispatch, useSelector } from 'react-redux';
@@ -287,6 +287,8 @@ function Model({ name, ...props }) {
 }
 
 export default function ViewStereo(props) {
+  const myCam = props.camera;
+  const myCamRot = props.cameraRot;
   const sceneObjs = props.scene;
   const toggleSides = props.toggleSides;
   const playPause = props.playPause;
@@ -340,11 +342,28 @@ export default function ViewStereo(props) {
     "/hdriskies/wasteland_clouds_puresky_4k.hdr"
     
 ])
+const prevCameraPosition = useRef(myCam);
+const prevCameraRotation = useRef(myCamRot);
 
 
+useEffect(() => {
+  // Check if the camera position or rotation has been updated
+  if (
+    myCam[0] !== prevCameraPosition.current[0] ||
+    myCam[1] !== prevCameraPosition.current[1] ||
+    myCam[2] !== prevCameraPosition.current[2] ||
+    myCamRot[0] !== prevCameraRotation.current[0] ||
+    myCamRot[1] !== prevCameraRotation.current[1] ||
+    myCamRot[2] !== prevCameraRotation.current[2]
+  ) {
+    // Update the previous camera position and rotation
+    prevCameraPosition.current = myCam;
+    prevCameraRotation.current = myCamRot;
 
-
-
+    // Call the updateCameras function with the updated information
+    props.updateCameras([props.eye, myCam, myCamRot]);
+  }
+}, [myCam, myCamRot, props.eye, props.updateCameras]);
 
 
 
@@ -402,14 +421,27 @@ export default function ViewStereo(props) {
 
 
   
+
+  const updateCamera = (e) =>{
+    if(e.type==="update"){
+
+      props.updateCameras([props.eye, e.target.camera.position, e.target.camera.rotation])
+      // console.log(e.target.camera.position);
+      // console.log(e.target.camera.rotation);
+    }
+  }
+
   return (
     <>
 
       <Canvas
-        camera={{ position: [-3, 5, 12], fov: 90 }}
+        camera={{
+          position: [myCam[0], myCam[1], myCam[2]],
+          fov: 90,
+          rotation: [myCamRot[0], myCamRot[1], myCamRot[2]],
+        }}
         linear
-        
-        >
+      >
         {sceneObjs && skyBoxes[sceneObjs.details.SkyBox] && sceneObjs.details.SkyBox !== 100 && (
           <Environment files={skyBoxes[sceneObjs.details.SkyBox]} background blur={0.0}   ground={{
             height: 10, // Height of the camera that was used to create the env map (Default: 15)
@@ -422,6 +454,8 @@ export default function ViewStereo(props) {
         {instantiateObjects()}
 
       </Suspense>
+      <OrbitControls makeDefault />
+      <CameraControls onChange={updateCamera}/>
     </Canvas>
     </>
 

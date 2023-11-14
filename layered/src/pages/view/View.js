@@ -12,11 +12,11 @@ import { selectUserID } from '../../redux/slice/authSlice';
 import { useLocation } from 'react-router-dom';
 import NewCanvas from '../../threejs/threeCanvas';
 import ViewStereo from '../../threejs/ViewStereo';
-
+import styles from './View.module.css';
 
 const View = () => {
     const dispatch = useDispatch();
-    const [playPause, setPlayPause] = useState(false);
+    const [playPause, setPlayPause] = useState(true);
     const userID = useSelector(selectUserID);
     const [projectScene, setProjectScene] = useState(null);
   
@@ -28,6 +28,38 @@ const View = () => {
   
 
     const [toggleSides, setToggleSides] = useState(false);
+
+
+    const [rightCamera, setRightCamera] = useState([-3, 5, 12])
+    const [leftCamera, setLeftCamera] = useState([-2, 5, 12])
+
+    const [rightCameraRot, setRightRotCamera] = useState([0, 0, 0])
+    const [leftCameraRot, setLeftRotCamera] = useState([0, 0, 0])
+
+     // Use this useEffect to update cameras based on external changes
+  useEffect(() => {
+    // Example: Listen for changes in an external variable and update cameras
+    const externalChanges = { leftCamera: [-2, 5, 12], rightCamera: [-3, 5, 12] };
+
+    // Check if the left camera has changed externally
+    if (
+      externalChanges.leftCamera &&
+      JSON.stringify(externalChanges.leftCamera) !== JSON.stringify(leftCamera)
+    ) {
+      setLeftCamera(externalChanges.leftCamera);
+      setRightCamera(externalChanges.leftCamera); // Apply the same to the right
+    }
+
+    // Check if the right camera has changed externally
+    if (
+      externalChanges.rightCamera &&
+      JSON.stringify(externalChanges.rightCamera) !== JSON.stringify(rightCamera)
+    ) {
+      setRightCamera(externalChanges.rightCamera);
+      setLeftCamera(externalChanges.rightCamera); // Apply the same to the left
+    }
+  }, [leftCamera, rightCamera]);
+
 
       // Fetch and update project data when the component mounts
   useEffect(() => {
@@ -60,14 +92,33 @@ const View = () => {
   
     fetchProjectData();
   }, [dispatch, projectIDURL, userID]);
+
+
+  const updateCameras = (updatedInformation) => {
+    const [eyeType, cameraPosition, cameraRotation] = updatedInformation;
+
+    if (eyeType === 'left') {
+      setLeftCamera(cameraPosition);
+      setLeftRotCamera(cameraRotation);
+
+      // Apply the same translation and rotation to the right eye
+      setRightCamera(cameraPosition);
+      setRightRotCamera(cameraRotation);
+    } else if (eyeType === 'right') {
+      setRightCamera(cameraPosition);
+      setRightRotCamera(cameraRotation);
+
+      // Apply the same translation and rotation to the left eye
+      setLeftCamera(cameraPosition);
+      setLeftRotCamera(cameraRotation);
+    }
+  };
    
 
   return (
-    <div>
-        
-        this is the View
-        <ViewStereo scene={projectScene} toggleSides={toggleSides} playPause={playPause}/>
-        <ViewStereo scene={projectScene} toggleSides={toggleSides} playPause={playPause}/>
+    <div className={styles.viewPage}>
+        <ViewStereo scene={projectScene} toggleSides={toggleSides} playPause={playPause} camera={leftCamera} cameraRot={leftCamera} updateCameras={updateCameras} eye="left"/>
+        <ViewStereo scene={projectScene} toggleSides={toggleSides} playPause={playPause} camera={leftCamera} cameraRot={leftCamera} updateCameras={updateCameras} eye="left"/>
     </div>
   )
 }

@@ -36,7 +36,7 @@ function App() {
         <Route path="/view/:id" element={<View/>}></Route>
         <Route path="*" element={<div> Unknown link :( </div>}/>
       </Routes>
-    <Footer/>
+    {/* <Footer/> */}
 
     </BrowserRouter>
     </div>
