@@ -74,7 +74,7 @@ const Editor = () => {
   const [lastSelectedImage, setLastSelectedImage] = useState(null);
   const [lastSelectedVideo, setLastSelectedVideo] = useState(null);
 
-  const [toggleSides, setToggleSides] = useState(true);
+  const [toggleSides, setToggleSides] = useState(false);
   const [copiedObject, setCopiedObject] = useState({});
 
   const [undoStack, setUndoStack] = useState([]);
@@ -819,9 +819,9 @@ const BroadStateTab = () => {
         <div className={`${tabClassName1}`} onClick={() => removeTarget('SkyBox')}>
           Sky
         </div>
-        <div className={`${tabClassName3}`} onClick={() => removeTarget('Audio')}>
+        {/* <div className={`${tabClassName3}`} onClick={() => removeTarget('Audio')}>
           Audio
-        </div>
+        </div> */}
         <div className={`${tabClassName2}`} onClick={() => removeTarget('Main')}>
           Main
         </div>
@@ -921,9 +921,9 @@ const instantiateBroadStateTabs = () => {
            <div className={`${tabClassName1}`}  onClick={() => setTextureType('image')}>
             image
           </div>
-          <div className={`${tabClassName2}`}  onClick={() => setTextureType('video')}>
+          {/* <div className={`${tabClassName2}`}  onClick={() => setTextureType('video')}>
             video
-          </div>
+          </div> */}
           <div className={`${tabClassName3}`}  onClick={() => setTextureType('solid')}>
             solid
           </div>
@@ -2349,12 +2349,12 @@ const updateObjectArc = (objectID, newObjectData) => {
                     <FontAwesomeIcon icon={faPause} className={templateCSS.editorButton} onClick={(togglePlayPause)}/>
                   }
                 </div>
-                  {toggleSides &&                 
+                  {!toggleSides &&                 
                   <div  className={templateCSS.toggleSides}>
                     <FontAwesomeIcon icon={faEye} onClick={toggleSidesButton}  className={templateCSS.editorButton}/>
                   </div>
                   }
-                  {!toggleSides &&                 
+                  {toggleSides &&                 
                     <div  className={templateCSS.toggleSides}>
                       <FontAwesomeIcon icon={faEyeSlash} onClick={toggleSidesButton}  className={templateCSS.editorButton}/>
                     </div>

@@ -26,7 +26,7 @@ function Model({ name, ...props }) {
   const { nodes: pivotNodes, materials: pivotMaterials } = useGLTF('/3dAssets/baked_pivots/baked_pivot.glb');
   const { nodes: planeNodes, materials: planeMaterials } = useGLTF('/3dAssets/baked_pivots/plane.glb');
 
-  const { nodes: discNode, materials: discMaterials } = useGLTF('/3dAssets/baked_pivots/disc.glb');
+  const { nodes: discNode, materials: discMaterials } = useGLTF('/3dAssets/baked_pivots/disc2.glb');
   const { nodes: half_cylinderNodes, materials: halfCylinderMats } = useGLTF('/3dAssets/baked_pivots/half_cylinder.glb');
 
 
@@ -81,7 +81,7 @@ function Model({ name, ...props }) {
             let videoTexture = new THREE.VideoTexture(video);
             videoTexture.minFilter = THREE.LinearFilter;
             videoTexture.magFilter = THREE.LinearFilter;
-            videoTexture.repeat.set(tiling[0], tiling[1]);
+            // videoTexture.repeat.set(tiling[0], tiling[1]);
             textureCache[cacheKey] = videoTexture;
             return videoTexture;
           }
@@ -104,7 +104,7 @@ function Model({ name, ...props }) {
             let videoTexture = new THREE.VideoTexture(video);
             videoTexture.minFilter = THREE.LinearFilter;
             videoTexture.magFilter = THREE.LinearFilter;
-            videoTexture.repeat.set(tiling[0], tiling[1]);
+            // videoTexture.repeat.set(tiling[0], tiling[1]);
             textureCache[cacheKey] = videoTexture;
             return videoTexture;
           }
@@ -127,7 +127,7 @@ function Model({ name, ...props }) {
             let videoTexture = new THREE.VideoTexture(video);
             videoTexture.minFilter = THREE.LinearFilter;
             videoTexture.magFilter = THREE.LinearFilter;
-            videoTexture.repeat.set(tiling[0], tiling[1]);
+            // videoTexture.repeat.set(tiling[0], tiling[1]);
             textureCache[cacheKey] = videoTexture;
             return videoTexture;
           }
@@ -149,7 +149,7 @@ function Model({ name, ...props }) {
             let videoTexture = new THREE.VideoTexture(video);
             videoTexture.minFilter = THREE.LinearFilter;
             videoTexture.magFilter = THREE.LinearFilter;
-            videoTexture.repeat.set(tiling[0], tiling[1]);
+            // videoTexture.repeat.set(tiling[0], tiling[1]);
             textureCache[cacheKey] = videoTexture;
             return videoTexture;
           }
@@ -482,7 +482,11 @@ export default function ThreeCanvas(props) {
         
         >
         {sceneObjs && skyBoxes[sceneObjs.details.SkyBox] && sceneObjs.details.SkyBox !== 100 && (
-          <Environment files={skyBoxes[sceneObjs.details.SkyBox]} background blur={0.0} />
+          <Environment files={skyBoxes[sceneObjs.details.SkyBox]} background blur={0.0}   ground={{
+            height: 10, // Height of the camera that was used to create the env map (Default: 15)
+            radius: 1000, // Radius of the world. (Default 60)
+            scale: 500, // Scale of the backside projected sphere that holds the env texture (Default: 1000)
+          }}/>
         )}
       <gridHelper args={[400, 200, '#f7f7f7', '#f7f7f7']} position={[0, 0, 0]} />
       <hemisphereLight color="#ffffff" groundColor="#b9b9b9" position={[-7, 25, 13]} intensity={0.85} />

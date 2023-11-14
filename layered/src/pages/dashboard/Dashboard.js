@@ -60,6 +60,36 @@ const Dashboard = () => {
       // Handle any errors here
     }
   };
+
+
+  const viewUserProject = (projectID) => async (e) => {
+    e.preventDefault();
+  
+    try {
+      // Fetch the project data using your fetchProject function
+      const projectData = await fetchProject(userID, projectID);
+  
+      // Create an object to hold the project information
+      const projectInfo = {
+        projectID: projectID,
+        projectTitle: projectData.title,
+        projectTemplate: projectData.projectTemplate,
+        projectTemplateInteger: projectData.templateID,
+        projectTimeCreated: projectData.timeCreated,
+        projectTimeLastSaved: projectData.timeLastSaved,
+        projectAuthor: projectData.author,
+      };
+  
+      // Dispatch the project information to Redux
+      dispatch(SET_ACTIVE_PROJECT(projectInfo));
+  
+      // Navigate to the project template page
+      navigate(`/view/${projectID}`);
+    } catch (error) {
+      console.error('Error fetching project:', error);
+      // Handle any errors here
+    }
+  };
   
 
   useEffect(() => {
@@ -84,6 +114,8 @@ const Dashboard = () => {
         {userProjects && (
           <div className={styles.projectList}>
             {Object.keys(userProjects).map((projectId) => (
+              <div>
+
               <div
                 key={projectId}
                 className={styles.projectItem}
@@ -105,6 +137,9 @@ const Dashboard = () => {
                         <img className={styles.projectImg} src={userProjects[projectId].projectScene.templateCover} alt="temp"/>
                 }
 
+              
+              </div>
+              <button onClick={viewUserProject(projectId)}>test</button>
               </div>
             ))}
           </div>
@@ -114,7 +149,7 @@ const Dashboard = () => {
         </button>
       </div>
 
-          <div>
+          {/* <div>
             <label>
               Type a number:
               <input
@@ -124,7 +159,7 @@ const Dashboard = () => {
               />
             </label>
             <p>Input value: {inputValue}</p>
-          </div>
+          </div> */}
 {/* 
       <div className={styles.collectionsSection}>
         <h2>My Collections:</h2>
