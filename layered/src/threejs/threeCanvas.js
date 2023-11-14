@@ -60,7 +60,6 @@ function Model({ name, ...props }) {
   
     const cacheKey = `${props.objectType}_${textureUrl}_${tiling[0]}_${tiling[1]}`;
   
-    console.log("Cache Key:", cacheKey);
   
     if (textureCache[cacheKey]) {
       return textureCache[cacheKey];
@@ -329,6 +328,7 @@ function Controls(props) {
   const ifSelected = useSelector(selectObjectChosen);
   const scene = useThree((state) => state.scene);
 
+
   const handleDrag = (event) => {
 
     // update the object here too
@@ -338,7 +338,7 @@ function Controls(props) {
     const newScale = {x: objectToUpdate.scale.x, y: objectToUpdate.scale.y, z: objectToUpdate.scale.z};
     const newRotation = {x:objectToUpdate.rotation._x, y: objectToUpdate.rotation._y, z:objectToUpdate.rotation._z};
 
-    props.updateThreeObject(selectedID, {
+    props.updateThreeObject(`${selectedID}`, {
       position: newPostion,
       scale: newScale,
       rotation: newRotation,
@@ -436,7 +436,7 @@ export default function ThreeCanvas(props) {
         objectsToRender.push(
           <Model
             name={`${index}`}
-            key={index}
+            key={`${index}_shape`}
             position={[item.position.x, item.position.y, item.position.z]}
             // rotation={[
             //   THREE.MathUtils.degToRad(item.rotation.x),
