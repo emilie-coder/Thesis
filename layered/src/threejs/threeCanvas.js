@@ -127,7 +127,8 @@ function Model({ name, ...props }) {
             let videoTexture = new THREE.VideoTexture(video);
             videoTexture.minFilter = THREE.LinearFilter;
             videoTexture.magFilter = THREE.LinearFilter;
-            // videoTexture.repeat.set(tiling[0], tiling[1]);
+            videoTexture.wrapS = videoTexture.wrapT = THREE.RepeatWrapping;
+            videoTexture.repeat.set(1, 1);
             textureCache[cacheKey] = videoTexture;
             return videoTexture;
           }

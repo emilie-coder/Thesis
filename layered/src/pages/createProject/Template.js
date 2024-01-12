@@ -921,9 +921,9 @@ const instantiateBroadStateTabs = () => {
            <div className={`${tabClassName1}`}  onClick={() => setTextureType('image')}>
             image
           </div>
-          {/* <div className={`${tabClassName2}`}  onClick={() => setTextureType('video')}>
+          <div className={`${tabClassName2}`}  onClick={() => setTextureType('video')}>
             video
-          </div> */}
+          </div>
           <div className={`${tabClassName3}`}  onClick={() => setTextureType('solid')}>
             solid
           </div>
